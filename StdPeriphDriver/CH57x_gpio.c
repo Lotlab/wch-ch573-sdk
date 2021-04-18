@@ -8,7 +8,6 @@
 
 #include "CH57x_common.h"
 
-
 /*******************************************************************************
 * Function Name  : GPIOA_ModeCfg
 * Description    : GPIOA端口引脚模式配置
@@ -22,40 +21,39 @@
 					GPIO_ModeOut_PP_20mA  -  推挽输出最大20mA				   				
 * Return         : None
 *******************************************************************************/
-void GPIOA_ModeCfg( uint32_t pin, GPIOModeTypeDef mode )
-{	
-    switch(mode)
-    {
-        case GPIO_ModeIN_Floating:
-            R32_PA_PD_DRV &= ~pin;
-            R32_PA_PU     &= ~pin;
-            R32_PA_DIR    &= ~pin;
-            break;
+void GPIOA_ModeCfg(uint32_t pin, GPIOModeTypeDef mode)
+{
+    switch (mode) {
+    case GPIO_ModeIN_Floating:
+        R32_PA_PD_DRV &= ~pin;
+        R32_PA_PU &= ~pin;
+        R32_PA_DIR &= ~pin;
+        break;
 
-        case GPIO_ModeIN_PU:
-            R32_PA_PD_DRV &= ~pin;
-            R32_PA_PU     |= pin;
-            R32_PA_DIR    &= ~pin;
-            break;
+    case GPIO_ModeIN_PU:
+        R32_PA_PD_DRV &= ~pin;
+        R32_PA_PU |= pin;
+        R32_PA_DIR &= ~pin;
+        break;
 
-        case GPIO_ModeIN_PD:
-            R32_PA_PD_DRV |= pin;
-            R32_PA_PU     &= ~pin;
-            R32_PA_DIR    &= ~pin;
-            break;
+    case GPIO_ModeIN_PD:
+        R32_PA_PD_DRV |= pin;
+        R32_PA_PU &= ~pin;
+        R32_PA_DIR &= ~pin;
+        break;
 
-        case GPIO_ModeOut_PP_5mA:
-            R32_PA_PD_DRV &= ~pin;
-            R32_PA_DIR    |= pin;
-            break;
+    case GPIO_ModeOut_PP_5mA:
+        R32_PA_PD_DRV &= ~pin;
+        R32_PA_DIR |= pin;
+        break;
 
-        case GPIO_ModeOut_PP_20mA:
-            R32_PA_PD_DRV |= pin;
-            R32_PA_DIR    |= pin;
-            break;
+    case GPIO_ModeOut_PP_20mA:
+        R32_PA_PD_DRV |= pin;
+        R32_PA_DIR |= pin;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -72,40 +70,39 @@ void GPIOA_ModeCfg( uint32_t pin, GPIOModeTypeDef mode )
 					GPIO_ModeOut_PP_20mA  -  推挽输出最大20mA				   				
 * Return         : None
 *******************************************************************************/
-void GPIOB_ModeCfg( uint32_t pin, GPIOModeTypeDef mode )
-{	
-    switch(mode)
-    {
-        case GPIO_ModeIN_Floating:
-            R32_PB_PD_DRV &= ~pin;
-            R32_PB_PU     &= ~pin;
-            R32_PB_DIR    &= ~pin;
-            break;
+void GPIOB_ModeCfg(uint32_t pin, GPIOModeTypeDef mode)
+{
+    switch (mode) {
+    case GPIO_ModeIN_Floating:
+        R32_PB_PD_DRV &= ~pin;
+        R32_PB_PU &= ~pin;
+        R32_PB_DIR &= ~pin;
+        break;
 
-        case GPIO_ModeIN_PU:
-            R32_PB_PD_DRV &= ~pin;
-            R32_PB_PU     |= pin;
-            R32_PB_DIR    &= ~pin;
-            break;
+    case GPIO_ModeIN_PU:
+        R32_PB_PD_DRV &= ~pin;
+        R32_PB_PU |= pin;
+        R32_PB_DIR &= ~pin;
+        break;
 
-        case GPIO_ModeIN_PD:
-            R32_PB_PD_DRV |= pin;
-            R32_PB_PU     &= ~pin;
-            R32_PB_DIR    &= ~pin;
-            break;
+    case GPIO_ModeIN_PD:
+        R32_PB_PD_DRV |= pin;
+        R32_PB_PU &= ~pin;
+        R32_PB_DIR &= ~pin;
+        break;
 
-        case GPIO_ModeOut_PP_5mA:
-            R32_PB_PD_DRV &= ~pin;
-            R32_PB_DIR    |= pin;
-            break;
+    case GPIO_ModeOut_PP_5mA:
+        R32_PB_PD_DRV &= ~pin;
+        R32_PB_DIR |= pin;
+        break;
 
-        case GPIO_ModeOut_PP_20mA:
-            R32_PB_PD_DRV |= pin;
-            R32_PB_DIR    |= pin;
-            break;
+    case GPIO_ModeOut_PP_20mA:
+        R32_PB_PD_DRV |= pin;
+        R32_PB_DIR |= pin;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -121,32 +118,31 @@ void GPIOB_ModeCfg( uint32_t pin, GPIOModeTypeDef mode )
 					GPIO_ITMode_RiseEdge   -  上升沿触发				   				
 * Return         : None
 *******************************************************************************/
-void GPIOA_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode )
+void GPIOA_ITModeCfg(uint32_t pin, GPIOITModeTpDef mode)
 {
-    switch( mode )
-    {
-        case GPIO_ITMode_LowLevel:		// 低电平触发
-            R16_PA_INT_MODE &= ~pin;
-            R32_PA_CLR |= pin;
-            break;
+    switch (mode) {
+    case GPIO_ITMode_LowLevel: // 低电平触发
+        R16_PA_INT_MODE &= ~pin;
+        R32_PA_CLR |= pin;
+        break;
 
-        case GPIO_ITMode_HighLevel:		// 高电平触发
-            R16_PA_INT_MODE &= ~pin;
-            R32_PA_OUT |= pin;
-            break;
+    case GPIO_ITMode_HighLevel: // 高电平触发
+        R16_PA_INT_MODE &= ~pin;
+        R32_PA_OUT |= pin;
+        break;
 
-        case GPIO_ITMode_FallEdge:		// 下降沿触发
-            R16_PA_INT_MODE |= pin;
-            R32_PA_CLR |= pin;
-            break;
+    case GPIO_ITMode_FallEdge: // 下降沿触发
+        R16_PA_INT_MODE |= pin;
+        R32_PA_CLR |= pin;
+        break;
 
-        case GPIO_ITMode_RiseEdge:		// 上升沿触发	
-            R16_PA_INT_MODE |= pin;
-            R32_PA_OUT |= pin;
-            break;
+    case GPIO_ITMode_RiseEdge: // 上升沿触发
+        R16_PA_INT_MODE |= pin;
+        R32_PA_OUT |= pin;
+        break;
 
-        default :
-            break;
+    default:
+        break;
     }
     R16_PA_INT_IF = pin;
     R16_PA_INT_EN |= pin;
@@ -164,38 +160,36 @@ void GPIOA_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode )
 					GPIO_ITMode_RiseEdge   -  上升沿触发				   				
 * Return         : None
 *******************************************************************************/
-void GPIOB_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode )
+void GPIOB_ITModeCfg(uint32_t pin, GPIOITModeTpDef mode)
 {
-    uint32_t Pin = pin|((pin&(GPIO_Pin_22|GPIO_Pin_23))>>14);
-    switch( mode )
-    {
-        case GPIO_ITMode_LowLevel:		// 低电平触发
-            R16_PB_INT_MODE &= ~Pin;
-            R32_PB_CLR |= pin;
-            break;
+    uint32_t Pin = pin | ((pin & (GPIO_Pin_22 | GPIO_Pin_23)) >> 14);
+    switch (mode) {
+    case GPIO_ITMode_LowLevel: // 低电平触发
+        R16_PB_INT_MODE &= ~Pin;
+        R32_PB_CLR |= pin;
+        break;
 
-        case GPIO_ITMode_HighLevel:		// 高电平触发
-            R16_PB_INT_MODE &= ~Pin;
-            R32_PB_OUT |= pin;
-            break;
+    case GPIO_ITMode_HighLevel: // 高电平触发
+        R16_PB_INT_MODE &= ~Pin;
+        R32_PB_OUT |= pin;
+        break;
 
-        case GPIO_ITMode_FallEdge:		// 下降沿触发
-            R16_PB_INT_MODE |= Pin;
-            R32_PB_CLR |= pin;
-            break;
+    case GPIO_ITMode_FallEdge: // 下降沿触发
+        R16_PB_INT_MODE |= Pin;
+        R32_PB_CLR |= pin;
+        break;
 
-        case GPIO_ITMode_RiseEdge:		// 上升沿触发	
-            R16_PB_INT_MODE |= Pin;
-            R32_PB_OUT |= pin;
-            break;
+    case GPIO_ITMode_RiseEdge: // 上升沿触发
+        R16_PB_INT_MODE |= Pin;
+        R32_PB_OUT |= pin;
+        break;
 
-        default :
-            break;
+    default:
+        break;
     }
     R16_PB_INT_IF = Pin;
     R16_PB_INT_EN |= Pin;
 }
-
 
 /*******************************************************************************
 * Function Name  : GPIOPinRemap
@@ -212,10 +206,12 @@ void GPIOB_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode )
 					RB_PIN_TMR0	  -  TMR0:  PA9 ->  PB23
 * Return         : None
 *******************************************************************************/
-void GPIOPinRemap( FunctionalState s, uint16_t perph )
+void GPIOPinRemap(FunctionalState s, uint16_t perph)
 {
-    if( s )     R16_PIN_ALTERNATE |= perph;				
-    else        R16_PIN_ALTERNATE &= ~perph;				
+    if (s)
+        R16_PIN_ALTERNATE |= perph;
+    else
+        R16_PIN_ALTERNATE &= ~perph;
 }
 
 /*******************************************************************************
@@ -243,8 +239,10 @@ void GPIOPinRemap( FunctionalState s, uint16_t perph )
 					RB_PIN_SEG20_23_IE	  -  LCD控制器SEG20-23驱动引脚	
 * Return         : None
 *******************************************************************************/
-void GPIOAGPPCfg( FunctionalState s, uint16_t perph )
+void GPIOAGPPCfg(FunctionalState s, uint16_t perph)
 {
-    if( s )     R16_PIN_ANALOG_IE |= perph;
-    else        R16_PIN_ANALOG_IE &= ~perph;
+    if (s)
+        R16_PIN_ANALOG_IE |= perph;
+    else
+        R16_PIN_ANALOG_IE &= ~perph;
 }

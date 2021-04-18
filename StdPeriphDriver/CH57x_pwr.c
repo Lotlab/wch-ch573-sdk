@@ -8,7 +8,6 @@
 
 #include "CH57x_common.h"
 
-
 /*******************************************************************************
 * Function Name  : PWR_DCDCCfg
 * Description    : 启用内部DC/DC电源，用于节约系统功耗
@@ -17,22 +16,19 @@
                     DISABLE - 关闭DCDC电源   				
 * Return         : None
 *******************************************************************************/
-void PWR_DCDCCfg( FunctionalState s )
+void PWR_DCDCCfg(FunctionalState s)
 {
-    if(s == DISABLE)
-    {		
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+    if (s == DISABLE) {
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R16_POWER_PLAN &= ~(RB_PWR_DCDC_EN|RB_PWR_DCDC_PRE);		// 旁路 DC/DC 
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG0;		
-    }
-    else
-    {
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+        R16_POWER_PLAN &= ~(RB_PWR_DCDC_EN | RB_PWR_DCDC_PRE); // 旁路 DC/DC
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG0;
+    } else {
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
         R16_POWER_PLAN |= RB_PWR_DCDC_PRE;
-        R16_POWER_PLAN |= RB_PWR_DCDC_EN;		
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG0;			
+        R16_POWER_PLAN |= RB_PWR_DCDC_EN;
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG0;
     }
 }
 
@@ -46,21 +42,20 @@ void PWR_DCDCCfg( FunctionalState s )
                     please refer to unit of controllable power supply 				
 * Return         : None
 *******************************************************************************/
-void PWR_UnitModCfg( FunctionalState s, uint8_t unit )
+void PWR_UnitModCfg(FunctionalState s, uint8_t unit)
 {
-    if(s == DISABLE)		//关闭
+    if (s == DISABLE) //关闭
     {
-    	R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
-    	R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R8_HFCK_PWR_CTRL &= ~(unit&0x1c);
-        R8_CK32K_CONFIG &= ~(unit&0x03);
-    }
-    else					//打开
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        R8_HFCK_PWR_CTRL &= ~(unit & 0x1c);
+        R8_CK32K_CONFIG &= ~(unit & 0x03);
+    } else //打开
     {
-    	R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
-    	R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R8_HFCK_PWR_CTRL |= (unit&0x1c);
-        R8_CK32K_CONFIG |= (unit&0x03);
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        R8_HFCK_PWR_CTRL |= (unit & 0x1c);
+        R8_CK32K_CONFIG |= (unit & 0x03);
     }
     R8_SAFE_ACCESS_SIG = 0;
 }
@@ -75,17 +70,14 @@ void PWR_UnitModCfg( FunctionalState s, uint8_t unit )
                     please refer to Peripher CLK control bit define						
 * Return         : None
 *******************************************************************************/
-void PWR_PeriphClkCfg( FunctionalState s, uint16_t perph )
+void PWR_PeriphClkCfg(FunctionalState s, uint16_t perph)
 {
-    if( s == DISABLE )
-    {
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+    if (s == DISABLE) {
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
         R32_SLEEP_CONTROL |= perph;
-    }
-    else
-    {
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+    } else {
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
         R32_SLEEP_CONTROL &= ~perph;
     }
@@ -106,39 +98,35 @@ void PWR_PeriphClkCfg( FunctionalState s, uint16_t perph )
                    mode: refer to WakeUP_ModeypeDef
 * Return         : None
 *******************************************************************************/
-void PWR_PeriphWakeUpCfg( FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mode )
+void PWR_PeriphWakeUpCfg(FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mode)
 {
-	uint8_t  m;
+    uint8_t m;
 
-    if( s == DISABLE )
-    {
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+    if (s == DISABLE) {
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R8_SLP_WAKE_CTRL &= ~perph;		
-    }
-    else
-    {
-    	switch( mode )
-    	{
-    	case Edge_LongDelay:
-    		m = RB_WAKE_EV_MODE;
-    		break;
+        R8_SLP_WAKE_CTRL &= ~perph;
+    } else {
+        switch (mode) {
+        case Edge_LongDelay:
+            m = RB_WAKE_EV_MODE;
+            break;
 
-    	case Level_LongDelay:
-    		m = 0;
-    		break;
+        case Level_LongDelay:
+            m = 0;
+            break;
 
-    	case Level_ShortDelay:
-    		m = RB_WAKE_DELAY;
-    		break;
+        case Level_ShortDelay:
+            m = RB_WAKE_DELAY;
+            break;
 
-    	default:
-    		m = RB_WAKE_EV_MODE|RB_WAKE_DELAY;
-    		break;
-    	}
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+        default:
+            m = RB_WAKE_EV_MODE | RB_WAKE_DELAY;
+            break;
+        }
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R8_SLP_WAKE_CTRL &= ~(RB_WAKE_EV_MODE|RB_WAKE_DELAY);
+        R8_SLP_WAKE_CTRL &= ~(RB_WAKE_EV_MODE | RB_WAKE_DELAY);
         R8_SLP_WAKE_CTRL |= m | perph;
     }
     R8_SAFE_ACCESS_SIG = 0;
@@ -153,36 +141,30 @@ void PWR_PeriphWakeUpCfg( FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mo
                    vl: refer to VolM_LevelypeDef
 * Return         : None
 *******************************************************************************/
-void PowerMonitor( FunctionalState s , VolM_LevelypeDef vl)
+void PowerMonitor(FunctionalState s, VolM_LevelypeDef vl)
 {
-    if( s == DISABLE )
-    {
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+    if (s == DISABLE) {
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
         R8_BAT_DET_CTRL = 0;
-        R8_SAFE_ACCESS_SIG = 0; 
-    }
-    else
-    {
-    	R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    	R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    	if( vl & 0x80 )
-    	{
-    		R8_BAT_DET_CFG = vl&0x03;
-    		R8_BAT_DET_CTRL = RB_BAT_MON_EN|((vl>>2)&1);
-    	}
-    	else
-    	{
-    		R8_BAT_DET_CFG = vl&0x03;
-    		R8_BAT_DET_CTRL = RB_BAT_DET_EN;
-    	}
-        R8_SAFE_ACCESS_SIG = 0; 
-        mDelayuS(1); 	
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+        R8_SAFE_ACCESS_SIG = 0;
+    } else {
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R8_BAT_DET_CTRL |= RB_BAT_LOW_IE|RB_BAT_LOWER_IE;
-        R8_SAFE_ACCESS_SIG = 0;  
-    }   
+        if (vl & 0x80) {
+            R8_BAT_DET_CFG = vl & 0x03;
+            R8_BAT_DET_CTRL = RB_BAT_MON_EN | ((vl >> 2) & 1);
+        } else {
+            R8_BAT_DET_CFG = vl & 0x03;
+            R8_BAT_DET_CTRL = RB_BAT_DET_EN;
+        }
+        R8_SAFE_ACCESS_SIG = 0;
+        mDelayuS(1);
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
+        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        R8_BAT_DET_CTRL |= RB_BAT_LOW_IE | RB_BAT_LOWER_IE;
+        R8_SAFE_ACCESS_SIG = 0;
+    }
 }
 
 /*******************************************************************************
@@ -191,15 +173,15 @@ void PowerMonitor( FunctionalState s , VolM_LevelypeDef vl)
 * Input          : None
 * Return         : None
 *******************************************************************************/
-__attribute__((section(".highcode")))
-void LowPower_Idle( void )
+__attribute__((section(".highcode"))) void LowPower_Idle(void)
 {
-  FLASH_ROM_SW_RESET();
-  R8_FLASH_CTRL = 0x04;   //flash关闭
+    FLASH_ROM_SW_RESET();
+    R8_FLASH_CTRL = 0x04; //flash关闭
 
-	PFIC -> SCTLR &= ~(1<<2);				// sleep
-	__WFI();
-	__nop();__nop();
+    PFIC->SCTLR &= ~(1 << 2); // sleep
+    __WFI();
+    __nop();
+    __nop();
 }
 
 /*******************************************************************************
@@ -209,34 +191,34 @@ void LowPower_Idle( void )
 * Input          : None
 * Return         : None
 *******************************************************************************/
-__attribute__((section(".highcode")))
-void LowPower_Halt( void )
+__attribute__((section(".highcode"))) void LowPower_Halt(void)
 {
-    uint8_t  x32Kpw, x32Mpw;
-    
+    uint8_t x32Kpw, x32Mpw;
+
     FLASH_ROM_SW_RESET();
-    R8_FLASH_CTRL = 0x04;   //flash关闭
+    R8_FLASH_CTRL = 0x04; //flash关闭
     x32Kpw = R8_XT32K_TUNE;
     x32Mpw = R8_XT32M_TUNE;
-    x32Mpw = (x32Mpw&0xfc)|0x03;            // 150%额定电流
-    if(R16_RTC_CNT_32K>0x3fff){     // 超过500ms
-        x32Kpw = (x32Kpw&0xfc)|0x01;        // LSE驱动电流降低到额定电流
+    x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
+    if (R16_RTC_CNT_32K > 0x3fff) { // 超过500ms
+        x32Kpw = (x32Kpw & 0xfc) | 0x01; // LSE驱动电流降低到额定电流
     }
-    
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    R8_BAT_DET_CTRL = 0;                              // 关闭电压监控
-    R8_XT32K_TUNE = x32Kpw;
-    R8_XT32M_TUNE = x32Mpw;
-    R8_PLL_CONFIG |= (1<<5);
-    R8_SAFE_ACCESS_SIG = 0;
-        
-    PFIC -> SCTLR |= (1<<2);				//deep sleep
-    __WFI();
-    __nop();__nop();
+
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    R8_PLL_CONFIG &= ~(1<<5);
+    R8_BAT_DET_CTRL = 0; // 关闭电压监控
+    R8_XT32K_TUNE = x32Kpw;
+    R8_XT32M_TUNE = x32Mpw;
+    R8_PLL_CONFIG |= (1 << 5);
+    R8_SAFE_ACCESS_SIG = 0;
+
+    PFIC->SCTLR |= (1 << 2); //deep sleep
+    __WFI();
+    __nop();
+    __nop();
+    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
+    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    R8_PLL_CONFIG &= ~(1 << 5);
     R8_SAFE_ACCESS_SIG = 0;
 }
 
@@ -253,40 +235,40 @@ void LowPower_Halt( void )
                    NULL	-	以上单元都断电
 * Return         : None
 *******************************************************************************/
-__attribute__((section(".highcode")))
-void LowPower_Sleep( uint8_t rm )
+__attribute__((section(".highcode"))) void LowPower_Sleep(uint8_t rm)
 {
-    uint8_t  x32Kpw, x32Mpw;
-    
+    uint8_t x32Kpw, x32Mpw;
+
     x32Kpw = R8_XT32K_TUNE;
     x32Mpw = R8_XT32M_TUNE;
-    x32Mpw = (x32Mpw&0xfc)|0x03;            // 150%额定电流
-    if(R16_RTC_CNT_32K>0x3fff){     // 超过500ms
-        x32Kpw = (x32Kpw&0xfc)|0x01;        // LSE驱动电流降低到额定电流
-    } 
+    x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
+    if (R16_RTC_CNT_32K > 0x3fff) { // 超过500ms
+        x32Kpw = (x32Kpw & 0xfc) | 0x01; // LSE驱动电流降低到额定电流
+    }
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    R8_BAT_DET_CTRL = 0;                // 关闭电压监控
+    R8_BAT_DET_CTRL = 0; // 关闭电压监控
     R8_XT32K_TUNE = x32Kpw;
     R8_XT32M_TUNE = x32Mpw;
     R8_SAFE_ACCESS_SIG = 0;
 
-    PFIC -> SCTLR |= (1<<2);				//deep sleep
+    PFIC->SCTLR |= (1 << 2); //deep sleep
 
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
     R8_SLP_POWER_CTRL |= RB_RAM_RET_LV;
-    R8_PLL_CONFIG |= (1<<5);
-    R16_POWER_PLAN = RB_PWR_PLAN_EN       \
-                    |RB_PWR_MUST_0010   \
-                    |RB_PWR_CORE            \
-                    |rm;
+    R8_PLL_CONFIG |= (1 << 5);
+    R16_POWER_PLAN = RB_PWR_PLAN_EN
+        | RB_PWR_MUST_0010
+        | RB_PWR_CORE
+        | rm;
     __WFI();
-    __nop();__nop();
+    __nop();
+    __nop();
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    R8_PLL_CONFIG &= ~(1<<5);
+    R8_PLL_CONFIG &= ~(1 << 5);
     R8_SAFE_ACCESS_SIG = 0;
 }
 
@@ -301,37 +283,33 @@ void LowPower_Sleep( uint8_t rm )
                    NULL	-	以上单元都断电
 * Return         : None
 *******************************************************************************/
-__attribute__((section(".highcode")))
-void LowPower_Shutdown( uint8_t rm )
-{	
-    uint8_t  x32Kpw, x32Mpw;
-    
+__attribute__((section(".highcode"))) void LowPower_Shutdown(uint8_t rm)
+{
+    uint8_t x32Kpw, x32Mpw;
+
     x32Kpw = R8_XT32K_TUNE;
     x32Mpw = R8_XT32M_TUNE;
-    x32Mpw = (x32Mpw&0xfc)|0x03;            // 150%额定电流
-    if(R16_RTC_CNT_32K>0x3fff){     // 超过500ms
-        x32Kpw = (x32Kpw&0xfc)|0x01;        // LSE驱动电流降低到额定电流
+    x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
+    if (R16_RTC_CNT_32K > 0x3fff) { // 超过500ms
+        x32Kpw = (x32Kpw & 0xfc) | 0x01; // LSE驱动电流降低到额定电流
     }
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
+    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    R8_BAT_DET_CTRL = 0;                // 关闭电压监控
+    R8_BAT_DET_CTRL = 0; // 关闭电压监控
     R8_XT32K_TUNE = x32Kpw;
     R8_XT32M_TUNE = x32Mpw;
-    R8_SAFE_ACCESS_SIG = 0;    
+    R8_SAFE_ACCESS_SIG = 0;
 
-    PFIC -> SCTLR |= (1<<2);				//deep sleep
+    PFIC->SCTLR |= (1 << 2); //deep sleep
 
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
     R8_SLP_POWER_CTRL |= RB_RAM_RET_LV;
-    R16_POWER_PLAN = RB_PWR_PLAN_EN       \
-                    |RB_PWR_MUST_0010   \
-                    |rm;
+    R16_POWER_PLAN = RB_PWR_PLAN_EN
+        | RB_PWR_MUST_0010
+        | rm;
     __WFI();
-    __nop();__nop();
+    __nop();
+    __nop();
 }
-
-
-
-

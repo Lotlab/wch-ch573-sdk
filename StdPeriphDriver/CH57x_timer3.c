@@ -8,7 +8,6 @@
 
 #include "CH57x_common.h"
 
-
 /*******************************************************************************
 * Function Name  : TMR3_TimerInit
 * Description    : 定时功能初始化
@@ -16,10 +15,10 @@
 					
 * Return         : None
 *******************************************************************************/
-void TMR3_TimerInit( uint32_t t )
-{	
+void TMR3_TimerInit(uint32_t t)
+{
     R32_TMR3_CNT_END = t;
-    R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;	
+    R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;
     R8_TMR3_CTRL_MOD = RB_TMR_COUNT_EN;
 }
 
@@ -33,13 +32,13 @@ void TMR3_TimerInit( uint32_t t )
 					RiseEdge_To_RiseEdge - 计数上升沿
 * Return         : None
 *******************************************************************************/
-void TMR3_EXTSingleCounterInit( CapModeTypeDef cap )
+void TMR3_EXTSingleCounterInit(CapModeTypeDef cap)
 {
     R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;
-    R8_TMR3_CTRL_MOD = RB_TMR_COUNT_EN      \
-                      |RB_TMR_CAP_COUNT     \
-                      |RB_TMR_MODE_IN       \
-                      |(cap<<6);    
+    R8_TMR3_CTRL_MOD = RB_TMR_COUNT_EN
+        | RB_TMR_CAP_COUNT
+        | RB_TMR_MODE_IN
+        | (cap << 6);
 }
 
 /*******************************************************************************
@@ -51,15 +50,14 @@ void TMR3_EXTSingleCounterInit( CapModeTypeDef cap )
 					refer to PWM_RepeatTsTypeDef					
 * Return         : None
 *******************************************************************************/
-void TMR3_PWMInit( PWMX_PolarTypeDef pr, PWM_RepeatTsTypeDef ts )
+void TMR3_PWMInit(PWMX_PolarTypeDef pr, PWM_RepeatTsTypeDef ts)
 {
-//    R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;
-    R8_TMR3_CTRL_MOD = RB_TMR_COUNT_EN      \
-                        |RB_TMR_OUT_EN      \
-                        |(pr<<4)            \
-                        |(ts<<6);
+    //    R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;
+    R8_TMR3_CTRL_MOD = RB_TMR_COUNT_EN
+        | RB_TMR_OUT_EN
+        | (pr << 4)
+        | (ts << 6);
 }
-
 
 /*******************************************************************************
 * Function Name  : TMR3_CapInit
@@ -68,16 +66,10 @@ void TMR3_PWMInit( PWMX_PolarTypeDef pr, PWM_RepeatTsTypeDef ts )
 					refer to CapModeTypeDef						
 * Return         : None
 *******************************************************************************/
-void TMR3_CapInit( CapModeTypeDef cap )
+void TMR3_CapInit(CapModeTypeDef cap)
 {
-        R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;
-        R8_TMR3_CTRL_MOD = RB_TMR_COUNT_EN      \
-                            |RB_TMR_MODE_IN     \
-                            |(cap<<6);	
+    R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;
+    R8_TMR3_CTRL_MOD = RB_TMR_COUNT_EN
+        | RB_TMR_MODE_IN
+        | (cap << 6);
 }
-
-
-
-
-
-

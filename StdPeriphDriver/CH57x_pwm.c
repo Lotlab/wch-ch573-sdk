@@ -8,7 +8,6 @@
 
 #include "CH57x_common.h"
 
-
 /*******************************************************************************
 * Function Name  : PWMX_CycleCfg
 * Description    : PWM4-PWM11基准时钟配置
@@ -16,44 +15,43 @@
 					refer to PWMX_CycleTypeDef
 * Return         : None
 *******************************************************************************/
-void PWMX_CycleCfg( PWMX_CycleTypeDef cyc )
-{	
-    switch( cyc )
-    {
-        case PWMX_Cycle_256:
-            R8_PWM_CONFIG = R8_PWM_CONFIG & 0xf0;
-            break;
+void PWMX_CycleCfg(PWMX_CycleTypeDef cyc)
+{
+    switch (cyc) {
+    case PWMX_Cycle_256:
+        R8_PWM_CONFIG = R8_PWM_CONFIG & 0xf0;
+        break;
 
-        case PWMX_Cycle_255:
-            R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | 0x01;
-            break;
+    case PWMX_Cycle_255:
+        R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | 0x01;
+        break;
 
-        case PWMX_Cycle_128:
-            R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (1<<2);
-            break;
+    case PWMX_Cycle_128:
+        R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (1 << 2);
+        break;
 
-        case PWMX_Cycle_127:
-            R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (1<<2) | 0x01;
-            break;
+    case PWMX_Cycle_127:
+        R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (1 << 2) | 0x01;
+        break;
 
-        case PWMX_Cycle_64:
-            R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (2<<2);
-            break;
+    case PWMX_Cycle_64:
+        R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (2 << 2);
+        break;
 
-        case PWMX_Cycle_63:
-            R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (2<<2) | 0x01;
-            break;
+    case PWMX_Cycle_63:
+        R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (2 << 2) | 0x01;
+        break;
 
-        case PWMX_Cycle_32:
-            R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (3<<2);
-            break;
+    case PWMX_Cycle_32:
+        R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (3 << 2);
+        break;
 
-        case PWMX_Cycle_31:
-            R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (3<<2) | 0x01;
-            break;
+    case PWMX_Cycle_31:
+        R8_PWM_CONFIG = (R8_PWM_CONFIG & 0xf0) | (3 << 2) | 0x01;
+        break;
 
-        default :
-            break;
+    default:
+        break;
     }
 }
 
@@ -70,17 +68,17 @@ void PWMX_CycleCfg( PWMX_CycleTypeDef cyc )
 					DISABLE - 关闭PWM 
 * Return         : None
 *******************************************************************************/
-void PWMX_ACTOUT( uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, FunctionalState s)
+void PWMX_ACTOUT(uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, FunctionalState s)
 {
     uint8_t i;
 
-    if(s == DISABLE)	R8_PWM_OUT_EN &= ~(ch);
-    else
-    {
-        (pr)?(R8_PWM_POLAR|=(ch)):(R8_PWM_POLAR&=~(ch));
-        for(i=0; i<8; i++)
-        {
-            if((ch>>i)&1)		*((volatile uint8_t*)((&R8_PWM4_DATA)+i)) = da;
+    if (s == DISABLE)
+        R8_PWM_OUT_EN &= ~(ch);
+    else {
+        (pr) ? (R8_PWM_POLAR |= (ch)) : (R8_PWM_POLAR &= ~(ch));
+        for (i = 0; i < 8; i++) {
+            if ((ch >> i) & 1)
+                *((volatile uint8_t*)((&R8_PWM4_DATA) + i)) = da;
         }
         R8_PWM_OUT_EN |= (ch);
     }
@@ -99,12 +97,10 @@ void PWMX_ACTOUT( uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, FunctionalState 
 					DISABLE - 关闭交替输出功能
 * Return         : None
 *******************************************************************************/
-void PWMX_AlterOutCfg( uint8_t ch, FunctionalState s)
+void PWMX_AlterOutCfg(uint8_t ch, FunctionalState s)
 {
-    if(s == DISABLE)        R8_PWM_CONFIG &= ~(ch);
-    else                    R8_PWM_CONFIG |= (ch);
+    if (s == DISABLE)
+        R8_PWM_CONFIG &= ~(ch);
+    else
+        R8_PWM_CONFIG |= (ch);
 }
-
-
-
-

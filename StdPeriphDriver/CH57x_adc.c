@@ -11,22 +11,22 @@
 
 /*******************************************************************************
 * Function Name  : ADC_DataCalib_Rough
-* Description    : ²ÉÑùÊı¾İ´Öµ÷,»ñÈ¡Æ«²îÖµ
+* Description    : é‡‡æ ·æ•°æ®ç²—è°ƒ,è·å–åå·®å€¼
 * Input          : None
-* Return         : Æ«²îÖµ
+* Return         : åå·®å€¼
 *******************************************************************************/
-signed short ADC_DataCalib_Rough( void )        // ²ÉÑùÊı¾İ´Öµ÷,»ñÈ¡Æ«²îÖµ
+signed short ADC_DataCalib_Rough( void )        // é‡‡æ ·æ•°æ®ç²—è°ƒ,è·å–åå·®å€¼
 {
     UINT16  i;
     UINT32  sum=0;
-    UINT8  ch=0;        // ±¸·İÍ¨µÀ
-    UINT8   ctrl=0;     // ±¸·İ¿ØÖÆ¼Ä´æÆ÷
+    UINT8  ch=0;        // å¤‡ä»½é€šé“
+    UINT8   ctrl=0;     // å¤‡ä»½æ§åˆ¶å¯„å­˜å™¨
     
     ch = R8_ADC_CHANNEL;
     ctrl = R8_ADC_CFG;
     
-    ADC_ChannelCfg( 6 );		// 6/7/10/11 ¿ÉÑ¡
-    R8_ADC_CFG |= RB_ADC_OFS_TEST|RB_ADC_POWER_ON;      // ½øÈë²âÊÔÄ£Ê½
+    ADC_ChannelCfg( 6 );		// 6/7/10/11 å¯é€‰
+    R8_ADC_CFG |= RB_ADC_OFS_TEST|RB_ADC_POWER_ON;      // è¿›å…¥æµ‹è¯•æ¨¡å¼
     R8_ADC_CONVERT = RB_ADC_START;
     while( R8_ADC_CONVERT & RB_ADC_START );
     for(i=0; i<16; i++)
@@ -36,7 +36,7 @@ signed short ADC_DataCalib_Rough( void )        // ²ÉÑùÊı¾İ´Öµ÷,»ñÈ¡Æ«²îÖµ
         sum += (~R16_ADC_DATA)&RB_ADC_DATA;
     }    
     sum = (sum+8)>>4;
-    R8_ADC_CFG &= ~RB_ADC_OFS_TEST;      // ¹Ø±Õ²âÊÔÄ£Ê½
+    R8_ADC_CFG &= ~RB_ADC_OFS_TEST;      // å…³é—­æµ‹è¯•æ¨¡å¼
     
     R8_ADC_CHANNEL = ch;
     R8_ADC_CFG = ctrl;
@@ -45,7 +45,7 @@ signed short ADC_DataCalib_Rough( void )        // ²ÉÑùÊı¾İ´Öµ÷,»ñÈ¡Æ«²îÖµ
 
 /*******************************************************************************
 * Function Name  : ADC_ExtSingleChSampInit
-* Description    : Íâ²¿ĞÅºÅµ¥Í¨µÀ²ÉÑù³õÊ¼»¯
+* Description    : å¤–éƒ¨ä¿¡å·å•é€šé“é‡‡æ ·åˆå§‹åŒ–
 * Input          : sp:
 					refer to ADC_SampClkTypeDef
 				   ga:
@@ -63,7 +63,7 @@ void ADC_ExtSingleChSampInit( ADC_SampClkTypeDef sp, ADC_SignalPGATypeDef ga )
 
 /*******************************************************************************
 * Function Name  : ADC_ExtDiffChSampInit
-* Description    : Íâ²¿ĞÅºÅ²î·ÖÍ¨µÀ²ÉÑù³õÊ¼»¯
+* Description    : å¤–éƒ¨ä¿¡å·å·®åˆ†é€šé“é‡‡æ ·åˆå§‹åŒ–
 * Input          : sp:
 					refer to ADC_SampClkTypeDef
 				   ga:
@@ -81,7 +81,7 @@ void ADC_ExtDiffChSampInit( ADC_SampClkTypeDef sp, ADC_SignalPGATypeDef ga )
 
 /*******************************************************************************
 * Function Name  : ADC_InterTSSampInit
-* Description    : ÄÚÖÃÎÂ¶È´«¸ĞÆ÷²ÉÑù³õÊ¼»¯
+* Description    : å†…ç½®æ¸©åº¦ä¼ æ„Ÿå™¨é‡‡æ ·åˆå§‹åŒ–
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -97,7 +97,7 @@ void ADC_InterTSSampInit( void )
 
 /*******************************************************************************
 * Function Name  : ADC_InterBATSampInit
-* Description    : ÄÚÖÃµç³ØµçÑ¹²ÉÑù³õÊ¼»¯
+* Description    : å†…ç½®ç”µæ± ç”µå‹é‡‡æ ·åˆå§‹åŒ–
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -107,13 +107,13 @@ void ADC_InterBATSampInit( void )
     R8_ADC_CHANNEL = CH_INTE_VBAT;
     R8_ADC_CFG = RB_ADC_POWER_ON			\
                 |RB_ADC_BUF_EN				\
-                |( 0<<4 )	;       // Ê¹ÓÃ-12dBÄ£Ê½£¬
+                |( 0<<4 )	;       // ä½¿ç”¨-12dBæ¨¡å¼ï¼Œ
 }
 
 
 /*******************************************************************************
 * Function Name  : TouchKey_ChSampInit
-* Description    : ´¥Ãş°´¼üÍ¨µÀ²ÉÑù³õÊ¼»¯
+* Description    : è§¦æ‘¸æŒ‰é”®é€šé“é‡‡æ ·åˆå§‹åŒ–
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -125,9 +125,9 @@ void TouchKey_ChSampInit( void )
 
 /*******************************************************************************
 * Function Name  : ADC_ExcutSingleConver
-* Description    : ADCÖ´ĞĞµ¥´Î×ª»»
+* Description    : ADCæ‰§è¡Œå•æ¬¡è½¬æ¢
 * Input          : None
-* Return         : ADC×ª»»ºóµÄÊı¾İ
+* Return         : ADCè½¬æ¢åçš„æ•°æ®
 *******************************************************************************/
 UINT16 ADC_ExcutSingleConver( void )
 {
@@ -139,10 +139,10 @@ UINT16 ADC_ExcutSingleConver( void )
 
 /*******************************************************************************
 * Function Name  : TouchKey_ExcutSingleConver
-* Description    : TouchKey×ª»»ºóÊı¾İ
-* Input          : charg:  Touchkey³äµçÊ±¼ä,5bitsÓĞĞ§, t=charg*Tadc
-*                  disch£º    Touchkey·ÅµçÊ±¼ä,3bitsÓĞĞ§, t=disch*Tadc
-* Return         : µ±Ç°TouchKeyµÈĞ§Êı¾İ
+* Description    : TouchKeyè½¬æ¢åæ•°æ®
+* Input          : charg:  Touchkeyå……ç”µæ—¶é—´,5bitsæœ‰æ•ˆ, t=charg*Tadc
+*                  dischï¼š    Touchkeyæ”¾ç”µæ—¶é—´,3bitsæœ‰æ•ˆ, t=disch*Tadc
+* Return         : å½“å‰TouchKeyç­‰æ•ˆæ•°æ®
 *******************************************************************************/
 UINT16 TouchKey_ExcutSingleConver( UINT8 charg, UINT8 disch )
 {
@@ -155,9 +155,9 @@ UINT16 TouchKey_ExcutSingleConver( UINT8 charg, UINT8 disch )
 
 /*******************************************************************************
 * Function Name  : ADC_GetCurrentTS
-* Description    : »ñÈ¡µ±Ç°²ÉÑùµÄÎÂ¶ÈÖµ£¨¡æ£©
-* Input          : ts_v£ºµ±Ç°ÎÂ¶È´«¸ĞÆ÷²ÉÑùÊä³ö
-* Return         : ×ª»»ºóµÄÎÂ¶ÈÖµ£¨¡æ£©
+* Description    : è·å–å½“å‰é‡‡æ ·çš„æ¸©åº¦å€¼ï¼ˆâ„ƒï¼‰
+* Input          : ts_vï¼šå½“å‰æ¸©åº¦ä¼ æ„Ÿå™¨é‡‡æ ·è¾“å‡º
+* Return         : è½¬æ¢åçš„æ¸©åº¦å€¼ï¼ˆâ„ƒï¼‰
 *******************************************************************************/
 int ADC_GetCurrentTS( UINT16 ts_v )
 {
@@ -175,18 +175,18 @@ int ADC_GetCurrentTS( UINT16 ts_v )
     D25_tem = temp;
     D25_vol = (temp>>16);
     
-    if( D25_vol != 0 ){ // Ä¬ÈÏÏµÊı»»Ëã
+    if( D25_vol != 0 ){ // é»˜è®¤ç³»æ•°æ¢ç®—
         // T = T85 + (V-V85)*16/D25
         cal =  (D25_tem*temperK + vol_ts*16 + (temperK>>1) - D25_vol*16) / temperK ;    
         return ( cal );
     }
-    else{  // ÄÚÖÃÏµÊı»»Ëã  D25_tem  
+    else{  // å†…ç½®ç³»æ•°æ¢ç®—  D25_tem  
     	temp = (*((PUINT32)ROM_TMP_85C_ADDR)); 	
-    	sum = (UINT8)(temp>>24);		// ×î¸ß×Ö½Ú    	
+    	sum = (UINT8)(temp>>24);		// æœ€é«˜å­—èŠ‚    	
     	sumck = (UINT8)(temp>>16);
     	sumck += (UINT8)(temp>>8);
     	sumck += (UINT8)temp;
-    	if( sum != sumck )		return 0xff;		// Ğ£ÑéºÍ³ö´í
+    	if( sum != sumck )		return 0xff;		// æ ¡éªŒå’Œå‡ºé”™
     	
         temperK = D25_tem;      // D25_tem = temperK 
         D85_tem = (UINT16)((temp>>16)&0x00ff); 

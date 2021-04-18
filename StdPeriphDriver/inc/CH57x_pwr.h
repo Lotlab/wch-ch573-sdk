@@ -36,10 +36,10 @@
 /**
   * @brief  unit of controllable power supply 
   */
-#define UNIT_SYS_LSE                RB_CLK_XT32K_PON        // Íâ²¿32K Ê±ÖÓÕñµ´
-#define UNIT_SYS_LSI                RB_CLK_INT32K_PON       // ÄÚ²¿32K Ê±ÖÓÕñµ´
-#define UNIT_SYS_HSE                RB_CLK_XT32M_PON        // Íâ²¿32M Ê±ÖÓÕñµ´
-#define UNIT_SYS_PLL                RB_CLK_PLL_PON          // PLL Ê±ÖÓÕñµ´
+#define UNIT_SYS_LSE                RB_CLK_XT32K_PON        // å¤–éƒ¨32K æ—¶é’ŸæŒ¯è¡
+#define UNIT_SYS_LSI                RB_CLK_INT32K_PON       // å†…éƒ¨32K æ—¶é’ŸæŒ¯è¡
+#define UNIT_SYS_HSE                RB_CLK_XT32M_PON        // å¤–éƒ¨32M æ—¶é’ŸæŒ¯è¡
+#define UNIT_SYS_PLL                RB_CLK_PLL_PON          // PLL æ—¶é’ŸæŒ¯è¡
 
 
  /**
@@ -59,13 +59,13 @@
    */
  typedef enum
  {
-	/* ÏÂÃæµÈ¼¶½«Ê¹ÓÃ¸ß¾«¶È¼à¿Ø£¬210uAÏûºÄ */
+	/* ä¸‹é¢ç­‰çº§å°†ä½¿ç”¨é«˜ç²¾åº¦ç›‘æ§ï¼Œ210uAæ¶ˆè€— */
  	HALevel_1V9 = 0,		// 1.7-1.9
 	HALevel_2V1,			// 1.9-2.1
 	HALevel_2V3,			// 2.1-2.3
 	HALevel_2V5,			// 2.3-2.5
 
-	/* ÏÂÃæµÈ¼¶½«Ê¹ÓÃµÍ¹¦ºÄ¼à¿Ø£¬1uAÏûºÄ */
+	/* ä¸‹é¢ç­‰çº§å°†ä½¿ç”¨ä½åŠŸè€—ç›‘æ§ï¼Œ1uAæ¶ˆè€— */
 	LPLevel_1V8 = 0x80,
 	LPLevel_1V9,	LPLevel_2V0,	LPLevel_2V1,
 	LPLevel_2V2,	LPLevel_2V3,	LPLevel_2V4,	LPLevel_2V5,
@@ -73,16 +73,16 @@
  }VolM_LevelypeDef;
 
 
-void PWR_DCDCCfg( FunctionalState s );	                              /* ÄÚ²¿DC/DCµçÔ´¿ØÖÆ */
-void PWR_UnitModCfg( FunctionalState s, UINT8 unit );                   /* ¿É¿Øµ¥ÔªÄ£¿éµÄµçÔ´¿ØÖÆ */
-void PWR_PeriphWakeUpCfg( FunctionalState s, UINT8 perph, WakeUP_ModeypeDef mode );    /* µÍ¹¦ºÄ»½ĞÑÔ´ÅäÖÃ */
+void PWR_DCDCCfg( FunctionalState s );	                              /* å†…éƒ¨DC/DCç”µæºæ§åˆ¶ */
+void PWR_UnitModCfg( FunctionalState s, UINT8 unit );                   /* å¯æ§å•å…ƒæ¨¡å—çš„ç”µæºæ§åˆ¶ */
+void PWR_PeriphWakeUpCfg( FunctionalState s, UINT8 perph, WakeUP_ModeypeDef mode );    /* ä½åŠŸè€—å”¤é†’æºé…ç½® */
 
-void PowerMonitor( FunctionalState s , VolM_LevelypeDef vl);          /* µçÔ´µçÑ¹¼à¿Ø¿ØÖÆ */
+void PowerMonitor( FunctionalState s , VolM_LevelypeDef vl);          /* ç”µæºç”µå‹ç›‘æ§æ§åˆ¶ */
 
-void LowPower_Idle( void );                                 /* µÍ¹¦ºÄ-IDLEÄ£Ê½ */	 
-void LowPower_Halt( void );                                 /* µÍ¹¦ºÄ-HaltÄ£Ê½ */
-void LowPower_Sleep( UINT8 rm );                            /* µÍ¹¦ºÄ-SleepÄ£Ê½ */
-void LowPower_Shutdown( UINT8 rm );                         /* µÍ¹¦ºÄ-ShutdownÄ£Ê½ */
+void LowPower_Idle( void );                                 /* ä½åŠŸè€—-IDLEæ¨¡å¼ */	 
+void LowPower_Halt( void );                                 /* ä½åŠŸè€—-Haltæ¨¡å¼ */
+void LowPower_Sleep( UINT8 rm );                            /* ä½åŠŸè€—-Sleepæ¨¡å¼ */
+void LowPower_Shutdown( UINT8 rm );                         /* ä½åŠŸè€—-Shutdownæ¨¡å¼ */
 
 	 
 	 

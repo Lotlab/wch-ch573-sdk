@@ -11,8 +11,8 @@
 
 /*******************************************************************************
 * Function Name  : TMR3_TimerInit
-* Description    : ¶¨Ê±¹¦ÄÜ³õÊ¼»¯
-* Input          : t: ¶¨Ê±Ê±¼ä£¬»ùÓÚµ±Ç°ÏµÍ³Ê±ÖÓTsys, ×î³¤¶¨Ê±ÖÜÆÚ 67108864
+* Description    : å®šæ—¶åŠŸèƒ½åˆå§‹åŒ–
+* Input          : t: å®šæ—¶æ—¶é—´ï¼ŒåŸºäºå½“å‰ç³»ç»Ÿæ—¶é’ŸTsys, æœ€é•¿å®šæ—¶å‘¨æœŸ 67108864
 					
 * Return         : None
 *******************************************************************************/
@@ -25,12 +25,12 @@ void TMR3_TimerInit( UINT32 t )
 
 /*******************************************************************************
 * Function Name  : TMR3_EXTSingleCounterInit
-* Description    : ±ßÑØ¼ÆÊı¹¦ÄÜ³õÊ¼»¯
-* Input          : cap: ²É¼¯¼ÆÊıÀàĞÍ
-                    CAP_NULL - ²»¼ÆÊı
-                    Edge_To_Edge - ¼ÆÊıÈÎÒâ±ßÑØ
-                    FallEdge_To_FallEdge - ¼ÆÊıÏÂ½µÑØ
-					RiseEdge_To_RiseEdge - ¼ÆÊıÉÏÉıÑØ
+* Description    : è¾¹æ²¿è®¡æ•°åŠŸèƒ½åˆå§‹åŒ–
+* Input          : cap: é‡‡é›†è®¡æ•°ç±»å‹
+                    CAP_NULL - ä¸è®¡æ•°
+                    Edge_To_Edge - è®¡æ•°ä»»æ„è¾¹æ²¿
+                    FallEdge_To_FallEdge - è®¡æ•°ä¸‹é™æ²¿
+					RiseEdge_To_RiseEdge - è®¡æ•°ä¸Šå‡æ²¿
 * Return         : None
 *******************************************************************************/
 void TMR3_EXTSingleCounterInit( CapModeTypeDef cap )
@@ -44,7 +44,7 @@ void TMR3_EXTSingleCounterInit( CapModeTypeDef cap )
 
 /*******************************************************************************
 * Function Name  : TMR3_PWMInit
-* Description    : PWM Êä³ö³õÊ¼»¯
+* Description    : PWM è¾“å‡ºåˆå§‹åŒ–
 * Input          : pr:  select wave polar 	
 					refer to PWMX_PolarTypeDef	
 				   ts:	set pwm repeat times
@@ -63,7 +63,7 @@ void TMR3_PWMInit( PWMX_PolarTypeDef pr, PWM_RepeatTsTypeDef ts )
 
 /*******************************************************************************
 * Function Name  : TMR3_CapInit
-* Description    : Íâ²¿ĞÅºÅ²¶×½¹¦ÄÜ³õÊ¼»¯
+* Description    : å¤–éƒ¨ä¿¡å·æ•æ‰åŠŸèƒ½åˆå§‹åŒ–
 * Input          : cap:  select capture mode 	
 					refer to CapModeTypeDef						
 * Return         : None

@@ -13,10 +13,10 @@ UINT16 Int32K_Tune_RAM = 0;
 
 /*******************************************************************************
 * Function Name  : LClk32K_Select
-* Description    : 32K µÍÆµÊ±ÖÓÀ´Ô´
+* Description    : 32K ä½é¢‘æ—¶é’Ÿæ¥æº
 * Input          : hc: 
-					Clk32K_LSI   -   Ñ¡ÔñÄÚ²¿32K
-					Clk32K_LSE   -   Ñ¡ÔñÍâ²¿32K
+					Clk32K_LSI   -   é€‰æ‹©å†…éƒ¨32K
+					Clk32K_LSE   -   é€‰æ‹©å¤–éƒ¨32K
 * Return         : None
 *******************************************************************************/
 void LClk32K_Select( LClk32KTypeDef hc)
@@ -32,7 +32,7 @@ void LClk32K_Select( LClk32KTypeDef hc)
 
 /*******************************************************************************
 * Function Name  : HSECFG_Current
-* Description    : HSE¾§Ìå Æ«ÖÃµçÁ÷ÅäÖÃ
+* Description    : HSEæ™¶ä½“ åç½®ç”µæµé…ç½®
 * Input          : c: 75%,100%,125%,150%
 * Return         : None
 *******************************************************************************/
@@ -51,7 +51,7 @@ void HSECFG_Current( HSECurrentTypeDef c )
 
 /*******************************************************************************
 * Function Name  : HSECFG_Capacitance
-* Description    : HSE¾§Ìå ¸ºÔØµçÈİÅäÖÃ
+* Description    : HSEæ™¶ä½“ è´Ÿè½½ç”µå®¹é…ç½®
 * Input          : c: refer to HSECapTypeDef
 * Return         : None
 *******************************************************************************/
@@ -70,7 +70,7 @@ void HSECFG_Capacitance( HSECapTypeDef c )
 
 /*******************************************************************************
 * Function Name  : LSECFG_Current
-* Description    : LSE¾§Ìå Æ«ÖÃµçÁ÷ÅäÖÃ
+* Description    : LSEæ™¶ä½“ åç½®ç”µæµé…ç½®
 * Input          : c: 70%,100%,140%,200%
 * Return         : None
 *******************************************************************************/
@@ -89,7 +89,7 @@ void LSECFG_Current( LSECurrentTypeDef c )
 
 /*******************************************************************************
 * Function Name  : LSECFG_Capacitance
-* Description    : LSE¾§Ìå ¸ºÔØµçÈİÅäÖÃ
+* Description    : LSEæ™¶ä½“ è´Ÿè½½ç”µå®¹é…ç½®
 * Input          : c: refer to LSECapTypeDef
 * Return         : None
 *******************************************************************************/
@@ -107,9 +107,9 @@ void LSECFG_Capacitance( LSECapTypeDef c )
 }
 /*******************************************************************************
 * Function Name  : Calibration_LSI_FLASH
-* Description    : Ğ£×¼ÔÚFLASHÖĞÔËĞĞÊ±µÄÄÚ²¿32KÊ±ÖÓ
+* Description    : æ ¡å‡†åœ¨FLASHä¸­è¿è¡Œæ—¶çš„å†…éƒ¨32Kæ—¶é’Ÿ
 * Input          : None
-* Return         : Îó²î£ºÍò·ÖÖ®£¨µ¥Î»£©
+* Return         : è¯¯å·®ï¼šä¸‡åˆ†ä¹‹ï¼ˆå•ä½ï¼‰
 *******************************************************************************/
 UINT16 Calibration_LSI_FLASH( void )
 {
@@ -121,36 +121,36 @@ UINT16 Calibration_LSI_FLASH( void )
   signed short diff_1, diff_2, diffc;
   UINT8 k = 0;
 
-  /* ¸ù¾İµ±Ç°Ê±ÖÓ»ñÈ¡±ê³ÆÖµºÍĞ±ÂÊ£¨T-step£© */
+  /* æ ¹æ®å½“å‰æ—¶é’Ÿè·å–æ ‡ç§°å€¼å’Œæ–œç‡ï¼ˆT-stepï¼‰ */
   rev = R16_CLK_SYS_CFG & 0xff;
   if ( ( rev & RB_CLK_SYS_MOD ) == ( 2 << 6 ) )
-  {       // 32M×öÖ÷Æµ
+  {       // 32Måšä¸»é¢‘
     calv = ( ( 5 * 32000000 + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -1.6;
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 1 << 6 ) )
-  {   // PLL½øĞĞ·ÖÆµ
+  {   // PLLè¿›è¡Œåˆ†é¢‘
     calv = ( ( ( UINT32 ) 5 * 480000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -0.1 * ( rev & 0x1f );
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 0 << 6 ) )
-  {   // 32M½øĞĞ·ÖÆµ
+  {   // 32Mè¿›è¡Œåˆ†é¢‘
     calv = ( ( 5 * 32000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -1.6 * ( rev & 0x1f );
   }
   else
-  {                       // 32K×öÖ÷Æµ
+  {                       // 32Kåšä¸»é¢‘
     calv = ( 5 );
     CNT_STEP_K = 0;
   }
-  basev = calv;             // »ñÈ¡Ğ£×¼±ê³ÆÖµ
+  basev = calv;             // è·å–æ ¡å‡†æ ‡ç§°å€¼
 
   if( Int32K_Tune_FLASH )
     loc = Int32K_Tune_FLASH;
   else
     loc = 2048;
 //  if (loc == 2048)
-//    loc = 1837; //10040.625-1.640625*5000;  //¾­ÑéÇúÏß
+//    loc = 1837; //10040.625-1.640625*5000;  //ç»éªŒæ›²çº¿
 
   diff_2 = 0;
   diffc = 0;
@@ -165,28 +165,28 @@ UINT16 Calibration_LSI_FLASH( void )
     R16_INT32K_TUNE = loc;
     R8_SAFE_ACCESS_SIG = 0;
 
-    /* ¶ÁÈ¡µ±Ç°Öµ */
+    /* è¯»å–å½“å‰å€¼ */
     while( !( R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT ) )
       ;
-    i = R16_OSC_CAL_CNT;      // ÓÃÓÚ¶ªÆú
+    i = R16_OSC_CAL_CNT;      // ç”¨äºä¸¢å¼ƒ
     while( R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT )
       ;
     while( !( R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT ) )
       ;
-    i = R16_OSC_CAL_CNT;      // ÊµÊ±Ğ£×¼ºó²ÉÑùÖµ
+    i = R16_OSC_CAL_CNT;      // å®æ—¶æ ¡å‡†åé‡‡æ ·å€¼
     k++;
     diff_1 = i - basev;
 
     Int32K_Tune_FLASH = loc;
     if ( diff_1 == 0 )
     {
-      return 0;    // Ğ£×¼ÕıºÃ
+      return 0;    // æ ¡å‡†æ­£å¥½
     }
     else if ( ( diff_1 * diff_2 ) < 0 )
-    {         // ´¦ÓÚÁ½µãÖ®¼ä
+    {         // å¤„äºä¸¤ç‚¹ä¹‹é—´
       if ( ( diffc == 1 ) || ( diffc == -1 ) || ( diffc == 0 ) )
       {
-        // ¶¼±ä³ÉÕıÊı
+        // éƒ½å˜æˆæ­£æ•°
         if ( diff_2 < 0 )
           diff_2 = ~( diff_2 - 1 );
         else
@@ -199,7 +199,7 @@ UINT16 Calibration_LSI_FLASH( void )
           R16_INT32K_TUNE = loc_t;
           R8_SAFE_ACCESS_SIG = 0;
 
-          return ( diff_2 * 10000 / basev );       // ·µ»ØÎó²îÖµ£¬Íò·ÖÖ®
+          return ( diff_2 * 10000 / basev );       // è¿”å›è¯¯å·®å€¼ï¼Œä¸‡åˆ†ä¹‹
         }
         else
           return ( diff_1 * 10000 / basev );
@@ -211,7 +211,7 @@ UINT16 Calibration_LSI_FLASH( void )
       return ((i > basev ? (i - basev) : (basev - i)) * 10000 / basev);
 
     }
-    // ±£´æÉÏÒ»´ÎÖµ
+    // ä¿å­˜ä¸Šä¸€æ¬¡å€¼
     diff_2 = diff_1;
     loc_t = loc;
     diffc = diff_1 *CNT_STEP_K;
@@ -219,9 +219,9 @@ UINT16 Calibration_LSI_FLASH( void )
     if ( loc == loc_t )
     {
       if ( diff_1 > 0 )
-        loc = loc + 1;    // µ±Ç°ÆµÂÊÆ«Ğ¡
+        loc = loc + 1;    // å½“å‰é¢‘ç‡åå°
       else
-        loc = loc - 1;    // µ±Ç°ÆµÂÊÆ«´ó
+        loc = loc - 1;    // å½“å‰é¢‘ç‡åå¤§
     }
   } while( k < 20 );
 
@@ -232,9 +232,9 @@ UINT16 Calibration_LSI_FLASH( void )
 
 /*******************************************************************************
 * Function Name  : Get_Calibration_Cnt_RAM
-* Description    : »ñÈ¡ÔÚRAMÖĞ¼ÆÊıµÄĞ£×¼¼ÆÊıÖµ
-* Input          : loc : TUNEÖµ
-* Return         : ¼ÆÊıÖµ
+* Description    : è·å–åœ¨RAMä¸­è®¡æ•°çš„æ ¡å‡†è®¡æ•°å€¼
+* Input          : loc : TUNEå€¼
+* Return         : è®¡æ•°å€¼
 *******************************************************************************/
 __attribute__((section(".highcode")))
 static UINT16 Get_Calibration_Cnt_RAM( UINT16 loc )
@@ -245,10 +245,10 @@ static UINT16 Get_Calibration_Cnt_RAM( UINT16 loc )
   R16_INT32K_TUNE = loc;
   R8_SAFE_ACCESS_SIG = 0;
 
-  /* ¶ÁÈ¡µ±Ç°Öµ */
+  /* è¯»å–å½“å‰å€¼ */
   while( !( R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT ) )
     ;
-  i = R16_OSC_CAL_CNT;      // ÓÃÓÚ¶ªÆú
+  i = R16_OSC_CAL_CNT;      // ç”¨äºä¸¢å¼ƒ
   while( R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT )
     ;
   while( !( R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT ) )
@@ -259,9 +259,9 @@ static UINT16 Get_Calibration_Cnt_RAM( UINT16 loc )
 
 /*******************************************************************************
 * Function Name  : Calibration_LSI_RAM
-* Description    : Ğ£×¼ÔÚRAMÖĞÔËĞĞÊ±µÄÄÚ²¿32KÊ±ÖÓ
+* Description    : æ ¡å‡†åœ¨RAMä¸­è¿è¡Œæ—¶çš„å†…éƒ¨32Kæ—¶é’Ÿ
 * Input          : None
-* Return         : Îó²î£ºÍò·ÖÖ®£¨µ¥Î»£©
+* Return         : è¯¯å·®ï¼šä¸‡åˆ†ä¹‹ï¼ˆå•ä½ï¼‰
 *******************************************************************************/
 UINT16 Calibration_LSI_RAM( void )
 {
@@ -273,36 +273,36 @@ UINT16 Calibration_LSI_RAM( void )
   signed short diff_1, diff_2, diffc;
   UINT8 k = 0;
 
-  /* ¸ù¾İµ±Ç°Ê±ÖÓ»ñÈ¡±ê³ÆÖµºÍĞ±ÂÊ£¨T-step£© */
+  /* æ ¹æ®å½“å‰æ—¶é’Ÿè·å–æ ‡ç§°å€¼å’Œæ–œç‡ï¼ˆT-stepï¼‰ */
   rev = R16_CLK_SYS_CFG & 0xff;
   if ( ( rev & RB_CLK_SYS_MOD ) == ( 2 << 6 ) )
-  {       // 32M×öÖ÷Æµ
+  {       // 32Måšä¸»é¢‘
     calv = ( ( 5 * 32000000 + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -1.6;
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 1 << 6 ) )
-  {   // PLL½øĞĞ·ÖÆµ
+  {   // PLLè¿›è¡Œåˆ†é¢‘
     calv = ( ( ( UINT32 ) 5 * 480000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -0.1 * ( rev & 0x1f );
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 0 << 6 ) )
-  {   // 32M½øĞĞ·ÖÆµ
+  {   // 32Mè¿›è¡Œåˆ†é¢‘
     calv = ( ( 5 * 32000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -1.6 * ( rev & 0x1f );
   }
   else
-  {                       // 32K×öÖ÷Æµ
+  {                       // 32Kåšä¸»é¢‘
     calv = ( 5 );
     CNT_STEP_K = 0;
   }
-  basev = calv;             // »ñÈ¡Ğ£×¼±ê³ÆÖµ
+  basev = calv;             // è·å–æ ¡å‡†æ ‡ç§°å€¼
 
   if( Int32K_Tune_RAM )
     loc = Int32K_Tune_RAM;
   else
     loc = 2048;
 //  if (loc == 2048)
-//    loc = 1837; //10040.625-1.640625*5000;  //¾­ÑéÇúÏß
+//    loc = 1837; //10040.625-1.640625*5000;  //ç»éªŒæ›²çº¿
 
   diff_2 = 0;
   diffc = 0;
@@ -312,20 +312,20 @@ UINT16 Calibration_LSI_RAM( void )
   R8_OSC_CAL_CTRL = RB_OSC_CNT_EN;
   do
   {
-    i = Get_Calibration_Cnt_RAM( loc );      // ÊµÊ±Ğ£×¼ºó²ÉÑùÖµ
+    i = Get_Calibration_Cnt_RAM( loc );      // å®æ—¶æ ¡å‡†åé‡‡æ ·å€¼
     k++;
     diff_1 = i - basev;
 
     Int32K_Tune_RAM = loc;
     if ( diff_1 == 0 )
     {
-      return 0;    // Ğ£×¼ÕıºÃ
+      return 0;    // æ ¡å‡†æ­£å¥½
     }
     else if ( ( diff_1 * diff_2 ) < 0 )
-    {         // ´¦ÓÚÁ½µãÖ®¼ä
+    {         // å¤„äºä¸¤ç‚¹ä¹‹é—´
       if ( ( diffc == 1 ) || ( diffc == -1 ) || ( diffc == 0 ) )
       {
-        // ¶¼±ä³ÉÕıÊı
+        // éƒ½å˜æˆæ­£æ•°
         if ( diff_2 < 0 )
           diff_2 = ~( diff_2 - 1 );
         else
@@ -338,7 +338,7 @@ UINT16 Calibration_LSI_RAM( void )
           R16_INT32K_TUNE = loc_t;
           R8_SAFE_ACCESS_SIG = 0;
 
-          return ( diff_2 * 10000 / basev );       // ·µ»ØÎó²îÖµ£¬Íò·ÖÖ®
+          return ( diff_2 * 10000 / basev );       // è¿”å›è¯¯å·®å€¼ï¼Œä¸‡åˆ†ä¹‹
         }
         else
           return ( diff_1 * 10000 / basev );
@@ -350,7 +350,7 @@ UINT16 Calibration_LSI_RAM( void )
       return ((i > basev ? (i - basev) : (basev - i)) * 10000 / basev);
 
     }
-    // ±£´æÉÏÒ»´ÎÖµ
+    // ä¿å­˜ä¸Šä¸€æ¬¡å€¼
     diff_2 = diff_1;
     loc_t = loc;
     diffc = diff_1 *CNT_STEP_K;
@@ -358,9 +358,9 @@ UINT16 Calibration_LSI_RAM( void )
     if ( loc == loc_t )
     {
       if ( diff_1 > 0 )
-        loc = loc + 1;    // µ±Ç°ÆµÂÊÆ«Ğ¡
+        loc = loc + 1;    // å½“å‰é¢‘ç‡åå°
       else
-        loc = loc - 1;    // µ±Ç°ÆµÂÊÆ«´ó
+        loc = loc - 1;    // å½“å‰é¢‘ç‡åå¤§
     }
   } while( k < 20 );
 
@@ -371,7 +371,7 @@ UINT16 Calibration_LSI_RAM( void )
 
 /*******************************************************************************
 * Function Name  : LSI_SetTune_FLASH
-* Description    : ÉèÖÃÔÚFLASHÖĞÔËĞĞÊ±µÄÄÚ²¿32kĞ£×¼Öµ
+* Description    : è®¾ç½®åœ¨FLASHä¸­è¿è¡Œæ—¶çš„å†…éƒ¨32kæ ¡å‡†å€¼
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -385,7 +385,7 @@ void LSI_SetTune_FLASH( void )
 
 /*******************************************************************************
 * Function Name  : LSI_SetTune_RAM
-* Description    : ÉèÖÃÔÚRAMÖĞÔËĞĞÊ±µÄÄÚ²¿32kĞ£×¼Öµ
+* Description    : è®¾ç½®åœ¨RAMä¸­è¿è¡Œæ—¶çš„å†…éƒ¨32kæ ¡å‡†å€¼
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -399,19 +399,19 @@ void LSI_SetTune_RAM( void )
 
 /*******************************************************************************
 * Function Name  : RTCInitTime
-* Description    : RTCÊ±ÖÓ³õÊ¼»¯µ±Ç°Ê±¼ä
-* Input          : y: ÅäÖÃÊ±¼ä - Äê
+* Description    : RTCæ—¶é’Ÿåˆå§‹åŒ–å½“å‰æ—¶é—´
+* Input          : y: é…ç½®æ—¶é—´ - å¹´
           MAX_Y = BEGYEAR + 44
-           mon: ÅäÖÃÊ±¼ä - ÔÂ
+           mon: é…ç½®æ—¶é—´ - æœˆ
           MAX_MON = 12
-           d: ÅäÖÃÊ±¼ä - ÈÕ
+           d: é…ç½®æ—¶é—´ - æ—¥
           MAX_D = 31
 
-           h: ÅäÖÃÊ±¼ä - Ğ¡Ê±
+           h: é…ç½®æ—¶é—´ - å°æ—¶
           MAX_H = 23
-           m: ÅäÖÃÊ±¼ä - ·ÖÖÓ
+           m: é…ç½®æ—¶é—´ - åˆ†é’Ÿ
           MAX_M = 59
-           s: ÅäÖÃÊ±¼ä - Ãë
+           s: é…ç½®æ—¶é—´ - ç§’
           MAX_S = 59
 * Return         : None
 *******************************************************************************/
@@ -451,18 +451,18 @@ void RTC_InitTime( UINT16 y, UINT16 mon, UINT16 d, UINT16 h, UINT16 m, UINT16 s 
 
 /*******************************************************************************
 * Function Name  : RTC_GetTime
-* Description    : »ñÈ¡µ±Ç°Ê±¼ä
-* Input          : y: »ñÈ¡µ½µÄÊ±¼ä - Äê
+* Description    : è·å–å½“å‰æ—¶é—´
+* Input          : y: è·å–åˆ°çš„æ—¶é—´ - å¹´
           MAX_Y = BEGYEAR + 44
-           mon: »ñÈ¡µ½µÄÊ±¼ä - ÔÂ
+           mon: è·å–åˆ°çš„æ—¶é—´ - æœˆ
           MAX_MON = 12
-           d: »ñÈ¡µ½µÄÊ±¼ä - ÈÕ
+           d: è·å–åˆ°çš„æ—¶é—´ - æ—¥
           MAX_D = 31
-           ph: »ñÈ¡µ½µÄÊ±¼ä - Ğ¡Ê±
+           ph: è·å–åˆ°çš„æ—¶é—´ - å°æ—¶
           MAX_H = 23
-           pm: »ñÈ¡µ½µÄÊ±¼ä - ·ÖÖÓ
+           pm: è·å–åˆ°çš„æ—¶é—´ - åˆ†é’Ÿ
           MAX_M = 59
-           ps: »ñÈ¡µ½µÄÊ±¼ä - Ãë
+           ps: è·å–åˆ°çš„æ—¶é—´ - ç§’
           MAX_S = 59
 * Return         : None
 *******************************************************************************/
@@ -499,8 +499,8 @@ void RTC_GetTime( PUINT16 py, PUINT16 pmon, PUINT16 pd, PUINT16 ph, PUINT16 pm, 
 
 /*******************************************************************************
 * Function Name  : RTC_SetCycle32k
-* Description    : »ùÓÚLSE/LSIÊ±ÖÓ£¬ÅäÖÃµ±Ç°RTC ÖÜÆÚÊı
-* Input          : cyc: ÅäÖÃÖÜÆÚ¼ÆÊı³õÖµ - cycle
+* Description    : åŸºäºLSE/LSIæ—¶é’Ÿï¼Œé…ç½®å½“å‰RTC å‘¨æœŸæ•°
+* Input          : cyc: é…ç½®å‘¨æœŸè®¡æ•°åˆå€¼ - cycle
 					MAX_CYC = 0xA8BFFFFF = 2831155199
 * Return         : None
 *******************************************************************************/
@@ -515,9 +515,9 @@ void RTC_SetCycle32k( UINT32 cyc )
 
 /*******************************************************************************
 * Function Name  : RTC_GetCycle32k
-* Description    : »ùÓÚLSE/LSIÊ±ÖÓ£¬»ñÈ¡µ±Ç°RTC ÖÜÆÚÊı
+* Description    : åŸºäºLSE/LSIæ—¶é’Ÿï¼Œè·å–å½“å‰RTC å‘¨æœŸæ•°
 * Input          : None
-* Return         : ·µ»Øµ±Ç°ÖÜÆÚÊı£¬MAX_CYC = 0xA8BFFFFF = 2831155199
+* Return         : è¿”å›å½“å‰å‘¨æœŸæ•°ï¼ŒMAX_CYC = 0xA8BFFFFF = 2831155199
 *******************************************************************************/
 UINT32 RTC_GetCycle32k( void )
 {
@@ -532,7 +532,7 @@ UINT32 RTC_GetCycle32k( void )
 
 /*******************************************************************************
 * Function Name  : RTC_TMRFunCfg
-* Description    : RTC¶¨Ê±Ä£Ê½ÅäÖÃ£¨×¢Òâ¶¨Ê±»ù×¼¹Ì¶¨Îª32768Hz£©
+* Description    : RTCå®šæ—¶æ¨¡å¼é…ç½®ï¼ˆæ³¨æ„å®šæ—¶åŸºå‡†å›ºå®šä¸º32768Hzï¼‰
 * Input          : t: 
 					refer to RTC_TMRCycTypeDef
 * Return         : None
@@ -548,8 +548,8 @@ void RTC_TMRFunCfg( RTC_TMRCycTypeDef t )
 
 /*******************************************************************************
 * Function Name  : RTC_TRIGFunCfg
-* Description    : RTCÊ±¼ä´¥·¢Ä£Ê½ÅäÖÃ
-* Input          : cyc: Ïà¶Ôµ±Ç°Ê±¼äµÄ´¥·¢¼ä¸ôÊ±¼ä£¬»ùÓÚLSE/LSIÊ±ÖÓÖÜÆÚÊı
+* Description    : RTCæ—¶é—´è§¦å‘æ¨¡å¼é…ç½®
+* Input          : cyc: ç›¸å¯¹å½“å‰æ—¶é—´çš„è§¦å‘é—´éš”æ—¶é—´ï¼ŒåŸºäºLSE/LSIæ—¶é’Ÿå‘¨æœŸæ•°
 * Return         : None
 *******************************************************************************/
 void RTC_TRIGFunCfg( UINT32 cyc )
@@ -567,8 +567,8 @@ void RTC_TRIGFunCfg( UINT32 cyc )
 
 /*******************************************************************************
 * Function Name  : RTC_ModeFunDisable
-* Description    : RTC Ä£Ê½¹¦ÄÜ¹Ø±Õ
-* Input          : m: ĞèÒª¹Ø±ÕµÄµ±Ç°Ä£Ê½
+* Description    : RTC æ¨¡å¼åŠŸèƒ½å…³é—­
+* Input          : m: éœ€è¦å…³é—­çš„å½“å‰æ¨¡å¼
 * Return         : None
 *******************************************************************************/
 void RTC_ModeFunDisable( RTC_MODETypeDef m )
@@ -586,12 +586,12 @@ void RTC_ModeFunDisable( RTC_MODETypeDef m )
 
 /*******************************************************************************
 * Function Name  : RTC_GetITFlag
-* Description    : »ñÈ¡RTCÖĞ¶Ï±êÖ¾
+* Description    : è·å–RTCä¸­æ–­æ ‡å¿—
 * Input          : f: 
 					refer to RTC_EVENTTypeDef
-* Return         : ÖĞ¶Ï±êÖ¾×´Ì¬:
-					0     -  	Î´·¢ÉúÊÂ¼ş
-				   (!0)   -  	·¢ÉúÊÂ¼ş
+* Return         : ä¸­æ–­æ ‡å¿—çŠ¶æ€:
+					0     -  	æœªå‘ç”Ÿäº‹ä»¶
+				   (!0)   -  	å‘ç”Ÿäº‹ä»¶
 *******************************************************************************/
 UINT8 RTC_GetITFlag( RTC_EVENTTypeDef f )
 {
@@ -603,7 +603,7 @@ UINT8 RTC_GetITFlag( RTC_EVENTTypeDef f )
 
 /*******************************************************************************
 * Function Name  : RTC_ClearITFlag
-* Description    : Çå³ıRTCÖĞ¶Ï±êÖ¾
+* Description    : æ¸…é™¤RTCä¸­æ–­æ ‡å¿—
 * Input          : f: 
 					refer to RTC_EVENTTypeDef
 * Return         : None

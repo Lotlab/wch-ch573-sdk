@@ -254,9 +254,9 @@ __attribute__( ( always_inline ) ) RV_STATIC_INLINE void __WFE(void){
 /*******************************************************************************
 * Function Name  : PFIC_SetFastIRQ
 * Description    : Set Fast Interrupt
-* Input          : addr£ºFast interrupt service function base address.
-*                  IRQn£ºInterrupt Numbers
-*                  num£ºFast Interrupt Numbers
+* Input          : addrï¼šFast interrupt service function base address.
+*                  IRQnï¼šInterrupt Numbers
+*                  numï¼šFast Interrupt Numbers
 * Return         : None
 *******************************************************************************/
 RV_STATIC_INLINE void PFIC_SetFastIRQ(UINT32 addr, IRQn_Type IRQn, UINT8 num){

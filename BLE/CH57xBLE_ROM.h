@@ -2578,8 +2578,8 @@ typedef struct  tag_rf_config
  * @return      access address
  * the Access Address meets the following requirements:
  * It shall have no more than six consecutive zeros or ones. 
- * It shall not be t he advertising channel packets¡¯ Access Address.
- * It shall not be a sequence that differ s from the advertising channel packets¡¯Access Address by only one bit.
+ * It shall not be t he advertising channel packetsâ€™ Access Address.
+ * It shall not be a sequence that differ s from the advertising channel packetsâ€™Access Address by only one bit.
  * It shall not have all four octets equal.
  * It shall have no more  than 24 transitions.
  * It shall have a minimum of two transitio ns in the most significant six bits.
@@ -4029,7 +4029,7 @@ typedef struct  tag_rf_config
  *
  * @return      0 - success.
  */
-#define    RF_RoleInit  ((  bStatus_t  (*)  ( void )£©  BLE_LIB_JT(99) )
+#define    RF_RoleInit  ((  bStatus_t  (*)  ( void )ï¼‰  BLE_LIB_JT(99) )
 /*******************************************************************************
  * @fn          RF_Config
  *
@@ -4045,7 +4045,7 @@ typedef struct  tag_rf_config
  *
  * @return      0 - success.
  */
-#define    RF_Config  ((  bStatus_t  (*)  ( rfConfig_t *pConfig )£©  BLE_LIB_JT(100) )
+#define    RF_Config  ((  bStatus_t  (*)  ( rfConfig_t *pConfig )ï¼‰  BLE_LIB_JT(100) )
 
 /*******************************************************************************
  * @fn          RF_Rx

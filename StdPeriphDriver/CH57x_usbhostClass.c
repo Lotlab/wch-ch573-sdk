@@ -11,20 +11,20 @@
 #include "CHRV3UFI.H"
 #endif
 
-/* ÉèÖÃHIDÉÏ´«ËÙÂÊ */
+/* è®¾ç½®HIDä¸Šä¼ é€Ÿç‡ */
 __attribute__((aligned(4))) const UINT8  SetupSetHIDIdle[] = { 0x21, HID_SET_IDLE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-/* »ñÈ¡HIDÉè±¸±¨±íÃèÊö·û */
+/* è·å–HIDè®¾å¤‡æŠ¥è¡¨æè¿°ç¬¦ */
 __attribute__((aligned(4))) const UINT8  SetupGetHIDDevReport[] = { 0x81, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_REPORT, 0x00, 0x00, 0x41, 0x00 };
-/* »ñÈ¡HUBÃèÊö·û */
+/* è·å–HUBæè¿°ç¬¦ */
 __attribute__((aligned(4))) const UINT8  SetupGetHubDescr[] = { HUB_GET_HUB_DESCRIPTOR, HUB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_HUB, 0x00, 0x00, sizeof( USB_HUB_DESCR ), 0x00 };
 
 
-__attribute__((aligned(4))) UINT8  Com_Buffer[ 128 ];            // ¶¨ÒåÓÃ»§ÁÙÊ±»º³åÇø,Ã¶¾ÙÊ±ÓÃÓÚ´¦ÀíÃèÊö·û,Ã¶¾Ù½áÊøÒ²¿ÉÒÔÓÃ×÷ÆÕÍ¨ÁÙÊ±»º³åÇø
+__attribute__((aligned(4))) UINT8  Com_Buffer[ 128 ];            // å®šä¹‰ç”¨æˆ·ä¸´æ—¶ç¼“å†²åŒº,æšä¸¾æ—¶ç”¨äºå¤„ç†æè¿°ç¬¦,æšä¸¾ç»“æŸä¹Ÿå¯ä»¥ç”¨ä½œæ™®é€šä¸´æ—¶ç¼“å†²åŒº
     
 /*****************************************************************************
 * Function Name  : InitRootDevice
-* Description    : ³õÊ¼»¯Ö¸¶¨ROOT-HUB¶Ë¿ÚµÄUSBÉè±¸
-* Input          : DataBuf: Ã¶¾Ù¹ı³ÌÖĞ´æ·ÅµÄÃèÊö·ûĞÅÏ¢»º´æÇø
+* Description    : åˆå§‹åŒ–æŒ‡å®šROOT-HUBç«¯å£çš„USBè®¾å¤‡
+* Input          : DataBuf: æšä¸¾è¿‡ç¨‹ä¸­å­˜æ”¾çš„æè¿°ç¬¦ä¿¡æ¯ç¼“å­˜åŒº
 * Return         :
 *******************************************************************************/
 UINT8 InitRootDevice( void ) 
@@ -33,38 +33,38 @@ UINT8 InitRootDevice( void )
     UINT8  cfg, dv_cls, if_cls;
 	
     PRINT( "Reset host port\n" );
-    ResetRootHubPort( );  		// ¼ì²âµ½Éè±¸ºó,¸´Î»ÏàÓ¦¶Ë¿ÚµÄUSB×ÜÏß
-    for ( i = 0, s = 0; i < 100; i ++ ) {  				// µÈ´ıUSBÉè±¸¸´Î»ºóÖØĞÂÁ¬½Ó,100mS³¬Ê±
+    ResetRootHubPort( );  		// æ£€æµ‹åˆ°è®¾å¤‡å,å¤ä½ç›¸åº”ç«¯å£çš„USBæ€»çº¿
+    for ( i = 0, s = 0; i < 100; i ++ ) {  				// ç­‰å¾…USBè®¾å¤‡å¤ä½åé‡æ–°è¿æ¥,100mSè¶…æ—¶
         mDelaymS( 1 );
-        if ( EnableRootHubPort( ) == ERR_SUCCESS ) {  // Ê¹ÄÜ¶Ë¿Ú
+        if ( EnableRootHubPort( ) == ERR_SUCCESS ) {  // ä½¿èƒ½ç«¯å£
             i = 0;
             s ++;  					
-            if ( s > 100 ) break;  	// ÒÑ¾­ÎÈ¶¨Á¬½Ó100mS
+            if ( s > 100 ) break;  	// å·²ç»ç¨³å®šè¿æ¥100mS
         }
     }
-    if ( i ) {  										// ¸´Î»ºóÉè±¸Ã»ÓĞÁ¬½Ó
+    if ( i ) {  										// å¤ä½åè®¾å¤‡æ²¡æœ‰è¿æ¥
         DisableRootHubPort( );
         PRINT( "Disable host port because of disconnect\n" );
         return( ERR_USB_DISCON );
     }
-    SetUsbSpeed( ThisUsbDev.DeviceSpeed );  // ÉèÖÃµ±Ç°USBËÙ¶È
+    SetUsbSpeed( ThisUsbDev.DeviceSpeed );  // è®¾ç½®å½“å‰USBé€Ÿåº¦
 	
     PRINT( "GetDevDescr: " );
-    s = CtrlGetDeviceDescr();  		// »ñÈ¡Éè±¸ÃèÊö·û
+    s = CtrlGetDeviceDescr();  		// è·å–è®¾å¤‡æè¿°ç¬¦
     if ( s == ERR_SUCCESS )
     {
         for ( i = 0; i < ((PUSB_SETUP_REQ)SetupGetDevDescr)->wLength; i ++ ) 		
        PRINT( "x%02X ", (UINT16)( Com_Buffer[i] ) );
        PRINT( "\n" ); 
 		
-       ThisUsbDev.DeviceVID = ((PUSB_DEV_DESCR)Com_Buffer)->idVendor; //±£´æVID PIDĞÅÏ¢
+       ThisUsbDev.DeviceVID = ((PUSB_DEV_DESCR)Com_Buffer)->idVendor; //ä¿å­˜VID PIDä¿¡æ¯
        ThisUsbDev.DevicePID = ((PUSB_DEV_DESCR)Com_Buffer)->idProduct;
        dv_cls = ( (PUSB_DEV_DESCR)Com_Buffer ) -> bDeviceClass;
 		
        s = CtrlSetUsbAddress( ((PUSB_SETUP_REQ)SetupSetUsbAddr)->wValue );  
        if ( s == ERR_SUCCESS )
        {
-           ThisUsbDev.DeviceAddress = ( (PUSB_SETUP_REQ)SetupSetUsbAddr )->wValue;  // ±£´æUSBµØÖ·
+           ThisUsbDev.DeviceAddress = ( (PUSB_SETUP_REQ)SetupSetUsbAddr )->wValue;  // ä¿å­˜USBåœ°å€
     
            PRINT( "GetCfgDescr: " );
            s = CtrlGetConfigDescr( );
@@ -73,69 +73,69 @@ UINT8 InitRootDevice( void )
                for ( i = 0; i < ( (PUSB_CFG_DESCR)Com_Buffer )->wTotalLength; i ++ ) 
                PRINT( "x%02X ", (UINT16)( Com_Buffer[i] ) );
                PRINT("\n");
-/* ·ÖÎöÅäÖÃÃèÊö·û,»ñÈ¡¶ËµãÊı¾İ/¸÷¶ËµãµØÖ·/¸÷¶Ëµã´óĞ¡µÈ,¸üĞÂ±äÁ¿endp_addrºÍendp_sizeµÈ */				
+/* åˆ†æé…ç½®æè¿°ç¬¦,è·å–ç«¯ç‚¹æ•°æ®/å„ç«¯ç‚¹åœ°å€/å„ç«¯ç‚¹å¤§å°ç­‰,æ›´æ–°å˜é‡endp_addrå’Œendp_sizeç­‰ */				
                cfg = ( (PUSB_CFG_DESCR)Com_Buffer )->bConfigurationValue;
-               if_cls = ( (PUSB_CFG_DESCR_LONG)Com_Buffer )->itf_descr.bInterfaceClass;  // ½Ó¿ÚÀà´úÂë
+               if_cls = ( (PUSB_CFG_DESCR_LONG)Com_Buffer )->itf_descr.bInterfaceClass;  // æ¥å£ç±»ä»£ç 
                               
-               if ( (dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_STORAGE)) {  // ÊÇUSB´æ´¢ÀàÉè±¸,»ù±¾ÉÏÈ·ÈÏÊÇUÅÌ
+               if ( (dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_STORAGE)) {  // æ˜¯USBå­˜å‚¨ç±»è®¾å¤‡,åŸºæœ¬ä¸Šç¡®è®¤æ˜¯Uç›˜
 #ifdef	FOR_ROOT_UDISK_ONLY
                    CHRV3DiskStatus = DISK_USB_ADDR;
                    return( ERR_SUCCESS );
                }
                else 	return( ERR_USB_UNSUPPORT );
 #else
-                  s = CtrlSetUsbConfig( cfg );  // ÉèÖÃUSBÉè±¸ÅäÖÃ
+                  s = CtrlSetUsbConfig( cfg );  // è®¾ç½®USBè®¾å¤‡é…ç½®
                   if ( s == ERR_SUCCESS )
                   {
                       ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                       ThisUsbDev.DeviceType = USB_DEV_CLASS_STORAGE;
                       PRINT( "USB-Disk Ready\n" );
-                      SetUsbSpeed( 1 );  // Ä¬ÈÏÎªÈ«ËÙ
+                      SetUsbSpeed( 1 );  // é»˜è®¤ä¸ºå…¨é€Ÿ
                       return( ERR_SUCCESS );
                   }
                }
-               else if ( (dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_PRINTER) && ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass == 0x01 ) {  // ÊÇ´òÓ¡»úÀàÉè±¸
-                   s = CtrlSetUsbConfig( cfg );  // ÉèÖÃUSBÉè±¸ÅäÖÃ
+               else if ( (dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_PRINTER) && ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass == 0x01 ) {  // æ˜¯æ‰“å°æœºç±»è®¾å¤‡
+                   s = CtrlSetUsbConfig( cfg );  // è®¾ç½®USBè®¾å¤‡é…ç½®
                    if ( s == ERR_SUCCESS ) {
-//	Ğè±£´æ¶ËµãĞÅÏ¢ÒÔ±ãÖ÷³ÌĞò½øĞĞUSB´«Êä
+//	éœ€ä¿å­˜ç«¯ç‚¹ä¿¡æ¯ä»¥ä¾¿ä¸»ç¨‹åºè¿›è¡ŒUSBä¼ è¾“
                        ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                        ThisUsbDev.DeviceType = USB_DEV_CLASS_PRINTER;
                        PRINT( "USB-Print Ready\n" );
-                       SetUsbSpeed( 1 );  // Ä¬ÈÏÎªÈ«ËÙ    
+                       SetUsbSpeed( 1 );  // é»˜è®¤ä¸ºå…¨é€Ÿ    
                        return( ERR_SUCCESS );
                    }
                }
-               else if ( (dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_HID) && ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass <= 0x01 ) {  // ÊÇHIDÀàÉè±¸,¼üÅÌ/Êó±êµÈ
-//  ´ÓÃèÊö·ûÖĞ·ÖÎö³öHIDÖĞ¶Ï¶ËµãµÄµØÖ·
-//  ±£´æÖĞ¶Ï¶ËµãµÄµØÖ·,Î»7ÓÃÓÚÍ¬²½±êÖ¾Î»,Çå0
+               else if ( (dv_cls == 0x00) && (if_cls == USB_DEV_CLASS_HID) && ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceSubClass <= 0x01 ) {  // æ˜¯HIDç±»è®¾å¤‡,é”®ç›˜/é¼ æ ‡ç­‰
+//  ä»æè¿°ç¬¦ä¸­åˆ†æå‡ºHIDä¸­æ–­ç«¯ç‚¹çš„åœ°å€
+//  ä¿å­˜ä¸­æ–­ç«¯ç‚¹çš„åœ°å€,ä½7ç”¨äºåŒæ­¥æ ‡å¿—ä½,æ¸…0
                    if_cls = ( (PUSB_CFG_DESCR_LONG)Com_Buffer ) -> itf_descr.bInterfaceProtocol;
-                   s = CtrlSetUsbConfig( cfg );  // ÉèÖÃUSBÉè±¸ÅäÖÃ
+                   s = CtrlSetUsbConfig( cfg );  // è®¾ç½®USBè®¾å¤‡é…ç½®
                    if ( s == ERR_SUCCESS ) {
 //	    					Set_Idle( );
-//	Ğè±£´æ¶ËµãĞÅÏ¢ÒÔ±ãÖ÷³ÌĞò½øĞĞUSB´«Êä
+//	éœ€ä¿å­˜ç«¯ç‚¹ä¿¡æ¯ä»¥ä¾¿ä¸»ç¨‹åºè¿›è¡ŒUSBä¼ è¾“
                        ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                        if ( if_cls == 1 ) {
                        ThisUsbDev.DeviceType = DEV_TYPE_KEYBOARD;
-//	½øÒ»²½³õÊ¼»¯,ÀıÈçÉè±¸¼üÅÌÖ¸Ê¾µÆLEDµÈ
+//	è¿›ä¸€æ­¥åˆå§‹åŒ–,ä¾‹å¦‚è®¾å¤‡é”®ç›˜æŒ‡ç¤ºç¯LEDç­‰
                        PRINT( "USB-Keyboard Ready\n" );
-                       SetUsbSpeed( 1 );  // Ä¬ÈÏÎªÈ«ËÙ
+                       SetUsbSpeed( 1 );  // é»˜è®¤ä¸ºå…¨é€Ÿ
                        return( ERR_SUCCESS );
                        }
                        else if ( if_cls == 2 ) {
                            ThisUsbDev.DeviceType = DEV_TYPE_MOUSE;
-//	ÎªÁËÒÔºó²éÑ¯Êó±ê×´Ì¬,Ó¦¸Ã·ÖÎöÃèÊö·û,È¡µÃÖĞ¶Ï¶Ë¿ÚµÄµØÖ·,³¤¶ÈµÈĞÅÏ¢
+//	ä¸ºäº†ä»¥åæŸ¥è¯¢é¼ æ ‡çŠ¶æ€,åº”è¯¥åˆ†ææè¿°ç¬¦,å–å¾—ä¸­æ–­ç«¯å£çš„åœ°å€,é•¿åº¦ç­‰ä¿¡æ¯
                            PRINT( "USB-Mouse Ready\n" );
-                            SetUsbSpeed( 1 );  // Ä¬ÈÏÎªÈ«ËÙ
+                            SetUsbSpeed( 1 );  // é»˜è®¤ä¸ºå…¨é€Ÿ
                            return( ERR_SUCCESS );
                        }
                        s = ERR_USB_UNSUPPORT;
                    }
                 }
-                else if(dv_cls == USB_DEV_CLASS_HUB){ // ÊÇHUBÀàÉè±¸,¼¯ÏßÆ÷µÈ
+                else if(dv_cls == USB_DEV_CLASS_HUB){ // æ˜¯HUBç±»è®¾å¤‡,é›†çº¿å™¨ç­‰
                     s = CtrlGetHubDescr( );
                     if(s==ERR_SUCCESS){
                         printf( "Max Port:%02X ",(((PXUSB_HUB_DESCR)Com_Buffer)->bNbrPorts) );
-                        s = CtrlSetUsbConfig( cfg );               // ÉèÖÃUSBÉè±¸ÅäÖÃ
+                        s = CtrlSetUsbConfig( cfg );               // è®¾ç½®USBè®¾å¤‡é…ç½®
                         if(s == ERR_SUCCESS){
                             ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                             ThisUsbDev.DeviceType = USB_DEV_CLASS_HUB;
@@ -143,14 +143,14 @@ UINT8 InitRootDevice( void )
                         }
                     }
                 }
-                else {   // ¿ÉÒÔ½øÒ»²½·ÖÎö
-                    s = CtrlSetUsbConfig( cfg );  // ÉèÖÃUSBÉè±¸ÅäÖÃ
+                else {   // å¯ä»¥è¿›ä¸€æ­¥åˆ†æ
+                    s = CtrlSetUsbConfig( cfg );  // è®¾ç½®USBè®¾å¤‡é…ç½®
                     if ( s == ERR_SUCCESS ) {
-//	Ğè±£´æ¶ËµãĞÅÏ¢ÒÔ±ãÖ÷³ÌĞò½øĞĞUSB´«Êä
+//	éœ€ä¿å­˜ç«¯ç‚¹ä¿¡æ¯ä»¥ä¾¿ä¸»ç¨‹åºè¿›è¡ŒUSBä¼ è¾“
                         ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                         ThisUsbDev.DeviceType = DEV_TYPE_UNKNOW;
-                        SetUsbSpeed( 1 );  // Ä¬ÈÏÎªÈ«ËÙ
-                        return( ERR_SUCCESS );  /* Î´ÖªÉè±¸³õÊ¼»¯³É¹¦ */
+                        SetUsbSpeed( 1 );  // é»˜è®¤ä¸ºå…¨é€Ÿ
+                        return( ERR_SUCCESS );  /* æœªçŸ¥è®¾å¤‡åˆå§‹åŒ–æˆåŠŸ */
                    }
                }
 #endif			
@@ -164,18 +164,18 @@ UINT8 InitRootDevice( void )
 #else
     ThisUsbDev.DeviceStatus = ROOT_DEV_FAILED;
 #endif
-    SetUsbSpeed( 1 );  // Ä¬ÈÏÎªÈ«ËÙ	
+    SetUsbSpeed( 1 );  // é»˜è®¤ä¸ºå…¨é€Ÿ	
     return( s );		
 }
 
 
 /*******************************************************************************
 * Function Name  : CtrlGetHIDDeviceReport
-* Description    : »ñÈ¡HIDÉè±¸±¨±íÃèÊö·û,·µ»ØÔÚTxBufferÖĞ
+* Description    : è·å–HIDè®¾å¤‡æŠ¥è¡¨æè¿°ç¬¦,è¿”å›åœ¨TxBufferä¸­
 * Input          : None
 * Output         : None
-* Return         : ERR_SUCCESS ³É¹¦
-                   ÆäËû        ´íÎó
+* Return         : ERR_SUCCESS æˆåŠŸ
+                   å…¶ä»–        é”™è¯¯
 *******************************************************************************/
 UINT8   CtrlGetHIDDeviceReport( UINT8 infc )  
 {
@@ -184,7 +184,7 @@ UINT8   CtrlGetHIDDeviceReport( UINT8 infc )
 
 	CopySetupReqPkg( (PCHAR)SetupSetHIDIdle );		
 	pSetupReq -> wIndex = infc;
-    s = HostCtrlTransfer( Com_Buffer, &len );                            // Ö´ĞĞ¿ØÖÆ´«Êä
+    s = HostCtrlTransfer( Com_Buffer, &len );                            // æ‰§è¡Œæ§åˆ¶ä¼ è¾“
     if ( s != ERR_SUCCESS )
     {
         return( s );
@@ -192,7 +192,7 @@ UINT8   CtrlGetHIDDeviceReport( UINT8 infc )
 	
 	CopySetupReqPkg( (PCHAR)SetupGetHIDDevReport );	
 	pSetupReq -> wIndex = infc;	
-    s = HostCtrlTransfer( Com_Buffer, &len );                            // Ö´ĞĞ¿ØÖÆ´«Êä
+    s = HostCtrlTransfer( Com_Buffer, &len );                            // æ‰§è¡Œæ§åˆ¶ä¼ è¾“
     if ( s != ERR_SUCCESS )
     {
         return( s );
@@ -203,11 +203,11 @@ UINT8   CtrlGetHIDDeviceReport( UINT8 infc )
 
 /*******************************************************************************
 * Function Name  : CtrlGetHubDescr
-* Description    : »ñÈ¡HUBÃèÊö·û,·µ»ØÔÚCom_BufferÖĞ
+* Description    : è·å–HUBæè¿°ç¬¦,è¿”å›åœ¨Com_Bufferä¸­
 * Input          : None
 * Output         : None
-* Return         : ERR_SUCCESS ³É¹¦
-                   ERR_USB_BUF_OVER ³¤¶È´íÎó
+* Return         : ERR_SUCCESS æˆåŠŸ
+                   ERR_USB_BUF_OVER é•¿åº¦é”™è¯¯
 *******************************************************************************/
 UINT8   CtrlGetHubDescr( void )  
 {
@@ -215,27 +215,27 @@ UINT8   CtrlGetHubDescr( void )
     UINT8  len;
     
     CopySetupReqPkg( (PCHAR)SetupGetHubDescr );
-    s = HostCtrlTransfer( Com_Buffer, &len );                          // Ö´ĞĞ¿ØÖÆ´«Êä
+    s = HostCtrlTransfer( Com_Buffer, &len );                          // æ‰§è¡Œæ§åˆ¶ä¼ è¾“
     if ( s != ERR_SUCCESS )
     {
         return( s );
     }
     if ( len < ( (PUSB_SETUP_REQ)SetupGetHubDescr ) -> wLength )
     {
-        return( ERR_USB_BUF_OVER );                                            // ÃèÊö·û³¤¶È´íÎó
+        return( ERR_USB_BUF_OVER );                                            // æè¿°ç¬¦é•¿åº¦é”™è¯¯
     }
-//  if ( len < 4 ) return( ERR_USB_BUF_OVER );                                 // ÃèÊö·û³¤¶È´íÎó
+//  if ( len < 4 ) return( ERR_USB_BUF_OVER );                                 // æè¿°ç¬¦é•¿åº¦é”™è¯¯
     return( ERR_SUCCESS );
 }
 
 
 /*******************************************************************************
 * Function Name  : HubGetPortStatus
-* Description    : ²éÑ¯HUB¶Ë¿Ú×´Ì¬,·µ»ØÔÚCom_BufferÖĞ
+* Description    : æŸ¥è¯¢HUBç«¯å£çŠ¶æ€,è¿”å›åœ¨Com_Bufferä¸­
 * Input          : UINT8 HubPortIndex 
 * Output         : None
-* Return         : ERR_SUCCESS ³É¹¦
-                   ERR_USB_BUF_OVER ³¤¶È´íÎó
+* Return         : ERR_SUCCESS æˆåŠŸ
+                   ERR_USB_BUF_OVER é•¿åº¦é”™è¯¯
 *******************************************************************************/
 UINT8   HubGetPortStatus( UINT8 HubPortIndex )   
 {
@@ -247,26 +247,26 @@ UINT8   HubGetPortStatus( UINT8 HubPortIndex )
     pSetupReq -> wValue = 0x0000;
     pSetupReq -> wIndex = 0x0000|HubPortIndex;
     pSetupReq -> wLength = 0x0004;
-    s = HostCtrlTransfer( Com_Buffer, &len );                           // Ö´ĞĞ¿ØÖÆ´«Êä
+    s = HostCtrlTransfer( Com_Buffer, &len );                           // æ‰§è¡Œæ§åˆ¶ä¼ è¾“
     if ( s != ERR_SUCCESS )
     {
         return( s );
     }
     if ( len < 4 )
     {
-        return( ERR_USB_BUF_OVER );                                             // ÃèÊö·û³¤¶È´íÎó
+        return( ERR_USB_BUF_OVER );                                             // æè¿°ç¬¦é•¿åº¦é”™è¯¯
     }
     return( ERR_SUCCESS );
 }
 
 /*******************************************************************************
 * Function Name  : HubSetPortFeature
-* Description    : ÉèÖÃHUB¶Ë¿ÚÌØĞÔ
-* Input          : UINT8 HubPortIndex    //HUB¶Ë¿Ú
-                   UINT8 FeatureSelt     //HUB¶Ë¿ÚÌØĞÔ
+* Description    : è®¾ç½®HUBç«¯å£ç‰¹æ€§
+* Input          : UINT8 HubPortIndex    //HUBç«¯å£
+                   UINT8 FeatureSelt     //HUBç«¯å£ç‰¹æ€§
 * Output         : None
-* Return         : ERR_SUCCESS ³É¹¦
-                   ÆäËû        ´íÎó
+* Return         : ERR_SUCCESS æˆåŠŸ
+                   å…¶ä»–        é”™è¯¯
 *******************************************************************************/
 UINT8   HubSetPortFeature( UINT8 HubPortIndex, UINT8 FeatureSelt ) 
 {
@@ -275,17 +275,17 @@ UINT8   HubSetPortFeature( UINT8 HubPortIndex, UINT8 FeatureSelt )
     pSetupReq -> wValue = 0x0000|FeatureSelt;
     pSetupReq -> wIndex = 0x0000|HubPortIndex;
     pSetupReq -> wLength = 0x0000;
-    return( HostCtrlTransfer( NULL, NULL ) );                                 // Ö´ĞĞ¿ØÖÆ´«Êä
+    return( HostCtrlTransfer( NULL, NULL ) );                                 // æ‰§è¡Œæ§åˆ¶ä¼ è¾“
 }
 
 /*******************************************************************************
 * Function Name  : HubClearPortFeature
-* Description    : Çå³ıHUB¶Ë¿ÚÌØĞÔ
-* Input          : UINT8 HubPortIndex                                         //HUB¶Ë¿Ú
-                   UINT8 FeatureSelt                                          //HUB¶Ë¿ÚÌØĞÔ
+* Description    : æ¸…é™¤HUBç«¯å£ç‰¹æ€§
+* Input          : UINT8 HubPortIndex                                         //HUBç«¯å£
+                   UINT8 FeatureSelt                                          //HUBç«¯å£ç‰¹æ€§
 * Output         : None
-* Return         : ERR_SUCCESS ³É¹¦
-                   ÆäËû        ´íÎó
+* Return         : ERR_SUCCESS æˆåŠŸ
+                   å…¶ä»–        é”™è¯¯
 *******************************************************************************/
 UINT8   HubClearPortFeature( UINT8 HubPortIndex, UINT8 FeatureSelt ) 
 {
@@ -294,7 +294,7 @@ UINT8   HubClearPortFeature( UINT8 HubPortIndex, UINT8 FeatureSelt )
     pSetupReq -> wValue = 0x0000|FeatureSelt;
     pSetupReq -> wIndex = 0x0000|HubPortIndex;
     pSetupReq -> wLength = 0x0000;
-    return( HostCtrlTransfer( NULL, NULL ) );                                // Ö´ĞĞ¿ØÖÆ´«Êä
+    return( HostCtrlTransfer( NULL, NULL ) );                                // æ‰§è¡Œæ§åˆ¶ä¼ è¾“
 }
 
 

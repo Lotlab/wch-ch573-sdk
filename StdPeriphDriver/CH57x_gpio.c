@@ -11,15 +11,15 @@
 
 /*******************************************************************************
 * Function Name  : GPIOA_ModeCfg
-* Description    : GPIOA¶Ë¿ÚÒý½ÅÄ£Ê½ÅäÖÃ
+* Description    : GPIOAç«¯å£å¼•è„šæ¨¡å¼é…ç½®
 * Input          : pin:  PA0-PA15
 					GPIO_Pin_0 - GPIO_Pin_15
 				   mode:
-					GPIO_ModeIN_Floating  -  ¸¡¿ÕÊäÈë
-					GPIO_ModeIN_PU        -  ÉÏÀ­ÊäÈë
-					GPIO_ModeIN_PD        -  ÏÂÀ­ÊäÈë
-					GPIO_ModeOut_PP_5mA   -  ÍÆÍìÊä³ö×î´ó5mA
-					GPIO_ModeOut_PP_20mA  -  ÍÆÍìÊä³ö×î´ó20mA				   				
+					GPIO_ModeIN_Floating  -  æµ®ç©ºè¾“å…¥
+					GPIO_ModeIN_PU        -  ä¸Šæ‹‰è¾“å…¥
+					GPIO_ModeIN_PD        -  ä¸‹æ‹‰è¾“å…¥
+					GPIO_ModeOut_PP_5mA   -  æŽ¨æŒ½è¾“å‡ºæœ€å¤§5mA
+					GPIO_ModeOut_PP_20mA  -  æŽ¨æŒ½è¾“å‡ºæœ€å¤§20mA				   				
 * Return         : None
 *******************************************************************************/
 void GPIOA_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
@@ -61,15 +61,15 @@ void GPIOA_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
 
 /*******************************************************************************
 * Function Name  : GPIOB_ModeCfg
-* Description    : GPIOB¶Ë¿ÚÒý½ÅÄ£Ê½ÅäÖÃ
+* Description    : GPIOBç«¯å£å¼•è„šæ¨¡å¼é…ç½®
 * Input          : pin:  PB0-PB23
 					GPIO_Pin_0 - GPIO_Pin_23
 				   mode:
-					GPIO_ModeIN_Floating  -  ¸¡¿ÕÊäÈë
-					GPIO_ModeIN_PU        -  ÉÏÀ­ÊäÈë
-					GPIO_ModeIN_PD        -  ÏÂÀ­ÊäÈë
-					GPIO_ModeOut_PP_5mA   -  ÍÆÍìÊä³ö×î´ó5mA
-					GPIO_ModeOut_PP_20mA  -  ÍÆÍìÊä³ö×î´ó20mA				   				
+					GPIO_ModeIN_Floating  -  æµ®ç©ºè¾“å…¥
+					GPIO_ModeIN_PU        -  ä¸Šæ‹‰è¾“å…¥
+					GPIO_ModeIN_PD        -  ä¸‹æ‹‰è¾“å…¥
+					GPIO_ModeOut_PP_5mA   -  æŽ¨æŒ½è¾“å‡ºæœ€å¤§5mA
+					GPIO_ModeOut_PP_20mA  -  æŽ¨æŒ½è¾“å‡ºæœ€å¤§20mA				   				
 * Return         : None
 *******************************************************************************/
 void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
@@ -111,36 +111,36 @@ void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
 
 /*******************************************************************************
 * Function Name  : GPIOA_ITModeCfg
-* Description    : GPIOAÒý½ÅÖÐ¶ÏÄ£Ê½ÅäÖÃ
+* Description    : GPIOAå¼•è„šä¸­æ–­æ¨¡å¼é…ç½®
 * Input          : pin:  PA0-PA15
 					GPIO_Pin_0 - GPIO_Pin_15
 				   mode:
-					GPIO_ITMode_LowLevel   -  µÍµçÆ½´¥·¢
-					GPIO_ITMode_HighLevel  -  ¸ßµçÆ½´¥·¢
-					GPIO_ITMode_FallEdge   -  ÏÂ½µÑØ´¥·¢
-					GPIO_ITMode_RiseEdge   -  ÉÏÉýÑØ´¥·¢				   				
+					GPIO_ITMode_LowLevel   -  ä½Žç”µå¹³è§¦å‘
+					GPIO_ITMode_HighLevel  -  é«˜ç”µå¹³è§¦å‘
+					GPIO_ITMode_FallEdge   -  ä¸‹é™æ²¿è§¦å‘
+					GPIO_ITMode_RiseEdge   -  ä¸Šå‡æ²¿è§¦å‘				   				
 * Return         : None
 *******************************************************************************/
 void GPIOA_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
 {
     switch( mode )
     {
-        case GPIO_ITMode_LowLevel:		// µÍµçÆ½´¥·¢
+        case GPIO_ITMode_LowLevel:		// ä½Žç”µå¹³è§¦å‘
             R16_PA_INT_MODE &= ~pin;
             R32_PA_CLR |= pin;
             break;
 
-        case GPIO_ITMode_HighLevel:		// ¸ßµçÆ½´¥·¢
+        case GPIO_ITMode_HighLevel:		// é«˜ç”µå¹³è§¦å‘
             R16_PA_INT_MODE &= ~pin;
             R32_PA_OUT |= pin;
             break;
 
-        case GPIO_ITMode_FallEdge:		// ÏÂ½µÑØ´¥·¢
+        case GPIO_ITMode_FallEdge:		// ä¸‹é™æ²¿è§¦å‘
             R16_PA_INT_MODE |= pin;
             R32_PA_CLR |= pin;
             break;
 
-        case GPIO_ITMode_RiseEdge:		// ÉÏÉýÑØ´¥·¢	
+        case GPIO_ITMode_RiseEdge:		// ä¸Šå‡æ²¿è§¦å‘	
             R16_PA_INT_MODE |= pin;
             R32_PA_OUT |= pin;
             break;
@@ -154,14 +154,14 @@ void GPIOA_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
 
 /*******************************************************************************
 * Function Name  : GPIOB_ITModeCfg
-* Description    : GPIOBÒý½ÅÖÐ¶ÏÄ£Ê½ÅäÖÃ
+* Description    : GPIOBå¼•è„šä¸­æ–­æ¨¡å¼é…ç½®
 * Input          : pin:  PB0-PB23
 					GPIO_Pin_0 - GPIO_Pin_23
 				   mode:
-					GPIO_ITMode_LowLevel   -  µÍµçÆ½´¥·¢
-					GPIO_ITMode_HighLevel  -  ¸ßµçÆ½´¥·¢
-					GPIO_ITMode_FallEdge   -  ÏÂ½µÑØ´¥·¢
-					GPIO_ITMode_RiseEdge   -  ÉÏÉýÑØ´¥·¢				   				
+					GPIO_ITMode_LowLevel   -  ä½Žç”µå¹³è§¦å‘
+					GPIO_ITMode_HighLevel  -  é«˜ç”µå¹³è§¦å‘
+					GPIO_ITMode_FallEdge   -  ä¸‹é™æ²¿è§¦å‘
+					GPIO_ITMode_RiseEdge   -  ä¸Šå‡æ²¿è§¦å‘				   				
 * Return         : None
 *******************************************************************************/
 void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
@@ -169,22 +169,22 @@ void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
     UINT32 Pin = pin|((pin&(GPIO_Pin_22|GPIO_Pin_23))>>14);
     switch( mode )
     {
-        case GPIO_ITMode_LowLevel:		// µÍµçÆ½´¥·¢
+        case GPIO_ITMode_LowLevel:		// ä½Žç”µå¹³è§¦å‘
             R16_PB_INT_MODE &= ~Pin;
             R32_PB_CLR |= pin;
             break;
 
-        case GPIO_ITMode_HighLevel:		// ¸ßµçÆ½´¥·¢
+        case GPIO_ITMode_HighLevel:		// é«˜ç”µå¹³è§¦å‘
             R16_PB_INT_MODE &= ~Pin;
             R32_PB_OUT |= pin;
             break;
 
-        case GPIO_ITMode_FallEdge:		// ÏÂ½µÑØ´¥·¢
+        case GPIO_ITMode_FallEdge:		// ä¸‹é™æ²¿è§¦å‘
             R16_PB_INT_MODE |= Pin;
             R32_PB_CLR |= pin;
             break;
 
-        case GPIO_ITMode_RiseEdge:		// ÉÏÉýÑØ´¥·¢	
+        case GPIO_ITMode_RiseEdge:		// ä¸Šå‡æ²¿è§¦å‘	
             R16_PB_INT_MODE |= Pin;
             R32_PB_OUT |= pin;
             break;
@@ -199,10 +199,10 @@ void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
 
 /*******************************************************************************
 * Function Name  : GPIOPinRemap
-* Description    : ÍâÉè¹¦ÄÜÒý½ÅÓ³Éä
+* Description    : å¤–è®¾åŠŸèƒ½å¼•è„šæ˜ å°„
 * Input          : s:  
-					ENABLE  - Òý½ÅÓ³Éä    
-					DISABLE - Ä¬ÈÏÒý½Å
+					ENABLE  - å¼•è„šæ˜ å°„    
+					DISABLE - é»˜è®¤å¼•è„š
 				   perph:
 					RB_PIN_SPI0	  -  SPI0:  PA12/PA13/PA14/PA15 -> PB12/PB13/PB14/PB15
 					RB_PIN_UART1  -  UART1: PA8/PA9 ->  PB12/PB13
@@ -220,27 +220,27 @@ void GPIOPinRemap( FunctionalState s, UINT16 perph )
 
 /*******************************************************************************
 * Function Name  : GPIOAGPPCfg
-* Description    : Ä£ÄâÍâÉèGPIOÒý½Å¹¦ÄÜ¿ØÖÆ
+* Description    : æ¨¡æ‹Ÿå¤–è®¾GPIOå¼•è„šåŠŸèƒ½æŽ§åˆ¶
 * Input          : s: 
-					ENABLE  - ´ò¿ªÄ£ÄâÍâÉè¹¦ÄÜ£¬¹Ø±ÕÊý×Ö¹¦ÄÜ     
-					DISABLE - ÆôÓÃÊý×Ö¹¦ÄÜ£¬¹Ø±ÕÄ£ÄâÍâÉè¹¦ÄÜ 
+					ENABLE  - æ‰“å¼€æ¨¡æ‹Ÿå¤–è®¾åŠŸèƒ½ï¼Œå…³é—­æ•°å­—åŠŸèƒ½     
+					DISABLE - å¯ç”¨æ•°å­—åŠŸèƒ½ï¼Œå…³é—­æ¨¡æ‹Ÿå¤–è®¾åŠŸèƒ½ 
 				   perph:
-					RB_PIN_ADC0_1_IE	  -  ADC0-1Í¨µÀ
-					RB_PIN_ADC2_3_IE	  -  ADC2-3Í¨µÀ
-					RB_PIN_ADC4_5_IE	  -  ADC4-5Í¨µÀ 					
-					RB_PIN_ADC6_7_IE	  -  ADC6-7Í¨µÀ
-					RB_PIN_ADC8_9_IE	  -  ADC8-9Í¨µÀ
-					RB_PIN_ADC10_11_IE	  -  ADC10-11Í¨µÀ
-					RB_PIN_ADC12_13_IE	  -  ADC12-13Í¨µÀ
-					RB_PIN_XT32K_IE	      -  Íâ²¿32KÒý½Å
-					RB_PIN_USB_IE		  -  USB¹¦ÄÜÐÅºÅÒý½Å
-					RB_PIN_ETH_IE		  -  ÒÔÌ«Íø¹¦ÄÜÐÅºÅÒý½Å
-					RB_PIN_SEG0_3_IE	  -  LCD¿ØÖÆÆ÷SEG0-3Çý¶¯Òý½Å
-					RB_PIN_SEG4_7_IE	  -  LCD¿ØÖÆÆ÷SEG4-7Çý¶¯Òý½Å
-					RB_PIN_SEG8_11_IE	  -  LCD¿ØÖÆÆ÷SEG8-11Çý¶¯Òý½Å
-					RB_PIN_SEG12_15_IE	  -  LCD¿ØÖÆÆ÷SEG12-15Çý¶¯Òý½Å
-					RB_PIN_SEG16_19_IE	  -  LCD¿ØÖÆÆ÷SEG16-19Çý¶¯Òý½Å
-					RB_PIN_SEG20_23_IE	  -  LCD¿ØÖÆÆ÷SEG20-23Çý¶¯Òý½Å	
+					RB_PIN_ADC0_1_IE	  -  ADC0-1é€šé“
+					RB_PIN_ADC2_3_IE	  -  ADC2-3é€šé“
+					RB_PIN_ADC4_5_IE	  -  ADC4-5é€šé“ 					
+					RB_PIN_ADC6_7_IE	  -  ADC6-7é€šé“
+					RB_PIN_ADC8_9_IE	  -  ADC8-9é€šé“
+					RB_PIN_ADC10_11_IE	  -  ADC10-11é€šé“
+					RB_PIN_ADC12_13_IE	  -  ADC12-13é€šé“
+					RB_PIN_XT32K_IE	      -  å¤–éƒ¨32Kå¼•è„š
+					RB_PIN_USB_IE		  -  USBåŠŸèƒ½ä¿¡å·å¼•è„š
+					RB_PIN_ETH_IE		  -  ä»¥å¤ªç½‘åŠŸèƒ½ä¿¡å·å¼•è„š
+					RB_PIN_SEG0_3_IE	  -  LCDæŽ§åˆ¶å™¨SEG0-3é©±åŠ¨å¼•è„š
+					RB_PIN_SEG4_7_IE	  -  LCDæŽ§åˆ¶å™¨SEG4-7é©±åŠ¨å¼•è„š
+					RB_PIN_SEG8_11_IE	  -  LCDæŽ§åˆ¶å™¨SEG8-11é©±åŠ¨å¼•è„š
+					RB_PIN_SEG12_15_IE	  -  LCDæŽ§åˆ¶å™¨SEG12-15é©±åŠ¨å¼•è„š
+					RB_PIN_SEG16_19_IE	  -  LCDæŽ§åˆ¶å™¨SEG16-19é©±åŠ¨å¼•è„š
+					RB_PIN_SEG20_23_IE	  -  LCDæŽ§åˆ¶å™¨SEG20-23é©±åŠ¨å¼•è„š	
 * Return         : None
 *******************************************************************************/
 void GPIOAGPPCfg( FunctionalState s, UINT16 perph )

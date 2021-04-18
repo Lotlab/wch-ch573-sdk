@@ -10,8 +10,8 @@
 
 /*******************************************************************************
 * Function Name  : SetSysClock
-* Description    : ÅäÖÃÏµÍ³ÔËĞĞÊ±ÖÓ
-* Input          : sc: ÏµÍ³Ê±ÖÓÔ´Ñ¡Ôñ
+* Description    : é…ç½®ç³»ç»Ÿè¿è¡Œæ—¶é’Ÿ
+* Input          : sc: ç³»ç»Ÿæ—¶é’Ÿæºé€‰æ‹©
           refer to SYS_CLKTypeDef
 * Return         : None
 *******************************************************************************/
@@ -63,7 +63,7 @@ void SetSysClock( SYS_CLKTypeDef sc)
 
 /*******************************************************************************
 * Function Name  : GetSysClock
-* Description    : »ñÈ¡µ±Ç°ÏµÍ³Ê±ÖÓ
+* Description    : è·å–å½“å‰ç³»ç»Ÿæ—¶é’Ÿ
 * Input          : None
 * Return         : Hz
 *******************************************************************************/
@@ -72,24 +72,24 @@ UINT32 GetSysClock( void )
   UINT16  rev;
 
   rev = R16_CLK_SYS_CFG & 0xff;
-  if( (rev & 0x40) == (0<<6) ){       // 32M½øĞĞ·ÖÆµ
+  if( (rev & 0x40) == (0<<6) ){       // 32Mè¿›è¡Œåˆ†é¢‘
       return (32000000/(rev&0x1f));
   }
-  else if( (rev & RB_CLK_SYS_MOD) == (1<<6) ){    // PLL½øĞĞ·ÖÆµ
+  else if( (rev & RB_CLK_SYS_MOD) == (1<<6) ){    // PLLè¿›è¡Œåˆ†é¢‘
       return (480000000/(rev&0x1f));
   }
-  else {                        // 32K×öÖ÷Æµ
+  else {                        // 32Kåšä¸»é¢‘
     return (32000);
   }
 }
 
 /*******************************************************************************
 * Function Name  : SYS_GetInfoSta
-* Description    : »ñÈ¡µ±Ç°ÏµÍ³ĞÅÏ¢×´Ì¬
+* Description    : è·å–å½“å‰ç³»ç»Ÿä¿¡æ¯çŠ¶æ€
 * Input          : i: 
 					refer to SYS_InfoStaTypeDef
-* Return         : DISABLE  -  ¹Ø±Õ
-				   ENABLE   -  ¿ªÆô
+* Return         : DISABLE  -  å…³é—­
+				   ENABLE   -  å¼€å¯
 *******************************************************************************/
 UINT8 SYS_GetInfoSta( SYS_InfoStaTypeDef i )
 {
@@ -101,7 +101,7 @@ UINT8 SYS_GetInfoSta( SYS_InfoStaTypeDef i )
 
 /*******************************************************************************
 * Function Name  : SYS_ResetExecute
-* Description    : Ö´ĞĞÏµÍ³Èí¼ş¸´Î»
+* Description    : æ‰§è¡Œç³»ç»Ÿè½¯ä»¶å¤ä½
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -115,8 +115,8 @@ void SYS_ResetExecute( void )
 
 /*******************************************************************************
 * Function Name  : SYS_DisableAllIrq
-* Description    : ¹Ø±ÕËùÓĞÖĞ¶Ï£¬²¢±£Áôµ±Ç°ÖĞ¶ÏÖµ
-* Input          : pirqv£ºµ±Ç°±£ÁôÖĞ¶ÏÖµ
+* Description    : å…³é—­æ‰€æœ‰ä¸­æ–­ï¼Œå¹¶ä¿ç•™å½“å‰ä¸­æ–­å€¼
+* Input          : pirqvï¼šå½“å‰ä¿ç•™ä¸­æ–­å€¼
 * Return         : None
 *******************************************************************************/
 void SYS_DisableAllIrq( PUINT32 pirqv )
@@ -128,8 +128,8 @@ void SYS_DisableAllIrq( PUINT32 pirqv )
 
 /*******************************************************************************
  * Function Name  : SYS_RecoverIrq
- * Description    : »Ö¸´Ö®Ç°¹Ø±ÕµÄÖĞ¶ÏÖµ
- * Input          : irq_status£ºµ±Ç°±£ÁôÖĞ¶ÏÖµ
+ * Description    : æ¢å¤ä¹‹å‰å…³é—­çš„ä¸­æ–­å€¼
+ * Input          : irq_statusï¼šå½“å‰ä¿ç•™ä¸­æ–­å€¼
  * Return         : None
  *******************************************************************************/
 void SYS_RecoverIrq( UINT32 irq_status )
@@ -140,9 +140,9 @@ void SYS_RecoverIrq( UINT32 irq_status )
 
 /*******************************************************************************
 * Function Name  : SYS_GetSysTickCnt
-* Description    : »ñÈ¡µ±Ç°ÏµÍ³(SYSTICK)¼ÆÊıÖµ
+* Description    : è·å–å½“å‰ç³»ç»Ÿ(SYSTICK)è®¡æ•°å€¼
 * Input          : None
-* Return         : µ±Ç°¼ÆÊıÖµ
+* Return         : å½“å‰è®¡æ•°å€¼
 *******************************************************************************/
 UINT32 SYS_GetSysTickCnt( void )
 {
@@ -154,8 +154,8 @@ UINT32 SYS_GetSysTickCnt( void )
 
 /*******************************************************************************
 * Function Name  : WWDG_ITCfg
-* Description    : ¿´ÃÅ¹·¶¨Ê±Æ÷Òç³öÖĞ¶ÏÊ¹ÄÜ
-* Input          : DISABLE-Òç³ö²»ÖĞ¶Ï      ENABLE-Òç³öÖĞ¶Ï
+* Description    : çœ‹é—¨ç‹—å®šæ—¶å™¨æº¢å‡ºä¸­æ–­ä½¿èƒ½
+* Input          : DISABLE-æº¢å‡ºä¸ä¸­æ–­      ENABLE-æº¢å‡ºä¸­æ–­
 * Return         : None
 *******************************************************************************/
 void  WWDG_ITCfg( FunctionalState s )
@@ -169,8 +169,8 @@ void  WWDG_ITCfg( FunctionalState s )
 
 /*******************************************************************************
 * Function Name  : WWDG_ResetCfg
-* Description    : ¿´ÃÅ¹·¶¨Ê±Æ÷¸´Î»¹¦ÄÜ
-* Input          : DISABLE-Òç³ö²»¸´Î»      ENABLE-Òç³öÏµÍ³¸´Î»
+* Description    : çœ‹é—¨ç‹—å®šæ—¶å™¨å¤ä½åŠŸèƒ½
+* Input          : DISABLE-æº¢å‡ºä¸å¤ä½      ENABLE-æº¢å‡ºç³»ç»Ÿå¤ä½
 * Return         : None
 *******************************************************************************/
 void WWDG_ResetCfg( FunctionalState s )
@@ -184,7 +184,7 @@ void WWDG_ResetCfg( FunctionalState s )
 
 /*******************************************************************************
 * Function Name  : WWDG_ClearFlag
-* Description    : Çå³ı¿´ÃÅ¹·ÖĞ¶Ï±êÖ¾£¬ÖØĞÂ¼ÓÔØ¼ÆÊıÖµÒ²¿ÉÇå³ı
+* Description    : æ¸…é™¤çœ‹é—¨ç‹—ä¸­æ–­æ ‡å¿—ï¼Œé‡æ–°åŠ è½½è®¡æ•°å€¼ä¹Ÿå¯æ¸…é™¤
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -198,7 +198,7 @@ void WWDG_ClearFlag( void )
 
 /*******************************************************************************
 * Function Name  : HardFault_Handler
-* Description    : Ó²¼ş´íÎóÖĞ¶Ï£¬½øÈëºóÖ´ĞĞ¸´Î»£¬¸´Î»ÀàĞÍÎªÉÏµç¸´Î»
+* Description    : ç¡¬ä»¶é”™è¯¯ä¸­æ–­ï¼Œè¿›å…¥åæ‰§è¡Œå¤ä½ï¼Œå¤ä½ç±»å‹ä¸ºä¸Šç”µå¤ä½
 * Input          : None
 * Return         : None
 *******************************************************************************/
@@ -216,8 +216,8 @@ void HardFault_Handler( void )
 
 /*******************************************************************************
 * Function Name  : mDelayuS
-* Description    : uS ÑÓÊ±
-* Input          : t: Ê±¼ä²ÎÊı
+* Description    : uS å»¶æ—¶
+* Input          : t: æ—¶é—´å‚æ•°
 * Return         : None
 *******************************************************************************/
 __attribute__((section(".highcode")))
@@ -253,8 +253,8 @@ void mDelayuS( UINT16 t )
 
 /*******************************************************************************
 * Function Name  : mDelaymS
-* Description    : mS ÑÓÊ±
-* Input          : t: Ê±¼ä²ÎÊı
+* Description    : mS å»¶æ—¶
+* Input          : t: æ—¶é—´å‚æ•°
 * Return         : None
 *******************************************************************************/
 __attribute__((section(".highcode")))
@@ -274,17 +274,17 @@ int _write(int fd, char *buf, int size)
 	for(i=0; i<size; i++)
 	{
 #if  DEBUG == Debug_UART0
-		while( R8_UART0_TFC == UART_FIFO_SIZE );                        /* µÈ´ıÊı¾İ·¢ËÍ */
-		R8_UART0_THR = *buf++;                                               /* ·¢ËÍÊı¾İ */
+		while( R8_UART0_TFC == UART_FIFO_SIZE );                        /* ç­‰å¾…æ•°æ®å‘é€ */
+		R8_UART0_THR = *buf++;                                               /* å‘é€æ•°æ® */
 #elif DEBUG == Debug_UART1       
-		while( R8_UART1_TFC == UART_FIFO_SIZE );                        /* µÈ´ıÊı¾İ·¢ËÍ */
-		R8_UART1_THR = *buf++;                                               /* ·¢ËÍÊı¾İ */
+		while( R8_UART1_TFC == UART_FIFO_SIZE );                        /* ç­‰å¾…æ•°æ®å‘é€ */
+		R8_UART1_THR = *buf++;                                               /* å‘é€æ•°æ® */
 #elif DEBUG == Debug_UART2       
-		while( R8_UART2_TFC == UART_FIFO_SIZE );                        /* µÈ´ıÊı¾İ·¢ËÍ */
-		R8_UART2_THR = *buf++;                                               /* ·¢ËÍÊı¾İ */
+		while( R8_UART2_TFC == UART_FIFO_SIZE );                        /* ç­‰å¾…æ•°æ®å‘é€ */
+		R8_UART2_THR = *buf++;                                               /* å‘é€æ•°æ® */
 #elif DEBUG == Debug_UART3       
-		while( R8_UART3_TFC == UART_FIFO_SIZE );                        /* µÈ´ıÊı¾İ·¢ËÍ */
-		R8_UART3_THR = *buf++;                                               /* ·¢ËÍÊı¾İ */
+		while( R8_UART3_TFC == UART_FIFO_SIZE );                        /* ç­‰å¾…æ•°æ®å‘é€ */
+		R8_UART3_THR = *buf++;                                               /* å‘é€æ•°æ® */
 #endif
 	}
 	return size;

@@ -43,16 +43,16 @@ typedef enum
 #define SYS_GetChipID()				R8_CHIP_ID									/* 获取芯片ID类，一般为固定值 */
 #define SYS_GetAccessID()			R8_SAFE_ACCESS_ID							/* 获取安全访问ID，一般为固定值 */
 void SetSysClock( SYS_CLKTypeDef sc);                         /* 配置系统运行时钟 */
-UINT32 GetSysClock( void );                                   /* 获取当前系统时钟 */
-UINT8 SYS_GetInfoSta( SYS_InfoStaTypeDef i );									/* 获取当前系统信息状态 */
+uint32_t GetSysClock( void );                                   /* 获取当前系统时钟 */
+uint8_t SYS_GetInfoSta( SYS_InfoStaTypeDef i );									/* 获取当前系统信息状态 */
 // refer to SYS_ResetStaTypeDef
 #define SYS_GetLastResetSta()		(R8_RESET_STATUS&RB_RESET_FLAG)				/* 获取系统上次复位状态 */
 void SYS_ResetExecute( void );													/* 执行系统软件复位 */
 #define SYS_ResetKeepBuf( d )		(R8_GLOB_RESET_KEEP = d)					/* 不受手动复位、 软件复位、 看门狗复位或者普通唤醒复位的影响 */
 
-void SYS_DisableAllIrq( PUINT32 pirqv);									        /* 关闭所有中断，并保留当前中断值 */
-void SYS_RecoverIrq( UINT32 irq_status );									    /* 恢复之前关闭的中断值 */
-UINT32 SYS_GetSysTickCnt( void );												/* 获取当前系统(SYSTICK)计数值 */
+void SYS_DisableAllIrq( uint32_t* pirqv);									        /* 关闭所有中断，并保留当前中断值 */
+void SYS_RecoverIrq( uint32_t irq_status );									    /* 恢复之前关闭的中断值 */
+uint32_t SYS_GetSysTickCnt( void );												/* 获取当前系统(SYSTICK)计数值 */
 
 #define  WWDG_SetCounter( c )		(R8_WDOG_COUNT = c)							/* 加载看门狗计数初值，递增型 */
 void  WWDG_ITCfg( FunctionalState s );							/* 看门狗溢出中断使能 */
@@ -61,8 +61,8 @@ void  WWDG_ResetCfg( FunctionalState s );							/* 看门狗溢出复位使能 *
 void WWDG_ClearFlag(void);														/* 清除看门狗中断标志，重新加载计数值也可清除 */
 
 
-void mDelayuS( UINT16 t );		/* uS 延时 */
-void mDelaymS( UINT16 t );		/* mS 延时 */
+void mDelayuS( uint16_t t );		/* uS 延时 */
+void mDelaymS( uint16_t t );		/* mS 延时 */
 
 
 

@@ -66,8 +66,8 @@ typedef enum
 
 
 		
-void GPIOA_ModeCfg( UINT32 pin, GPIOModeTypeDef mode );				/* GPIOA端口引脚模式配置 */
-void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode );				/* GPIOB端口引脚模式配置 */
+void GPIOA_ModeCfg( uint32_t pin, GPIOModeTypeDef mode );				/* GPIOA端口引脚模式配置 */
+void GPIOB_ModeCfg( uint32_t pin, GPIOModeTypeDef mode );				/* GPIOB端口引脚模式配置 */
 #define	GPIOA_ResetBits( pin )			(R32_PA_CLR |= pin)			/* GPIOA端口引脚输出置低 */
 #define	GPIOA_SetBits( pin )			(R32_PA_OUT |= pin)			/* GPIOA端口引脚输出置高 */
 #define	GPIOB_ResetBits( pin )			(R32_PB_CLR |= pin)			/* GPIOB端口引脚输出置低 */
@@ -79,8 +79,8 @@ void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode );				/* GPIOB端口引脚�
 #define	GPIOA_ReadPortPin( pin )		(R32_PA_PIN&pin)			/* GPIOA端口引脚状态，0-引脚低电平，(!0)-引脚高电平 */
 #define	GPIOB_ReadPortPin( pin )		(R32_PB_PIN&pin)			/* GPIOB端口引脚状态，0-引脚低电平，(!0)-引脚高电平 */
 
-void GPIOA_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode );			/* GPIOA引脚中断模式配置 */
-void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode );			/* GPIOB引脚中断模式配置 */
+void GPIOA_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode );			/* GPIOA引脚中断模式配置 */
+void GPIOB_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode );			/* GPIOB引脚中断模式配置 */
 #define	GPIOA_ReadITFlagPort()			(R16_PA_INT_IF)				/* 读取GPIOA端口中断标志状态 */
 #define	GPIOB_ReadITFlagPort()			((R16_PB_INT_IF&(~((GPIO_Pin_22|GPIO_Pin_23)>>14)))|((R16_PB_INT_IF<<14)&(GPIO_Pin_22|GPIO_Pin_23)))				/* 读取GPIOB端口中断标志状态 */
 #define	GPIOA_ReadITFlagBit( pin )		(R16_PA_INT_IF&pin)		    /* 读取GPIOA端口引脚中断标志状态 */
@@ -88,8 +88,8 @@ void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode );			/* GPIOB引脚中断
 #define	GPIOA_ClearITFlagBit( pin )		(R16_PA_INT_IF = pin)		/* 清除GPIOA端口引脚中断标志状态 */
 #define	GPIOB_ClearITFlagBit( pin )		(R16_PB_INT_IF = (pin|((pin&(GPIO_Pin_22|GPIO_Pin_23))>>14)))		/* 清除GPIOB端口引脚中断标志状态 */
 
-void GPIOPinRemap( FunctionalState s, UINT16 perph );				/* 外设功能引脚映射 */
-void GPIOAGPPCfg( FunctionalState s, UINT16 perph );				/* 模拟外设GPIO引脚功能控制 */
+void GPIOPinRemap( FunctionalState s, uint16_t perph );				/* 外设功能引脚映射 */
+void GPIOAGPPCfg( FunctionalState s, uint16_t perph );				/* 模拟外设GPIO引脚功能控制 */
 	 
 	 
 #ifdef __cplusplus

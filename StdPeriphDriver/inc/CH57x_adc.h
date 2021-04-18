@@ -84,10 +84,10 @@ void ADC_InterTSSampInit( void );																	/* 内置温度传感器采样
 #define ADC_DisableTSPower()       		(R8_TEM_SENSOR = 0)                                         /* 关闭温度传感器电源 */
 void ADC_InterBATSampInit( void );																	/* 内置电池电压采样初始化 */
 
-UINT16 ADC_ExcutSingleConver( void );																/* ADC执行单次转换 */
+uint16_t ADC_ExcutSingleConver( void );																/* ADC执行单次转换 */
 signed short ADC_DataCalib_Rough( void ); 
-UINT16 TouchKey_ExcutSingleConver( UINT8 charg, UINT8 disch );										/* TouchKey转换后数据 */
-int ADC_GetCurrentTS( UINT16 ts_v );                                                              /* 获取当前采样的温度值（℃） */
+uint16_t TouchKey_ExcutSingleConver( uint8_t charg, uint8_t disch );										/* TouchKey转换后数据 */
+int ADC_GetCurrentTS( uint16_t ts_v );                                                              /* 获取当前采样的温度值（℃） */
 
 #define ADC_ReadConverValue()       (R16_ADC_DATA)                                                  /* 读取转换后的数值 */
 #define ADC_StartUp()               (R8_ADC_CONVERT = RB_ADC_START)									/* ADC启动转换 */

@@ -12,14 +12,14 @@
 #endif
 
 /* 设置HID上传速率 */
-__attribute__((aligned(4))) const UINT8  SetupSetHIDIdle[] = { 0x21, HID_SET_IDLE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupSetHIDIdle[] = { 0x21, HID_SET_IDLE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 /* 获取HID设备报表描述符 */
-__attribute__((aligned(4))) const UINT8  SetupGetHIDDevReport[] = { 0x81, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_REPORT, 0x00, 0x00, 0x41, 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupGetHIDDevReport[] = { 0x81, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_REPORT, 0x00, 0x00, 0x41, 0x00 };
 /* 获取HUB描述符 */
-__attribute__((aligned(4))) const UINT8  SetupGetHubDescr[] = { HUB_GET_HUB_DESCRIPTOR, HUB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_HUB, 0x00, 0x00, sizeof( USB_HUB_DESCR ), 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupGetHubDescr[] = { HUB_GET_HUB_DESCRIPTOR, HUB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_HUB, 0x00, 0x00, sizeof( USB_HUB_DESCR ), 0x00 };
 
 
-__attribute__((aligned(4))) UINT8  Com_Buffer[ 128 ];            // 定义用户临时缓冲区,枚举时用于处理描述符,枚举结束也可以用作普通临时缓冲区
+__attribute__((aligned(4))) uint8_t  Com_Buffer[ 128 ];            // 定义用户临时缓冲区,枚举时用于处理描述符,枚举结束也可以用作普通临时缓冲区
     
 /*****************************************************************************
 * Function Name  : InitRootDevice
@@ -27,10 +27,10 @@ __attribute__((aligned(4))) UINT8  Com_Buffer[ 128 ];            // 定义用户
 * Input          : DataBuf: 枚举过程中存放的描述符信息缓存区
 * Return         :
 *******************************************************************************/
-UINT8 InitRootDevice( void ) 
+uint8_t InitRootDevice( void ) 
 {
-    UINT8  i, s;
-    UINT8  cfg, dv_cls, if_cls;
+    uint8_t  i, s;
+    uint8_t  cfg, dv_cls, if_cls;
 	
     PRINT( "Reset host port\n" );
     ResetRootHubPort( );  		// 检测到设备后,复位相应端口的USB总线
@@ -54,7 +54,7 @@ UINT8 InitRootDevice( void )
     if ( s == ERR_SUCCESS )
     {
         for ( i = 0; i < ((PUSB_SETUP_REQ)SetupGetDevDescr)->wLength; i ++ ) 		
-       PRINT( "x%02X ", (UINT16)( Com_Buffer[i] ) );
+       PRINT( "x%02X ", (uint16_t)( Com_Buffer[i] ) );
        PRINT( "\n" ); 
 		
        ThisUsbDev.DeviceVID = ((PUSB_DEV_DESCR)Com_Buffer)->idVendor; //保存VID PID信息
@@ -71,7 +71,7 @@ UINT8 InitRootDevice( void )
            if ( s == ERR_SUCCESS ) 
            {
                for ( i = 0; i < ( (PUSB_CFG_DESCR)Com_Buffer )->wTotalLength; i ++ ) 
-               PRINT( "x%02X ", (UINT16)( Com_Buffer[i] ) );
+               PRINT( "x%02X ", (uint16_t)( Com_Buffer[i] ) );
                PRINT("\n");
 /* 分析配置描述符,获取端点数据/各端点地址/各端点大小等,更新变量endp_addr和endp_size等 */				
                cfg = ( (PUSB_CFG_DESCR)Com_Buffer )->bConfigurationValue;
@@ -158,7 +158,7 @@ UINT8 InitRootDevice( void )
        }
     }
 	
-    PRINT( "InitRootDev Err = %02X\n", (UINT16)s );
+    PRINT( "InitRootDev Err = %02X\n", (uint16_t)s );
 #ifdef	FOR_ROOT_UDISK_ONLY
     CHRV3DiskStatus = DISK_CONNECT;
 #else
@@ -177,12 +177,12 @@ UINT8 InitRootDevice( void )
 * Return         : ERR_SUCCESS 成功
                    其他        错误
 *******************************************************************************/
-UINT8   CtrlGetHIDDeviceReport( UINT8 infc )  
+uint8_t   CtrlGetHIDDeviceReport( uint8_t infc )  
 {
-    UINT8   s;
-    UINT8  len;    
+    uint8_t   s;
+    uint8_t  len;    
 
-	CopySetupReqPkg( (PCHAR)SetupSetHIDIdle );		
+	CopySetupReqPkg( (char*)SetupSetHIDIdle );		
 	pSetupReq -> wIndex = infc;
     s = HostCtrlTransfer( Com_Buffer, &len );                            // 执行控制传输
     if ( s != ERR_SUCCESS )
@@ -190,7 +190,7 @@ UINT8   CtrlGetHIDDeviceReport( UINT8 infc )
         return( s );
     }	
 	
-	CopySetupReqPkg( (PCHAR)SetupGetHIDDevReport );	
+	CopySetupReqPkg( (char*)SetupGetHIDDevReport );	
 	pSetupReq -> wIndex = infc;	
     s = HostCtrlTransfer( Com_Buffer, &len );                            // 执行控制传输
     if ( s != ERR_SUCCESS )
@@ -209,12 +209,12 @@ UINT8   CtrlGetHIDDeviceReport( UINT8 infc )
 * Return         : ERR_SUCCESS 成功
                    ERR_USB_BUF_OVER 长度错误
 *******************************************************************************/
-UINT8   CtrlGetHubDescr( void )  
+uint8_t   CtrlGetHubDescr( void )  
 {
-    UINT8   s;
-    UINT8  len;
+    uint8_t   s;
+    uint8_t  len;
     
-    CopySetupReqPkg( (PCHAR)SetupGetHubDescr );
+    CopySetupReqPkg( (char*)SetupGetHubDescr );
     s = HostCtrlTransfer( Com_Buffer, &len );                          // 执行控制传输
     if ( s != ERR_SUCCESS )
     {
@@ -232,15 +232,15 @@ UINT8   CtrlGetHubDescr( void )
 /*******************************************************************************
 * Function Name  : HubGetPortStatus
 * Description    : 查询HUB端口状态,返回在Com_Buffer中
-* Input          : UINT8 HubPortIndex 
+* Input          : uint8_t HubPortIndex 
 * Output         : None
 * Return         : ERR_SUCCESS 成功
                    ERR_USB_BUF_OVER 长度错误
 *******************************************************************************/
-UINT8   HubGetPortStatus( UINT8 HubPortIndex )   
+uint8_t   HubGetPortStatus( uint8_t HubPortIndex )   
 {
-    UINT8   s;
-    UINT8  len;
+    uint8_t   s;
+    uint8_t  len;
     
     pSetupReq -> bRequestType = HUB_GET_PORT_STATUS;
     pSetupReq -> bRequest = HUB_GET_STATUS;
@@ -262,13 +262,13 @@ UINT8   HubGetPortStatus( UINT8 HubPortIndex )
 /*******************************************************************************
 * Function Name  : HubSetPortFeature
 * Description    : 设置HUB端口特性
-* Input          : UINT8 HubPortIndex    //HUB端口
-                   UINT8 FeatureSelt     //HUB端口特性
+* Input          : uint8_t HubPortIndex    //HUB端口
+                   uint8_t FeatureSelt     //HUB端口特性
 * Output         : None
 * Return         : ERR_SUCCESS 成功
                    其他        错误
 *******************************************************************************/
-UINT8   HubSetPortFeature( UINT8 HubPortIndex, UINT8 FeatureSelt ) 
+uint8_t   HubSetPortFeature( uint8_t HubPortIndex, uint8_t FeatureSelt ) 
 {
     pSetupReq -> bRequestType = HUB_SET_PORT_FEATURE;
     pSetupReq -> bRequest = HUB_SET_FEATURE;
@@ -281,13 +281,13 @@ UINT8   HubSetPortFeature( UINT8 HubPortIndex, UINT8 FeatureSelt )
 /*******************************************************************************
 * Function Name  : HubClearPortFeature
 * Description    : 清除HUB端口特性
-* Input          : UINT8 HubPortIndex                                         //HUB端口
-                   UINT8 FeatureSelt                                          //HUB端口特性
+* Input          : uint8_t HubPortIndex                                         //HUB端口
+                   uint8_t FeatureSelt                                          //HUB端口特性
 * Output         : None
 * Return         : ERR_SUCCESS 成功
                    其他        错误
 *******************************************************************************/
-UINT8   HubClearPortFeature( UINT8 HubPortIndex, UINT8 FeatureSelt ) 
+uint8_t   HubClearPortFeature( uint8_t HubPortIndex, uint8_t FeatureSelt ) 
 {
     pSetupReq -> bRequestType = HUB_CLEAR_PORT_FEATURE;
     pSetupReq -> bRequest = HUB_CLEAR_FEATURE;

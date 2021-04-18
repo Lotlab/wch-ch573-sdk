@@ -29,13 +29,13 @@ void UART2_DefInit( void )
 * Input          : 
 * Return         : 
 *******************************************************************************/
-void UART2_BaudRateCfg( UINT32 baudrate )
+void UART2_BaudRateCfg( uint32_t baudrate )
 {
-    UINT32	x;
+    uint32_t	x;
 
     x = 10 * GetSysClock() / 8 / baudrate;
     x = ( x + 5 ) / 10;
-    R16_UART2_DL = (UINT16)x;
+    R16_UART2_DL = (uint16_t)x;
 }
 
 /*******************************************************************************
@@ -63,7 +63,7 @@ void UART2_ByteTrigCfg( UARTByteTRIGTypeDef b )
 					RB_IER_RECV_RDY   - 接收数据中断
 * Return         : None
 *******************************************************************************/
-void UART2_INTCfg( FunctionalState s,  UINT8 i )
+void UART2_INTCfg( FunctionalState s,  uint8_t i )
 {
     if( s )
     {
@@ -94,9 +94,9 @@ void UART2_Reset( void )
                      l - 待发送的数据长度
 * Return         : None
 *******************************************************************************/
-void UART2_SendString( PUINT8 buf, UINT16 l )
+void UART2_SendString( uint8_t* buf, uint16_t l )
 {
-    UINT16 len = l;
+    uint16_t len = l;
 
     while(len)
     {
@@ -114,9 +114,9 @@ void UART2_SendString( PUINT8 buf, UINT16 l )
 * Input          : buf - 读取数据存放缓存区首地址
 * Return         : 读取数据长度
 *******************************************************************************/
-UINT16 UART2_RecvString( PUINT8 buf )
+uint16_t UART2_RecvString( uint8_t* buf )
 {
-    UINT16 len = 0;
+    uint16_t len = 0;
 
     while( R8_UART2_RFC )
     {

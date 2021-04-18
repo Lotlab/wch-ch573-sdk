@@ -30,7 +30,7 @@ void SPI0_MasterDefInit( void )
 * Input          : c: 时钟分频系数			   				
 * Return         : None
 *******************************************************************************/
-void SPI0_CLKCfg( UINT8 c )
+void SPI0_CLKCfg( uint8_t c )
 {
     if(c==2)
         R8_SPI0_CTRL_CFG |= RB_SPI_MST_DLY_EN;
@@ -77,7 +77,7 @@ void SPI0_DataMode( ModeBitOrderTypeDef m )
 * Input          : d: 发送字节
 * Return         : None
 *******************************************************************************/
-void SPI0_MasterSendByte( UINT8 d )
+void SPI0_MasterSendByte( uint8_t d )
 {
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R8_SPI0_BUFFER = d;
@@ -90,7 +90,7 @@ void SPI0_MasterSendByte( UINT8 d )
 * Input          : None
 * Return         : 接收到的字节
 *******************************************************************************/
-UINT8 SPI0_MasterRecvByte( void )
+uint8_t SPI0_MasterRecvByte( void )
 {
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;
     R8_SPI0_BUFFER = 0xFF;           // 启动传输
@@ -106,9 +106,9 @@ UINT8 SPI0_MasterRecvByte( void )
                    len: 请求发送的数据长度，最大4095				   
 * Return         : None
 *******************************************************************************/
-void SPI0_MasterTrans( UINT8 *pbuf, UINT16 len )
+void SPI0_MasterTrans( uint8_t *pbuf, uint16_t len )
 {
-    UINT16 sendlen;
+    uint16_t sendlen;
 
     sendlen = len;
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;                     // 设置数据方向为输出 
@@ -133,9 +133,9 @@ void SPI0_MasterTrans( UINT8 *pbuf, UINT16 len )
                    len: 请求发送的数据长度，最大4095
 * Return         : None
 *******************************************************************************/
-void SPI0_MasterRecv( UINT8 *pbuf, UINT16 len )
+void SPI0_MasterRecv( uint8_t *pbuf, uint16_t len )
 {
-    UINT16  readlen;
+    uint16_t  readlen;
 
     readlen = len;
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;                     // 设置数据方向为输入 
@@ -159,11 +159,11 @@ void SPI0_MasterRecv( UINT8 *pbuf, UINT16 len )
 *                  len : 待发送数据长度
 * Return         : None
 *******************************************************************************/
-void SPI0_MasterDMATrans( PUINT8 pbuf, UINT16 len)
+void SPI0_MasterDMATrans( uint8_t* pbuf, uint16_t len)
 {                                    
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;     
-    R16_SPI0_DMA_BEG = (UINT32)pbuf;                                           
-    R16_SPI0_DMA_END = (UINT32)(pbuf + len);
+    R16_SPI0_DMA_BEG = (uint32_t)pbuf;                                           
+    R16_SPI0_DMA_END = (uint32_t)(pbuf + len);
     R16_SPI0_TOTAL_CNT = len;
     R8_SPI0_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI0_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -178,11 +178,11 @@ void SPI0_MasterDMATrans( PUINT8 pbuf, UINT16 len)
 *                  len : 待接收数据长度
 * Return         : None
 *******************************************************************************/
-void SPI0_MasterDMARecv( PUINT8 pbuf, UINT16 len)
+void SPI0_MasterDMARecv( uint8_t* pbuf, uint16_t len)
 {
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;                                      
-    R16_SPI0_DMA_BEG = (UINT32)pbuf;                                           
-    R16_SPI0_DMA_END = (UINT32)(pbuf + len);                                 
+    R16_SPI0_DMA_BEG = (uint32_t)pbuf;                                           
+    R16_SPI0_DMA_END = (uint32_t)(pbuf + len);                                 
     R16_SPI0_TOTAL_CNT = len; 
     R8_SPI0_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI0_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -211,7 +211,7 @@ void SPI0_SlaveInit( void )
 * Input          : None
 * Return         : 接收到数据
 *******************************************************************************/
-UINT8 SPI0_SlaveRecvByte( void )
+uint8_t SPI0_SlaveRecvByte( void )
 {
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;
     while( R8_SPI0_FIFO_COUNT == 0 );          
@@ -224,7 +224,7 @@ UINT8 SPI0_SlaveRecvByte( void )
 * Input          : d -待发送数据 
 * Return         : None
 *******************************************************************************/
-void SPI0_SlaveSendByte( UINT8 d )
+void SPI0_SlaveSendByte( uint8_t d )
 {
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;                                              
     R8_SPI0_FIFO = d;                    
@@ -238,9 +238,9 @@ void SPI0_SlaveSendByte( UINT8 d )
 *                  len : 请求接收数据长度
 * Return         : None
 *******************************************************************************/
-void SPI0_SlaveRecv( PUINT8 pbuf, UINT16 len )
+void SPI0_SlaveRecv( uint8_t* pbuf, uint16_t len )
 {
-    UINT16 revlen;
+    uint16_t revlen;
     
     revlen = len;
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;
@@ -263,9 +263,9 @@ void SPI0_SlaveRecv( PUINT8 pbuf, UINT16 len )
                    len: 请求发送的数据长度，最大4095				   
 * Return         : None
 *******************************************************************************/
-void SPI0_SlaveTrans( UINT8 *pbuf, UINT16 len )
+void SPI0_SlaveTrans( uint8_t *pbuf, uint16_t len )
 {
-    UINT16 sendlen;
+    uint16_t sendlen;
 
     sendlen = len;
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;                     // 设置数据方向为输出 
@@ -289,11 +289,11 @@ void SPI0_SlaveTrans( UINT8 *pbuf, UINT16 len )
 *                  len : 待接收数据长度
 * Return         : None
 *******************************************************************************/
-void SPI0_SlaveDMARecv( PUINT8 pbuf, UINT16 len)
+void SPI0_SlaveDMARecv( uint8_t* pbuf, uint16_t len)
 {
     R8_SPI0_CTRL_MOD |= RB_SPI_FIFO_DIR;                                      
-    R16_SPI0_DMA_BEG = (UINT32)pbuf;                                           
-    R16_SPI0_DMA_END = (UINT32)(pbuf + len);
+    R16_SPI0_DMA_BEG = (uint32_t)pbuf;                                           
+    R16_SPI0_DMA_END = (uint32_t)(pbuf + len);
     R16_SPI0_TOTAL_CNT = len;
     R8_SPI0_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI0_CTRL_CFG |= RB_SPI_DMA_ENABLE;
@@ -308,11 +308,11 @@ void SPI0_SlaveDMARecv( PUINT8 pbuf, UINT16 len)
 *                  len : 待发送数据长度
 * Return         : None
 *******************************************************************************/
-void SPI0_SlaveDMATrans( PUINT8 pbuf, UINT16 len)
+void SPI0_SlaveDMATrans( uint8_t* pbuf, uint16_t len)
 {                                    
     R8_SPI0_CTRL_MOD &= ~RB_SPI_FIFO_DIR;     
-    R16_SPI0_DMA_BEG = (UINT32)pbuf;                                           
-    R16_SPI0_DMA_END = (UINT32)(pbuf + len);
+    R16_SPI0_DMA_BEG = (uint32_t)pbuf;                                           
+    R16_SPI0_DMA_END = (uint32_t)(pbuf + len);
     R16_SPI0_TOTAL_CNT = len;
     R8_SPI0_INT_FLAG = RB_SPI_IF_CNT_END|RB_SPI_IF_DMA_END;
     R8_SPI0_CTRL_CFG |= RB_SPI_DMA_ENABLE;

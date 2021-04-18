@@ -8,10 +8,10 @@
 
 #include "CH57x_common.h"
 
-PUINT8  pEP0_RAM_Addr;
-PUINT8  pEP1_RAM_Addr;
-PUINT8  pEP2_RAM_Addr;
-PUINT8  pEP3_RAM_Addr;
+uint8_t*  pEP0_RAM_Addr;
+uint8_t*  pEP1_RAM_Addr;
+uint8_t*  pEP2_RAM_Addr;
+uint8_t*  pEP3_RAM_Addr;
 
 /*******************************************************************************
 * Function Name  : USB_DeviceInit
@@ -26,10 +26,10 @@ void USB_DeviceInit( void )
     R8_UEP4_1_MOD = RB_UEP4_RX_EN|RB_UEP4_TX_EN|RB_UEP1_RX_EN|RB_UEP1_TX_EN;    // 端点4 OUT+IN,端点1 OUT+IN
     R8_UEP2_3_MOD = RB_UEP2_RX_EN|RB_UEP2_TX_EN|RB_UEP3_RX_EN|RB_UEP3_TX_EN;    // 端点2 OUT+IN,端点3 OUT+IN
 
-    R16_UEP0_DMA = (UINT16)(UINT32)pEP0_RAM_Addr;
-    R16_UEP1_DMA = (UINT16)(UINT32)pEP1_RAM_Addr;
-    R16_UEP2_DMA = (UINT16)(UINT32)pEP2_RAM_Addr;
-    R16_UEP3_DMA = (UINT16)(UINT32)pEP3_RAM_Addr;
+    R16_UEP0_DMA = (uint16_t)(uint32_t)pEP0_RAM_Addr;
+    R16_UEP1_DMA = (uint16_t)(uint32_t)pEP1_RAM_Addr;
+    R16_UEP2_DMA = (uint16_t)(uint32_t)pEP2_RAM_Addr;
+    R16_UEP3_DMA = (uint16_t)(uint32_t)pEP3_RAM_Addr;
 
     R8_UEP0_CTRL = UEP_R_RES_ACK | UEP_T_RES_NAK;
     R8_UEP1_CTRL = UEP_R_RES_ACK | UEP_T_RES_NAK | RB_UEP_AUTO_TOG;
@@ -51,7 +51,7 @@ void USB_DeviceInit( void )
 * Input          : l: 上传数据长度(<64B)			   				
 * Return         : None
 *******************************************************************************/
-void DevEP1_IN_Deal( UINT8 l )
+void DevEP1_IN_Deal( uint8_t l )
 {
     R8_UEP1_T_LEN = l;
     R8_UEP1_CTRL = (R8_UEP1_CTRL & ~MASK_UEP_T_RES)| UEP_T_RES_ACK;
@@ -63,7 +63,7 @@ void DevEP1_IN_Deal( UINT8 l )
 * Input          : l: 上传数据长度(<64B)			   				
 * Return         : None
 *******************************************************************************/
-void DevEP2_IN_Deal( UINT8 l )
+void DevEP2_IN_Deal( uint8_t l )
 {
     R8_UEP2_T_LEN = l;
     R8_UEP2_CTRL = (R8_UEP2_CTRL & ~MASK_UEP_T_RES)| UEP_T_RES_ACK;
@@ -75,7 +75,7 @@ void DevEP2_IN_Deal( UINT8 l )
 * Input          : l: 上传数据长度(<64B)			   				
 * Return         : None
 *******************************************************************************/
-void DevEP3_IN_Deal( UINT8 l )
+void DevEP3_IN_Deal( uint8_t l )
 {
     R8_UEP3_T_LEN = l;
     R8_UEP3_CTRL = (R8_UEP3_CTRL & ~MASK_UEP_T_RES)| UEP_T_RES_ACK;
@@ -87,7 +87,7 @@ void DevEP3_IN_Deal( UINT8 l )
 * Input          : l: 上传数据长度(<64B)			   				
 * Return         : None
 *******************************************************************************/
-void DevEP4_IN_Deal( UINT8 l )
+void DevEP4_IN_Deal( uint8_t l )
 {
     R8_UEP4_T_LEN = l;
     R8_UEP4_CTRL = (R8_UEP4_CTRL & ~MASK_UEP_T_RES)| UEP_T_RES_ACK;

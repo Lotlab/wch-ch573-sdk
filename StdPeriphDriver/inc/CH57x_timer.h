@@ -58,7 +58,7 @@ typedef enum
 
 /****************** TMR0 */
 // 定时功能
-void TMR0_TimerInit( UINT32 t );									/* 定时功能初始化 */	 
+void TMR0_TimerInit( uint32_t t );									/* 定时功能初始化 */	 
 #define  TMR0_GetCurrentTimer()		R32_TMR0_COUNT	 				/* 获取当前定时器值，最大67108864 */
 
 //计数功能
@@ -88,7 +88,7 @@ void TMR0_CapInit( CapModeTypeDef cap );							/* 外部信号捕捉功能初始
 
 /****************** TMR1 */
 // 定时和计数
-void TMR1_TimerInit( UINT32 t );									/* 定时功能初始化 */	 
+void TMR1_TimerInit( uint32_t t );									/* 定时功能初始化 */	 
 #define  TMR1_GetCurrentTimer()		R32_TMR1_COUNT	 				/* 获取当前定时器值，最大67108864 */
 
 //计数功能
@@ -107,7 +107,7 @@ void TMR1_CapInit( CapModeTypeDef cap );							/* 外部信号捕捉功能初始
 #define TMR1_CAPGetData()			R32_TMR1_FIFO					/* 获取脉冲数据 */
 #define TMR1_CAPDataCounter()		R8_TMR1_FIFO_COUNT				/* 获取当前已捕获数据个数 */
 
-void TMR1_DMACfg( UINT8 s, UINT16 startAddr, UINT16 endAddr, DMAModeTypeDef m );    /* DMA配置  */
+void TMR1_DMACfg( uint8_t s, uint16_t startAddr, uint16_t endAddr, DMAModeTypeDef m );    /* DMA配置  */
 
 #define TMR1_Disable()				(R8_TMR1_CTRL_MOD &= ~RB_TMR_COUNT_EN)		/* 关闭 TMR1 */
 // refer to TMR1 interrupt bit define
@@ -119,7 +119,7 @@ void TMR1_DMACfg( UINT8 s, UINT16 startAddr, UINT16 endAddr, DMAModeTypeDef m );
 
 /****************** TMR2 */
 // 定时和计数
-void TMR2_TimerInit( UINT32 t );									/* 定时功能初始化 */	 
+void TMR2_TimerInit( uint32_t t );									/* 定时功能初始化 */	 
 #define  TMR2_GetCurrentTimer()		R32_TMR2_COUNT	 				/* 获取当前定时器值，最大67108864 */
 
 //计数功能
@@ -138,7 +138,7 @@ void TMR2_CapInit( CapModeTypeDef cap );							/* 外部信号捕捉功能初始
 #define TMR2_CAPGetData()			R32_TMR2_FIFO					/* 获取脉冲数据 */
 #define TMR2_CAPDataCounter()		R8_TMR2_FIFO_COUNT				/* 获取当前已捕获数据个数 */
 
-void TMR2_DMACfg( UINT8 s, UINT16 startAddr, UINT16 endAddr, DMAModeTypeDef m );    /* DMA配置  */
+void TMR2_DMACfg( uint8_t s, uint16_t startAddr, uint16_t endAddr, DMAModeTypeDef m );    /* DMA配置  */
 
 #define TMR2_Disable()				(R8_TMR2_CTRL_MOD &= ~RB_TMR_COUNT_EN)		/* 关闭 TMR2 */
 // refer to TMR2 interrupt bit define
@@ -150,7 +150,7 @@ void TMR2_DMACfg( UINT8 s, UINT16 startAddr, UINT16 endAddr, DMAModeTypeDef m );
 
 /****************** TMR3 */
 // 定时和计数
-void TMR3_TimerInit( UINT32 t );									/* 定时功能初始化 */	 
+void TMR3_TimerInit( uint32_t t );									/* 定时功能初始化 */	 
 #define  TMR3_GetCurrentTimer()		R32_TMR3_COUNT	 				/* 获取当前定时器值，最大67108864 */
 
 //计数功能

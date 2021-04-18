@@ -16,7 +16,7 @@
 					
 * Return         : None
 *******************************************************************************/
-void TMR1_TimerInit( UINT32 t )
+void TMR1_TimerInit( uint32_t t )
 {	
     R32_TMR1_CNT_END = t;
     R8_TMR1_CTRL_MOD = RB_TMR_ALL_CLEAR;	
@@ -87,7 +87,7 @@ void TMR1_CapInit( CapModeTypeDef cap )
                    m：配置DMA模式
 * Return         : None
 *******************************************************************************/
-void TMR1_DMACfg( UINT8 s, UINT16 startAddr, UINT16 endAddr, DMAModeTypeDef m )
+void TMR1_DMACfg( uint8_t s, uint16_t startAddr, uint16_t endAddr, DMAModeTypeDef m )
 {
         if(s == DISABLE){
             R8_TMR1_CTRL_DMA = 0;

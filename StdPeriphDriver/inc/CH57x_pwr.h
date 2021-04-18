@@ -74,15 +74,15 @@
 
 
 void PWR_DCDCCfg( FunctionalState s );	                              /* 内部DC/DC电源控制 */
-void PWR_UnitModCfg( FunctionalState s, UINT8 unit );                   /* 可控单元模块的电源控制 */
-void PWR_PeriphWakeUpCfg( FunctionalState s, UINT8 perph, WakeUP_ModeypeDef mode );    /* 低功耗唤醒源配置 */
+void PWR_UnitModCfg( FunctionalState s, uint8_t unit );                   /* 可控单元模块的电源控制 */
+void PWR_PeriphWakeUpCfg( FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mode );    /* 低功耗唤醒源配置 */
 
 void PowerMonitor( FunctionalState s , VolM_LevelypeDef vl);          /* 电源电压监控控制 */
 
 void LowPower_Idle( void );                                 /* 低功耗-IDLE模式 */	 
 void LowPower_Halt( void );                                 /* 低功耗-Halt模式 */
-void LowPower_Sleep( UINT8 rm );                            /* 低功耗-Sleep模式 */
-void LowPower_Shutdown( UINT8 rm );                         /* 低功耗-Shutdown模式 */
+void LowPower_Sleep( uint8_t rm );                            /* 低功耗-Sleep模式 */
+void LowPower_Shutdown( uint8_t rm );                         /* 低功耗-Shutdown模式 */
 
 	 
 	 

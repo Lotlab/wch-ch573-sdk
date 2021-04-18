@@ -18,7 +18,7 @@
 __attribute__((section(".highcode")))
 void SetSysClock( SYS_CLKTypeDef sc)
 {
-  UINT32 i;
+  uint32_t i;
   R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
   R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
   R8_PLL_CONFIG &= ~(1<<5);   //
@@ -67,9 +67,9 @@ void SetSysClock( SYS_CLKTypeDef sc)
 * Input          : None
 * Return         : Hz
 *******************************************************************************/
-UINT32 GetSysClock( void )
+uint32_t GetSysClock( void )
 {
-  UINT16  rev;
+  uint16_t  rev;
 
   rev = R16_CLK_SYS_CFG & 0xff;
   if( (rev & 0x40) == (0<<6) ){       // 32M进行分频
@@ -91,7 +91,7 @@ UINT32 GetSysClock( void )
 * Return         : DISABLE  -  关闭
 				   ENABLE   -  开启
 *******************************************************************************/
-UINT8 SYS_GetInfoSta( SYS_InfoStaTypeDef i )
+uint8_t SYS_GetInfoSta( SYS_InfoStaTypeDef i )
 {
   if (i == STA_SAFEACC_ACT)
     return (R8_SAFE_ACCESS_SIG & RB_SAFE_ACC_ACT);
@@ -119,7 +119,7 @@ void SYS_ResetExecute( void )
 * Input          : pirqv：当前保留中断值
 * Return         : None
 *******************************************************************************/
-void SYS_DisableAllIrq( PUINT32 pirqv )
+void SYS_DisableAllIrq( uint32_t* pirqv )
 {
   *pirqv = (PFIC->ISR[0] >> 8) | (PFIC->ISR[1] << 24);
   PFIC->IRER[0] = 0xffffffff;
@@ -132,7 +132,7 @@ void SYS_DisableAllIrq( PUINT32 pirqv )
  * Input          : irq_status：当前保留中断值
  * Return         : None
  *******************************************************************************/
-void SYS_RecoverIrq( UINT32 irq_status )
+void SYS_RecoverIrq( uint32_t irq_status )
 {
   PFIC->IENR[0] = (irq_status << 8);
   PFIC->IENR[1] = (irq_status >> 24);
@@ -144,9 +144,9 @@ void SYS_RecoverIrq( UINT32 irq_status )
 * Input          : None
 * Return         : 当前计数值
 *******************************************************************************/
-UINT32 SYS_GetSysTickCnt( void )
+uint32_t SYS_GetSysTickCnt( void )
 {
-	UINT32 val;
+	uint32_t val;
 
 	val = SysTick->CNT;
 	return( val );
@@ -221,9 +221,9 @@ void HardFault_Handler( void )
 * Return         : None
 *******************************************************************************/
 __attribute__((section(".highcode")))
-void mDelayuS( UINT16 t )
+void mDelayuS( uint16_t t )
 {
-    UINT32 i;
+    uint32_t i;
 #if     (FREQ_SYS == 60000000)
     i = t*15;
 #elif (FREQ_SYS == 48000000)
@@ -258,9 +258,9 @@ void mDelayuS( UINT16 t )
 * Return         : None
 *******************************************************************************/
 __attribute__((section(".highcode")))
-void mDelaymS( UINT16 t )
+void mDelaymS( uint16_t t )
 {
-    UINT16 i;
+    uint16_t i;
 
     for(i=0; i<t; i++)
         mDelayuS(1000);

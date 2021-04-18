@@ -11,25 +11,25 @@
 #include "CHRV3UFI.H"
 #endif
 
-UINT8  UsbDevEndp0Size;			// USB设备的端点0的最大包尺寸 
-UINT8  FoundNewDev;
+uint8_t  UsbDevEndp0Size;			// USB设备的端点0的最大包尺寸 
+uint8_t  FoundNewDev;
 _RootHubDev   ThisUsbDev;                            //ROOT口
 
-PUINT8  pHOST_RX_RAM_Addr;
-PUINT8  pHOST_TX_RAM_Addr;
+uint8_t*  pHOST_RX_RAM_Addr;
+uint8_t*  pHOST_TX_RAM_Addr;
 
 /*获取设备描述符*/
-__attribute__((aligned(4))) const UINT8  SetupGetDevDescr[] = { USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupGetDevDescr[] = { USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00 };
 /*获取配置描述符*/
-__attribute__((aligned(4))) const UINT8  SetupGetCfgDescr[] = { USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupGetCfgDescr[] = { USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_CONFIG, 0x00, 0x00, 0x04, 0x00 };
 /*设置USB地址*/
-__attribute__((aligned(4))) const UINT8  SetupSetUsbAddr[] = { USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupSetUsbAddr[] = { USB_REQ_TYP_OUT, USB_SET_ADDRESS, USB_DEVICE_ADDR, 0x00, 0x00, 0x00, 0x00, 0x00 };
 /*设置USB配置*/
-__attribute__((aligned(4))) const UINT8  SetupSetUsbConfig[] = { USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupSetUsbConfig[] = { USB_REQ_TYP_OUT, USB_SET_CONFIGURATION, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 /*设置USB接口配置*/
-__attribute__((aligned(4))) const UINT8  SetupSetUsbInterface[] = { USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupSetUsbInterface[] = { USB_REQ_RECIP_INTERF, USB_SET_INTERFACE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 /*清除端点STALL*/
-__attribute__((aligned(4))) const UINT8  SetupClrEndpStall[] = { USB_REQ_TYP_OUT | USB_REQ_RECIP_ENDP, USB_CLEAR_FEATURE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+__attribute__((aligned(4))) const uint8_t  SetupClrEndpStall[] = { USB_REQ_TYP_OUT | USB_REQ_RECIP_ENDP, USB_CLEAR_FEATURE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 
 /*******************************************************************************
@@ -56,9 +56,9 @@ void  DisableRootHubPort(void)
 * Input          : None
 * Return         : 返回ERR_SUCCESS为没有情况,返回ERR_USB_CONNECT为检测到新连接,返回ERR_USB_DISCON为检测到断开
 *******************************************************************************/
-UINT8   AnalyzeRootHub( void ) 
+uint8_t   AnalyzeRootHub( void ) 
 { 
-	UINT8	s;
+	uint8_t	s;
 	
     s = ERR_SUCCESS;
 	
@@ -97,10 +97,10 @@ UINT8   AnalyzeRootHub( void )
 /*******************************************************************************
 * Function Name  : SetHostUsbAddr
 * Description    : 设置USB主机当前操作的USB设备地址
-* Input          : UINT8 addr
+* Input          : uint8_t addr
 * Return         : None
 *******************************************************************************/
-void    SetHostUsbAddr( UINT8 addr )
+void    SetHostUsbAddr( uint8_t addr )
 {
     R8_USB_DEV_AD = (R8_USB_DEV_AD&RB_UDA_GP_BIT) | (addr&MASK_USB_ADDR);
 }
@@ -108,10 +108,10 @@ void    SetHostUsbAddr( UINT8 addr )
 /*******************************************************************************
 * Function Name  : SetUsbSpeed
 * Description    : 设置当前USB速度
-* Input          : UINT8 FullSpeed
+* Input          : uint8_t FullSpeed
 * Return         : None
 *******************************************************************************/
-void    SetUsbSpeed( UINT8 FullSpeed )  
+void    SetUsbSpeed( uint8_t FullSpeed )  
 {
 #ifndef	DISK_BASE_BUF_LEN    
     if ( FullSpeed )                                                           // 全速
@@ -152,7 +152,7 @@ void  ResetRootHubPort( void )
 * Input          : None
 * Return         : 返回ERR_SUCCESS为检测到新连接,返回ERR_USB_DISCON为无连接
 *******************************************************************************/
-UINT8   EnableRootHubPort(void) 
+uint8_t   EnableRootHubPort(void) 
 {
 #ifdef DISK_BASE_BUF_LEN
     if ( CHRV3DiskStatus < DISK_CONNECT ) CHRV3DiskStatus = DISK_CONNECT;
@@ -180,9 +180,9 @@ UINT8   EnableRootHubPort(void)
 * Return         : 返回ERR_SUCCESS 数据接收或者发送成功
                    ERR_USB_UNKNOWN 数据接收或者发送失败
 *******************************************************************************/
-UINT8 WaitUSB_Interrupt( void )
+uint8_t WaitUSB_Interrupt( void )
 {
-    UINT16  i;
+    uint16_t  i;
     for ( i = WAIT_USB_TOUT_200US; i != 0 && (R8_USB_INT_FG&RB_UIF_TRANSFER) == 0; i -- ){;}
     return( (R8_USB_INT_FG&RB_UIF_TRANSFER)  ? ERR_SUCCESS : ERR_USB_UNKNOWN );
 }
@@ -200,12 +200,12 @@ UINT8 WaitUSB_Interrupt( void )
                    ERR_USB_CONNECT 设备连接
                    ERR_SUCCESS     传输完成
 *******************************************************************************/
-UINT8   USBHostTransact( UINT8 endp_pid, UINT8 tog, UINT32 timeout )
+uint8_t   USBHostTransact( uint8_t endp_pid, uint8_t tog, uint32_t timeout )
 {
-    UINT8	TransRetry;
+    uint8_t	TransRetry;
 
-    UINT8	s, r;
-    UINT16	i;
+    uint8_t	s, r;
+    uint16_t	i;
 
     R8_UH_RX_CTRL = R8_UH_TX_CTRL = tog;
     TransRetry = 0;
@@ -276,12 +276,12 @@ UINT8   USBHostTransact( UINT8 endp_pid, UINT8 tog, UINT32 timeout )
                    ERR_SUCCESS     数据交换成功
                    其他错误状态
 *******************************************************************************/
-UINT8 HostCtrlTransfer( PUINT8 DataBuf, PUINT8 RetLen )  
+uint8_t HostCtrlTransfer( uint8_t* DataBuf, uint8_t* RetLen )  
 {
-    UINT16  RemLen  = 0;
-    UINT8   s, RxLen, RxCnt, TxCnt;
-    PUINT8  pBuf;
-    PUINT8   pLen;
+    uint16_t  RemLen  = 0;
+    uint8_t   s, RxLen, RxCnt, TxCnt;
+    uint8_t*  pBuf;
+    uint8_t*   pLen;
 
     pBuf = DataBuf;
     pLen = RetLen;
@@ -348,12 +348,12 @@ UINT8 HostCtrlTransfer( PUINT8 DataBuf, PUINT8 RetLen )
 * Input          : pReqPkt: 控制请求包地址
 * Return         : None
 *******************************************************************************/
-void CopySetupReqPkg( PCCHAR pReqPkt )                                        // 复制控制传输的请求包
+void CopySetupReqPkg( const char* pReqPkt )                                        // 复制控制传输的请求包
 {
-    UINT8   i;
+    uint8_t   i;
     for ( i = 0; i != sizeof( USB_SETUP_REQ ); i ++ )
     {
-        ((PUINT8)pSetupReq)[ i ] = *pReqPkt;
+        ((uint8_t*)pSetupReq)[ i ] = *pReqPkt;
         pReqPkt++;
     }			
 }
@@ -366,13 +366,13 @@ void CopySetupReqPkg( PCCHAR pReqPkt )                                        //
                    ERR_SUCCESS      成功
                    其他
 *******************************************************************************/
-UINT8 CtrlGetDeviceDescr( void )  
+uint8_t CtrlGetDeviceDescr( void )  
 {
-    UINT8   s;
-    UINT8  len;
+    uint8_t   s;
+    uint8_t  len;
 
     UsbDevEndp0Size = DEFAULT_ENDP0_SIZE;
-    CopySetupReqPkg( (PCHAR)SetupGetDevDescr );
+    CopySetupReqPkg( (char*)SetupGetDevDescr );
     s = HostCtrlTransfer( Com_Buffer, &len );                            // 执行控制传输
     if ( s != ERR_SUCCESS ) 		return( s );
     UsbDevEndp0Size = ( (PUSB_DEV_DESCR)Com_Buffer ) -> bMaxPacketSize0;        // 端点0最大包长度,这是简化处理,正常应该先获取前8字节后立即更新UsbDevEndp0Size再继续
@@ -388,18 +388,18 @@ UINT8 CtrlGetDeviceDescr( void )
                    ERR_SUCCESS      成功
                    其他
 *******************************************************************************/
-UINT8 CtrlGetConfigDescr( void )
+uint8_t CtrlGetConfigDescr( void )
 {
-    UINT8   s;
-    UINT8  len;
+    uint8_t   s;
+    uint8_t  len;
       
-    CopySetupReqPkg( (PCHAR)SetupGetCfgDescr );
+    CopySetupReqPkg( (char*)SetupGetCfgDescr );
     s = HostCtrlTransfer( Com_Buffer, &len );                            // 执行控制传输
     if ( s != ERR_SUCCESS )	        return( s );
     if ( len < ( (PUSB_SETUP_REQ)SetupGetCfgDescr ) -> wLength ) return( ERR_USB_BUF_OVER );  // 返回长度错误
 
     len = ( (PUSB_CFG_DESCR)Com_Buffer ) -> wTotalLength;	
-    CopySetupReqPkg( (PCHAR)SetupGetCfgDescr );
+    CopySetupReqPkg( (char*)SetupGetCfgDescr );
     pSetupReq ->wLength = len;                                                 // 完整配置描述符的总长度		
     s = HostCtrlTransfer( Com_Buffer, &len );                            // 执行控制传输
     if ( s != ERR_SUCCESS )         return( s );
@@ -420,11 +420,11 @@ UINT8 CtrlGetConfigDescr( void )
 * Return         : ERR_SUCCESS      成功
                    其他
 *******************************************************************************/
-UINT8 CtrlSetUsbAddress( UINT8 addr ) 
+uint8_t CtrlSetUsbAddress( uint8_t addr ) 
 {
-    UINT8   s;
+    uint8_t   s;
 
-    CopySetupReqPkg( (PCHAR)SetupSetUsbAddr );	
+    CopySetupReqPkg( (char*)SetupSetUsbAddr );	
     pSetupReq -> wValue = addr;                                       // USB设备地址	
     s = HostCtrlTransfer( NULL, NULL );                               // 执行控制传输
     if ( s != ERR_SUCCESS )         return( s );
@@ -440,9 +440,9 @@ UINT8 CtrlSetUsbAddress( UINT8 addr )
 * Return         : ERR_SUCCESS      成功
                    其他
 *******************************************************************************/
-UINT8 CtrlSetUsbConfig( UINT8 cfg )                   
+uint8_t CtrlSetUsbConfig( uint8_t cfg )                   
 {    
-    CopySetupReqPkg( (PCHAR)SetupSetUsbConfig );	
+    CopySetupReqPkg( (char*)SetupSetUsbConfig );	
     pSetupReq -> wValue = cfg;                                        // USB设备配置		
     return( HostCtrlTransfer( NULL, NULL ) );                         // 执行控制传输
 }
@@ -454,9 +454,9 @@ UINT8 CtrlSetUsbConfig( UINT8 cfg )
 * Return         : ERR_SUCCESS      成功
                    其他
 *******************************************************************************/
-UINT8 CtrlClearEndpStall( UINT8 endp )  
+uint8_t CtrlClearEndpStall( uint8_t endp )  
 {
-    CopySetupReqPkg( (PCHAR)SetupClrEndpStall );                              // 清除端点的错误
+    CopySetupReqPkg( (char*)SetupClrEndpStall );                              // 清除端点的错误
     pSetupReq -> wIndex = endp;                                        // 端点地址	
     return( HostCtrlTransfer( NULL, NULL ) );                          // 执行控制传输
 }
@@ -468,9 +468,9 @@ UINT8 CtrlClearEndpStall( UINT8 endp )
 * Return         : ERR_SUCCESS      成功
                    其他
 *******************************************************************************/
-UINT8 CtrlSetUsbIntercace( UINT8 cfg )                   
+uint8_t CtrlSetUsbIntercace( uint8_t cfg )                   
 {
-    CopySetupReqPkg( (PCHAR)SetupSetUsbInterface );		
+    CopySetupReqPkg( (char*)SetupSetUsbInterface );		
     pSetupReq -> wValue = cfg;                                          // USB设备配置	
     return( HostCtrlTransfer( NULL, NULL ) );                           // 执行控制传输
 }
@@ -488,8 +488,8 @@ void  USB_HostInit( void )
     R8_USB_DEV_AD = 0x00;
 
     R8_UH_EP_MOD = RB_UH_EP_TX_EN | RB_UH_EP_RX_EN;
-    R16_UH_RX_DMA = (UINT16)(UINT32)pHOST_RX_RAM_Addr;
-    R16_UH_TX_DMA = (UINT16)(UINT32)pHOST_TX_RAM_Addr;
+    R16_UH_RX_DMA = (uint16_t)(uint32_t)pHOST_RX_RAM_Addr;
+    R16_UH_TX_DMA = (uint16_t)(uint32_t)pHOST_TX_RAM_Addr;
 
     R8_UH_RX_CTRL = 0x00;
     R8_UH_TX_CTRL = 0x00;

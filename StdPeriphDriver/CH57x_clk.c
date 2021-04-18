@@ -8,8 +8,8 @@
 
 #include "CH57x_common.h"
 
-UINT16 Int32K_Tune_FLASH = 0;
-UINT16 Int32K_Tune_RAM = 0;
+uint16_t Int32K_Tune_FLASH = 0;
+uint16_t Int32K_Tune_RAM = 0;
 
 /*******************************************************************************
 * Function Name  : LClk32K_Select
@@ -38,7 +38,7 @@ void LClk32K_Select( LClk32KTypeDef hc)
 *******************************************************************************/
 void HSECFG_Current( HSECurrentTypeDef c )
 {
-    UINT8  x32M_c;
+    uint8_t  x32M_c;
     
     x32M_c = R8_XT32M_TUNE;
     x32M_c = (x32M_c&0xfc)|(c&0x03);
@@ -57,7 +57,7 @@ void HSECFG_Current( HSECurrentTypeDef c )
 *******************************************************************************/
 void HSECFG_Capacitance( HSECapTypeDef c )
 {
-    UINT8  x32M_c;
+    uint8_t  x32M_c;
     
     x32M_c = R8_XT32M_TUNE;
     x32M_c = (x32M_c&0x8f)|(c<<4);
@@ -76,7 +76,7 @@ void HSECFG_Capacitance( HSECapTypeDef c )
 *******************************************************************************/
 void LSECFG_Current( LSECurrentTypeDef c )
 {
-    UINT8  x32K_c;
+    uint8_t  x32K_c;
     
     x32K_c = R8_XT32K_TUNE;
     x32K_c = (x32K_c&0xfc)|(c&0x03);
@@ -95,7 +95,7 @@ void LSECFG_Current( LSECurrentTypeDef c )
 *******************************************************************************/
 void LSECFG_Capacitance( LSECapTypeDef c )
 {
-    UINT8  x32K_c;
+    uint8_t  x32K_c;
     
     x32K_c = R8_XT32K_TUNE;
     x32K_c = (x32K_c&0x0f)|(c<<4);
@@ -111,15 +111,15 @@ void LSECFG_Capacitance( LSECapTypeDef c )
 * Input          : None
 * Return         : 误差：万分之（单位）
 *******************************************************************************/
-UINT16 Calibration_LSI_FLASH( void )
+uint16_t Calibration_LSI_FLASH( void )
 {
-  UINT16 rev, basev;
-  UINT32 calv;
-  UINT16 i;
-  UINT16 loc, loc_t;
+  uint16_t rev, basev;
+  uint32_t calv;
+  uint16_t i;
+  uint16_t loc, loc_t;
   float CNT_STEP_K;
   signed short diff_1, diff_2, diffc;
-  UINT8 k = 0;
+  uint8_t k = 0;
 
   /* 根据当前时钟获取标称值和斜率（T-step） */
   rev = R16_CLK_SYS_CFG & 0xff;
@@ -130,7 +130,7 @@ UINT16 Calibration_LSI_FLASH( void )
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 1 << 6 ) )
   {   // PLL进行分频
-    calv = ( ( ( UINT32 ) 5 * 480000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
+    calv = ( ( ( uint32_t ) 5 * 480000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -0.1 * ( rev & 0x1f );
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 0 << 6 ) )
@@ -237,9 +237,9 @@ UINT16 Calibration_LSI_FLASH( void )
 * Return         : 计数值
 *******************************************************************************/
 __attribute__((section(".highcode")))
-static UINT16 Get_Calibration_Cnt_RAM( UINT16 loc )
+static uint16_t Get_Calibration_Cnt_RAM( uint16_t loc )
 {
-  UINT16 i;
+  uint16_t i;
   R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
   R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
   R16_INT32K_TUNE = loc;
@@ -263,15 +263,15 @@ static UINT16 Get_Calibration_Cnt_RAM( UINT16 loc )
 * Input          : None
 * Return         : 误差：万分之（单位）
 *******************************************************************************/
-UINT16 Calibration_LSI_RAM( void )
+uint16_t Calibration_LSI_RAM( void )
 {
-  UINT16 rev, basev;
-  UINT32 calv;
-  UINT16 i;
-  UINT16 loc, loc_t;
+  uint16_t rev, basev;
+  uint32_t calv;
+  uint16_t i;
+  uint16_t loc, loc_t;
   float CNT_STEP_K;
   signed short diff_1, diff_2, diffc;
-  UINT8 k = 0;
+  uint8_t k = 0;
 
   /* 根据当前时钟获取标称值和斜率（T-step） */
   rev = R16_CLK_SYS_CFG & 0xff;
@@ -282,7 +282,7 @@ UINT16 Calibration_LSI_RAM( void )
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 1 << 6 ) )
   {   // PLL进行分频
-    calv = ( ( ( UINT32 ) 5 * 480000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
+    calv = ( ( ( uint32_t ) 5 * 480000000 / ( rev & 0x1f ) + ( CAB_LSIFQ >> 1 ) ) / CAB_LSIFQ );
     CNT_STEP_K = -0.1 * ( rev & 0x1f );
   }
   else if ( ( rev & RB_CLK_SYS_MOD ) == ( 0 << 6 ) )
@@ -415,10 +415,10 @@ void LSI_SetTune_RAM( void )
           MAX_S = 59
 * Return         : None
 *******************************************************************************/
-void RTC_InitTime( UINT16 y, UINT16 mon, UINT16 d, UINT16 h, UINT16 m, UINT16 s )
+void RTC_InitTime( uint16_t y, uint16_t mon, uint16_t d, uint16_t h, uint16_t m, uint16_t s )
 {
-    UINT32  t;
-    UINT16  year, month, day, sec2, t32k;
+    uint32_t  t;
+    uint16_t  year, month, day, sec2, t32k;
 
     year = y;
     month = mon;
@@ -466,10 +466,10 @@ void RTC_InitTime( UINT16 y, UINT16 mon, UINT16 d, UINT16 h, UINT16 m, UINT16 s 
           MAX_S = 59
 * Return         : None
 *******************************************************************************/
-void RTC_GetTime( PUINT16 py, PUINT16 pmon, PUINT16 pd, PUINT16 ph, PUINT16 pm, PUINT16 ps )
+void RTC_GetTime( uint16_t* py, uint16_t* pmon, uint16_t* pd, uint16_t* ph, uint16_t* pm, uint16_t* ps )
 {
-    UINT32  t;
-    UINT16  day, sec2, t32k;
+    uint32_t  t;
+    uint16_t  day, sec2, t32k;
 
     day = R32_RTC_CNT_DAY & 0x3FFF;
     sec2 = R16_RTC_CNT_2S; 
@@ -504,7 +504,7 @@ void RTC_GetTime( PUINT16 py, PUINT16 pmon, PUINT16 pd, PUINT16 ph, PUINT16 pm, 
 					MAX_CYC = 0xA8BFFFFF = 2831155199
 * Return         : None
 *******************************************************************************/
-void RTC_SetCycle32k( UINT32 cyc )
+void RTC_SetCycle32k( uint32_t cyc )
 {
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;		
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;   
@@ -519,9 +519,9 @@ void RTC_SetCycle32k( UINT32 cyc )
 * Input          : None
 * Return         : 返回当前周期数，MAX_CYC = 0xA8BFFFFF = 2831155199
 *******************************************************************************/
-UINT32 RTC_GetCycle32k( void )
+uint32_t RTC_GetCycle32k( void )
 {
-    UINT32 i;
+    uint32_t i;
     
     do{
     	i = R32_RTC_CNT_32K;
@@ -552,9 +552,9 @@ void RTC_TMRFunCfg( RTC_TMRCycTypeDef t )
 * Input          : cyc: 相对当前时间的触发间隔时间，基于LSE/LSI时钟周期数
 * Return         : None
 *******************************************************************************/
-void RTC_TRIGFunCfg( UINT32 cyc )
+void RTC_TRIGFunCfg( uint32_t cyc )
 {
-    UINT32 t;
+    uint32_t t;
 
     t = RTC_GetCycle32k() + cyc;
 
@@ -573,7 +573,7 @@ void RTC_TRIGFunCfg( UINT32 cyc )
 *******************************************************************************/
 void RTC_ModeFunDisable( RTC_MODETypeDef m )
 {
-    UINT8  i=0;
+    uint8_t  i=0;
     
     if( m == RTC_TRIG_MODE )    i |= RB_RTC_TRIG_EN;
     else if( m == RTC_TMR_MODE )     i |= RB_RTC_TMR_EN;
@@ -593,7 +593,7 @@ void RTC_ModeFunDisable( RTC_MODETypeDef m )
 					0     -  	未发生事件
 				   (!0)   -  	发生事件
 *******************************************************************************/
-UINT8 RTC_GetITFlag( RTC_EVENTTypeDef f )
+uint8_t RTC_GetITFlag( RTC_EVENTTypeDef f )
 {
     if( f == RTC_TRIG_EVENT )
         return ( R8_RTC_FLAG_CTRL & RB_RTC_TRIG_FLAG );

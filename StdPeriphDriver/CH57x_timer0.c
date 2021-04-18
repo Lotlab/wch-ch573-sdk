@@ -16,7 +16,7 @@
 					
 * Return         : None
 *******************************************************************************/
-void TMR0_TimerInit( UINT32 t )
+void TMR0_TimerInit( uint32_t t )
 {	
     R32_TMR0_CNT_END = t;
     R8_TMR0_CTRL_MOD = RB_TMR_ALL_CLEAR;	

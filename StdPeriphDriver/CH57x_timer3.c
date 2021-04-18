@@ -16,7 +16,7 @@
 					
 * Return         : None
 *******************************************************************************/
-void TMR3_TimerInit( UINT32 t )
+void TMR3_TimerInit( uint32_t t )
 {	
     R32_TMR3_CNT_END = t;
     R8_TMR3_CTRL_MOD = RB_TMR_ALL_CLEAR;	

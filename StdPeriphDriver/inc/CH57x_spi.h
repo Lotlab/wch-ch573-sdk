@@ -46,29 +46,29 @@ typedef enum
 	 
 /**************** SPI0 */	 
 void SPI0_MasterDefInit( void );                            /* 主机模式默认初始化：模式0+3线全双工+8MHz */
-void SPI0_CLKCfg( UINT8 c );                                /* SPI0 基准时钟配置，= d*Tsys */ 	 
+void SPI0_CLKCfg( uint8_t c );                                /* SPI0 基准时钟配置，= d*Tsys */ 	 
 void SPI0_DataMode( ModeBitOrderTypeDef m );                /* 设置数据流模式 */	 
 
-void SPI0_MasterSendByte( UINT8 d );                        /* 发送单字节 (buffer) */
-UINT8 SPI0_MasterRecvByte( void );                          /* 接收单字节 (buffer) */
+void SPI0_MasterSendByte( uint8_t d );                        /* 发送单字节 (buffer) */
+uint8_t SPI0_MasterRecvByte( void );                          /* 接收单字节 (buffer) */
 
-void SPI0_MasterTrans( UINT8 *pbuf, UINT16 len );           /* 使用FIFO连续发送多字节 */	 
-void SPI0_MasterRecv( UINT8 *pbuf, UINT16 len );            /* 使用FIFO连续接收多字节 */
+void SPI0_MasterTrans( uint8_t *pbuf, uint16_t len );           /* 使用FIFO连续发送多字节 */	 
+void SPI0_MasterRecv( uint8_t *pbuf, uint16_t len );            /* 使用FIFO连续接收多字节 */
 
-void SPI0_MasterDMATrans( PUINT8 pbuf, UINT16 len);			/* DMA方式连续发送数据   */
-void SPI0_MasterDMARecv( PUINT8 pbuf, UINT16 len);			/* DMA方式连续接收数据  */
+void SPI0_MasterDMATrans( uint8_t* pbuf, uint16_t len);			/* DMA方式连续发送数据   */
+void SPI0_MasterDMARecv( uint8_t* pbuf, uint16_t len);			/* DMA方式连续接收数据  */
 
 
 void SPI0_SlaveInit( void );			                    /* 设备模式默认初始化，建议设置MISO的GPIO对应为输入模式 */
 #define SetFirstData(d)			(R8_SPI0_SLAVE_PRE = d)		/* 加载首字节数据内容 */
-void SPI0_SlaveSendByte( UINT8 d );			                /* 从机模式，发送一字节数据 */
-UINT8 SPI0_SlaveRecvByte( void );			                /* 从机模式，接收一字节数据 */
+void SPI0_SlaveSendByte( uint8_t d );			                /* 从机模式，发送一字节数据 */
+uint8_t SPI0_SlaveRecvByte( void );			                /* 从机模式，接收一字节数据 */
 
-void SPI0_SlaveTrans( UINT8 *pbuf, UINT16 len );            /* 从机模式，发送多字节数据 */
-void SPI0_SlaveRecv( PUINT8 pbuf, UINT16 len );             /* 从机模式，接收多字节数据  */
+void SPI0_SlaveTrans( uint8_t *pbuf, uint16_t len );            /* 从机模式，发送多字节数据 */
+void SPI0_SlaveRecv( uint8_t* pbuf, uint16_t len );             /* 从机模式，接收多字节数据  */
 
-void SPI0_SlaveDMATrans( PUINT8 pbuf, UINT16 len);          /* 从机模式，DMA方式发送多字节数据 */
-void SPI0_SlaveDMARecv( PUINT8 pbuf, UINT16 len);           /* 从机模式，DMA方式接收多字节数据 */
+void SPI0_SlaveDMATrans( uint8_t* pbuf, uint16_t len);          /* 从机模式，DMA方式发送多字节数据 */
+void SPI0_SlaveDMARecv( uint8_t* pbuf, uint16_t len);           /* 从机模式，DMA方式接收多字节数据 */
 
 // refer to SPI0 interrupt bit define
 #define SPI0_ITCfg(s,f)			((s)?(R8_SPI0_INTER_EN|=f):(R8_SPI0_INTER_EN&=~f))

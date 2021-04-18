@@ -63,8 +63,8 @@ void PWMX_CycleCfg( PWMX_CycleTypeDef cyc );							/* PWM4-PWM11 通道输出波
 #define PWM11_ActDataWidth( d )		(R8_PWM11_DATA = d)					/* PWM11 有效数据脉宽 */
 
 // 占空比 = 数据有效脉宽/波形周期
-void PWMX_ACTOUT( UINT8 ch, UINT8 da, PWMX_PolarTypeDef pr, FunctionalState s);	/* PWM4-PWM11通道输出波形配置 */
-void PWMX_AlterOutCfg( UINT8 ch, FunctionalState s);			/* PWM 交替输出模式配置 */
+void PWMX_ACTOUT( uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, FunctionalState s);	/* PWM4-PWM11通道输出波形配置 */
+void PWMX_AlterOutCfg( uint8_t ch, FunctionalState s);			/* PWM 交替输出模式配置 */
 
 
 

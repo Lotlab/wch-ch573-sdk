@@ -22,7 +22,7 @@
 					GPIO_ModeOut_PP_20mA  -  推挽输出最大20mA				   				
 * Return         : None
 *******************************************************************************/
-void GPIOA_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
+void GPIOA_ModeCfg( uint32_t pin, GPIOModeTypeDef mode )
 {	
     switch(mode)
     {
@@ -72,7 +72,7 @@ void GPIOA_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
 					GPIO_ModeOut_PP_20mA  -  推挽输出最大20mA				   				
 * Return         : None
 *******************************************************************************/
-void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
+void GPIOB_ModeCfg( uint32_t pin, GPIOModeTypeDef mode )
 {	
     switch(mode)
     {
@@ -121,7 +121,7 @@ void GPIOB_ModeCfg( UINT32 pin, GPIOModeTypeDef mode )
 					GPIO_ITMode_RiseEdge   -  上升沿触发				   				
 * Return         : None
 *******************************************************************************/
-void GPIOA_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
+void GPIOA_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode )
 {
     switch( mode )
     {
@@ -164,9 +164,9 @@ void GPIOA_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
 					GPIO_ITMode_RiseEdge   -  上升沿触发				   				
 * Return         : None
 *******************************************************************************/
-void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
+void GPIOB_ITModeCfg( uint32_t pin, GPIOITModeTpDef mode )
 {
-    UINT32 Pin = pin|((pin&(GPIO_Pin_22|GPIO_Pin_23))>>14);
+    uint32_t Pin = pin|((pin&(GPIO_Pin_22|GPIO_Pin_23))>>14);
     switch( mode )
     {
         case GPIO_ITMode_LowLevel:		// 低电平触发
@@ -212,7 +212,7 @@ void GPIOB_ITModeCfg( UINT32 pin, GPIOITModeTpDef mode )
 					RB_PIN_TMR0	  -  TMR0:  PA9 ->  PB23
 * Return         : None
 *******************************************************************************/
-void GPIOPinRemap( FunctionalState s, UINT16 perph )
+void GPIOPinRemap( FunctionalState s, uint16_t perph )
 {
     if( s )     R16_PIN_ALTERNATE |= perph;				
     else        R16_PIN_ALTERNATE &= ~perph;				
@@ -243,7 +243,7 @@ void GPIOPinRemap( FunctionalState s, UINT16 perph )
 					RB_PIN_SEG20_23_IE	  -  LCD控制器SEG20-23驱动引脚	
 * Return         : None
 *******************************************************************************/
-void GPIOAGPPCfg( FunctionalState s, UINT16 perph )
+void GPIOAGPPCfg( FunctionalState s, uint16_t perph )
 {
     if( s )     R16_PIN_ANALOG_IE |= perph;
     else        R16_PIN_ANALOG_IE &= ~perph;

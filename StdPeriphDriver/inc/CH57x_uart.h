@@ -37,9 +37,9 @@ typedef enum
  
 /****************** UART0 */ 
 void UART0_DefInit( void );	 							/* 串口默认初始化配置 */
-void UART0_BaudRateCfg( UINT32 baudrate );	 			/* 串口波特率配置 */
+void UART0_BaudRateCfg( uint32_t baudrate );	 			/* 串口波特率配置 */
 void UART0_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* 串口字节触发中断配置 */
-void UART0_INTCfg( FunctionalState s,  UINT8 i );		            /* 串口中断配置 */
+void UART0_INTCfg( FunctionalState s,  uint8_t i );		            /* 串口中断配置 */
 void UART0_Reset( void );								/* 串口软件复位 */
 
 #define UART0_CLR_RXFIFO()       (R8_UART0_FCR |= RB_FCR_RX_FIFO_CLR)          /* 清除当前接收FIFO */
@@ -50,17 +50,17 @@ void UART0_Reset( void );								/* 串口软件复位 */
 #define UART0_GetLinSTA()       (R8_UART0_LSR)          /* 获取当前通讯状态 */
 
 #define	UART0_SendByte(b)		(R8_UART0_THR = b)		/* 串口单字节发送 */
-void UART0_SendString( PUINT8 buf, UINT16 l );			/* 串口多字节发送 */
+void UART0_SendString( uint8_t* buf, uint16_t l );			/* 串口多字节发送 */
 #define	UART0_RecvByte()		( R8_UART0_RBR )        /* 串口读取单字节 */
-UINT16 UART0_RecvString( PUINT8 buf );					/* 串口读取多字节 */
+uint16_t UART0_RecvString( uint8_t* buf );					/* 串口读取多字节 */
 
  
      
 /****************** UART1 */ 	 
 void UART1_DefInit( void );	 							/* 串口默认初始化配置 */
-void UART1_BaudRateCfg( UINT32 baudrate );	 			/* 串口波特率配置 */
+void UART1_BaudRateCfg( uint32_t baudrate );	 			/* 串口波特率配置 */
 void UART1_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* 串口字节触发中断配置 */
-void UART1_INTCfg( FunctionalState s,  UINT8 i );		            /* 串口中断配置 */
+void UART1_INTCfg( FunctionalState s,  uint8_t i );		            /* 串口中断配置 */
 void UART1_Reset( void );								/* 串口软件复位 */
 
 #define UART1_CLR_RXFIFO()       (R8_UART1_FCR |= RB_FCR_RX_FIFO_CLR)          /* 清除当前接收FIFO */
@@ -71,17 +71,17 @@ void UART1_Reset( void );								/* 串口软件复位 */
 #define UART1_GetLinSTA()       (R8_UART1_LSR)          /* 获取当前通讯状态 */
 
 #define	UART1_SendByte(b)		(R8_UART1_THR = b)		/* 串口单字节发送 */
-void UART1_SendString( PUINT8 buf, UINT16 l );			/* 串口多字节发送 */
+void UART1_SendString( uint8_t* buf, uint16_t l );			/* 串口多字节发送 */
 #define	UART1_RecvByte()		( R8_UART1_RBR )        /* 串口读取单字节 */
-UINT16 UART1_RecvString( PUINT8 buf );					/* 串口读取多字节 */
+uint16_t UART1_RecvString( uint8_t* buf );					/* 串口读取多字节 */
 
 
 
 /****************** UART2 */ 
 void UART2_DefInit( void );	 							/* 串口默认初始化配置 */
-void UART2_BaudRateCfg( UINT32 baudrate );	 			/* 串口波特率配置 */
+void UART2_BaudRateCfg( uint32_t baudrate );	 			/* 串口波特率配置 */
 void UART2_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* 串口字节触发中断配置 */
-void UART2_INTCfg( FunctionalState s,  UINT8 i );		            /* 串口中断配置 */
+void UART2_INTCfg( FunctionalState s,  uint8_t i );		            /* 串口中断配置 */
 void UART2_Reset( void );								/* 串口软件复位 */
 
 #define UART2_CLR_RXFIFO()       (R8_UART2_FCR |= RB_FCR_RX_FIFO_CLR)          /* 清除当前接收FIFO */
@@ -92,18 +92,18 @@ void UART2_Reset( void );								/* 串口软件复位 */
 #define UART2_GetLinSTA()       (R8_UART2_LSR)          /* 获取当前通讯状态 */
 
 #define	UART2_SendByte(b)		(R8_UART2_THR = b)		/* 串口单字节发送 */
-void UART2_SendString( PUINT8 buf, UINT16 l );			/* 串口多字节发送 */
+void UART2_SendString( uint8_t* buf, uint16_t l );			/* 串口多字节发送 */
 #define	UART2_RecvByte()		( R8_UART2_RBR )        /* 串口读取单字节 */
-UINT16 UART2_RecvString( PUINT8 buf );					/* 串口读取多字节 */
+uint16_t UART2_RecvString( uint8_t* buf );					/* 串口读取多字节 */
 
 
 
 
 /****************** UART3 */ 
 void UART3_DefInit( void );	 							/* 串口默认初始化配置 */
-void UART3_BaudRateCfg( UINT32 baudrate );	 			/* 串口波特率配置 */
+void UART3_BaudRateCfg( uint32_t baudrate );	 			/* 串口波特率配置 */
 void UART3_ByteTrigCfg( UARTByteTRIGTypeDef b );        /* 串口字节触发中断配置 */
-void UART3_INTCfg( FunctionalState s,  UINT8 i );		            /* 串口中断配置 */
+void UART3_INTCfg( FunctionalState s,  uint8_t i );		            /* 串口中断配置 */
 void UART3_Reset( void );								/* 串口软件复位 */
 
 #define UART3_CLR_RXFIFO()       (R8_UART3_FCR |= RB_FCR_RX_FIFO_CLR)          /* 清除当前接收FIFO */
@@ -114,9 +114,9 @@ void UART3_Reset( void );								/* 串口软件复位 */
 #define UART3_GetLinSTA()       (R8_UART3_LSR)          /* 获取当前通讯状态 */
 
 #define	UART3_SendByte(b)		(R8_UART3_THR = b)		/* 串口单字节发送 */
-void UART3_SendString( PUINT8 buf, UINT16 l );			/* 串口多字节发送 */
+void UART3_SendString( uint8_t* buf, uint16_t l );			/* 串口多字节发送 */
 #define	UART3_RecvByte()		( R8_UART3_RBR )        /* 串口读取单字节 */
-UINT16 UART3_RecvString( PUINT8 buf );					/* 串口读取多字节 */
+uint16_t UART3_RecvString( uint8_t* buf );					/* 串口读取多字节 */
 
 	 
 	 

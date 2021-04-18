@@ -121,8 +121,8 @@ typedef enum
 
 }RTC_MODETypeDef;
 
-UINT16 Int32K_Tune_FLASH;
-UINT16 Int32K_Tune_RAM;
+uint16_t Int32K_Tune_FLASH;
+uint16_t Int32K_Tune_RAM;
 
 void LClk32K_Select( LClk32KTypeDef hc);		/* 32K 低频时钟来源 */
 
@@ -131,23 +131,23 @@ void HSECFG_Capacitance( HSECapTypeDef c );     /* HSE晶体 负载电容配置 
 void LSECFG_Current( LSECurrentTypeDef c );     /* LSE晶体 偏置电流配置 */
 void LSECFG_Capacitance( LSECapTypeDef c );     /* LSE晶体 负载电容配置 */
 
-UINT16 Calibration_LSI_FLASH( void );				/* 外部32M时钟校准FLASH运行时内部32K时钟 */
-UINT16 Calibration_LSI_RAM( void );         /* 外部32M时钟校准RAM运行时内部32K时钟 */
+uint16_t Calibration_LSI_FLASH( void );				/* 外部32M时钟校准FLASH运行时内部32K时钟 */
+uint16_t Calibration_LSI_RAM( void );         /* 外部32M时钟校准RAM运行时内部32K时钟 */
 void LSI_SetTune_FLASH( void );           /* 设置在FLASH中运行时的内部32k校准值 */
 void LSI_SetTune_RAM( void );             /* 设置在RAM中运行时的内部32k校准值 */
 
 	 
-void RTC_InitTime( UINT16 y, UINT16 mon, UINT16 d, UINT16 h, UINT16 m, UINT16 s );      /* RTC时钟初始化当前时间 */
-void RTC_GetTime( PUINT16 py, PUINT16 pmon, PUINT16 pd, PUINT16 ph, PUINT16 pm, PUINT16 ps );   /* 获取当前时间 */
+void RTC_InitTime( uint16_t y, uint16_t mon, uint16_t d, uint16_t h, uint16_t m, uint16_t s );      /* RTC时钟初始化当前时间 */
+void RTC_GetTime( uint16_t* py, uint16_t* pmon, uint16_t* pd, uint16_t* ph, uint16_t* pm, uint16_t* ps );   /* 获取当前时间 */
 	 
-void RTC_SetCycle32k( UINT32 cyc );							/* 基于LSE/LSI时钟，配置当前RTC 周期数 */	 
-UINT32 RTC_GetCycle32k( void );				                /* 基于LSE/LSI时钟，获取当前RTC 周期数 */
+void RTC_SetCycle32k( uint32_t cyc );							/* 基于LSE/LSI时钟，配置当前RTC 周期数 */	 
+uint32_t RTC_GetCycle32k( void );				                /* 基于LSE/LSI时钟，获取当前RTC 周期数 */
 
-void RTC_TRIGFunCfg( UINT32 cyc );							/* RTC触发模式配置间隔时间,基于LSE/LSI时钟，匹配周期数 */
+void RTC_TRIGFunCfg( uint32_t cyc );							/* RTC触发模式配置间隔时间,基于LSE/LSI时钟，匹配周期数 */
 void RTC_TMRFunCfg( RTC_TMRCycTypeDef t );					/* RTC定时模式配置 */
 void RTC_ModeFunDisable( RTC_MODETypeDef m );               /* RTC 模式功能关闭 */
 
-UINT8 RTC_GetITFlag( RTC_EVENTTypeDef f );					/* 获取RTC中断标志 */	 
+uint8_t RTC_GetITFlag( RTC_EVENTTypeDef f );					/* 获取RTC中断标志 */	 
 void RTC_ClearITFlag( RTC_EVENTTypeDef f );					/* 清除RTC中断标志 */ 
 
 	 

@@ -58,7 +58,7 @@
 #define ROM_CFG_BOOT_INFO	0x7DFF8			// address for BOOT information
 
 // Buffer:  Must be aligned to 4 bytes
-extern UINT32 FLASH_EEPROM_CMD( UINT8 cmd, UINT32 StartAddr, PVOID Buffer, UINT32 Length );  // execute Flash/EEPROM command, caller from FlashROM or RAM
+extern uint32_t FLASH_EEPROM_CMD( uint8_t cmd, uint32_t StartAddr, void* Buffer, uint32_t Length );  // execute Flash/EEPROM command, caller from FlashROM or RAM
 
 
 #define FLASH_ROM_SW_RESET( )						FLASH_EEPROM_CMD( CMD_FLASH_ROM_SW_RESET, 0, NULL, 0 )  // software reset FlashROM

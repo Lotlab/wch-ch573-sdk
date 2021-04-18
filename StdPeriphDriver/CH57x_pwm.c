@@ -70,9 +70,9 @@ void PWMX_CycleCfg( PWMX_CycleTypeDef cyc )
 					DISABLE - 关闭PWM 
 * Return         : None
 *******************************************************************************/
-void PWMX_ACTOUT( UINT8 ch, UINT8 da, PWMX_PolarTypeDef pr, FunctionalState s)
+void PWMX_ACTOUT( uint8_t ch, uint8_t da, PWMX_PolarTypeDef pr, FunctionalState s)
 {
-    UINT8 i;
+    uint8_t i;
 
     if(s == DISABLE)	R8_PWM_OUT_EN &= ~(ch);
     else
@@ -80,7 +80,7 @@ void PWMX_ACTOUT( UINT8 ch, UINT8 da, PWMX_PolarTypeDef pr, FunctionalState s)
         (pr)?(R8_PWM_POLAR|=(ch)):(R8_PWM_POLAR&=~(ch));
         for(i=0; i<8; i++)
         {
-            if((ch>>i)&1)		*((PUINT8V)((&R8_PWM4_DATA)+i)) = da;
+            if((ch>>i)&1)		*((volatile uint8_t*)((&R8_PWM4_DATA)+i)) = da;
         }
         R8_PWM_OUT_EN |= (ch);
     }
@@ -99,7 +99,7 @@ void PWMX_ACTOUT( UINT8 ch, UINT8 da, PWMX_PolarTypeDef pr, FunctionalState s)
 					DISABLE - 关闭交替输出功能
 * Return         : None
 *******************************************************************************/
-void PWMX_AlterOutCfg( UINT8 ch, FunctionalState s)
+void PWMX_AlterOutCfg( uint8_t ch, FunctionalState s)
 {
     if(s == DISABLE)        R8_PWM_CONFIG &= ~(ch);
     else                    R8_PWM_CONFIG |= (ch);

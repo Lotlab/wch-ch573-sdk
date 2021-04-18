@@ -8,7 +8,7 @@
  extern "C" {
 #endif
      
-void FLASH_ROM_READ( UINT32 StartAddr, PVOID Buffer, UINT32 len );           /* 读取Flash-ROM */
+void FLASH_ROM_READ( uint32_t StartAddr, void* Buffer, uint32_t len );           /* 读取Flash-ROM */
 
 
 #ifdef __cplusplus

@@ -14,11 +14,11 @@
  * Input          :
  * Return         : None
  *******************************************************************************/
-void FLASH_ROM_READ( UINT32 StartAddr, PVOID Buffer, UINT32 len )
+void FLASH_ROM_READ( uint32_t StartAddr, void* Buffer, uint32_t len )
 {
-  UINT32 i, Length = ( len + 3 ) >> 2;
-  PUINT32 pCode = ( PUINT32 ) StartAddr;
-  PUINT32 pBuf = ( PUINT32 ) Buffer;
+  uint32_t i, Length = ( len + 3 ) >> 2;
+  uint32_t* pCode = ( uint32_t* ) StartAddr;
+  uint32_t* pBuf = ( uint32_t* ) Buffer;
 
   for ( i = 0; i < Length; i++ )
   {

@@ -46,7 +46,7 @@ void PWR_DCDCCfg( FunctionalState s )
                     please refer to unit of controllable power supply 				
 * Return         : None
 *******************************************************************************/
-void PWR_UnitModCfg( FunctionalState s, UINT8 unit )
+void PWR_UnitModCfg( FunctionalState s, uint8_t unit )
 {
     if(s == DISABLE)		//关闭
     {
@@ -75,7 +75,7 @@ void PWR_UnitModCfg( FunctionalState s, UINT8 unit )
                     please refer to Peripher CLK control bit define						
 * Return         : None
 *******************************************************************************/
-void PWR_PeriphClkCfg( FunctionalState s, UINT16 perph )
+void PWR_PeriphClkCfg( FunctionalState s, uint16_t perph )
 {
     if( s == DISABLE )
     {
@@ -106,9 +106,9 @@ void PWR_PeriphClkCfg( FunctionalState s, UINT16 perph )
                    mode: refer to WakeUP_ModeypeDef
 * Return         : None
 *******************************************************************************/
-void PWR_PeriphWakeUpCfg( FunctionalState s, UINT8 perph, WakeUP_ModeypeDef mode )
+void PWR_PeriphWakeUpCfg( FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mode )
 {
-	UINT8  m;
+	uint8_t  m;
 
     if( s == DISABLE )
     {
@@ -212,7 +212,7 @@ void LowPower_Idle( void )
 __attribute__((section(".highcode")))
 void LowPower_Halt( void )
 {
-    UINT8  x32Kpw, x32Mpw;
+    uint8_t  x32Kpw, x32Mpw;
     
     FLASH_ROM_SW_RESET();
     R8_FLASH_CTRL = 0x04;   //flash关闭
@@ -254,9 +254,9 @@ void LowPower_Halt( void )
 * Return         : None
 *******************************************************************************/
 __attribute__((section(".highcode")))
-void LowPower_Sleep( UINT8 rm )
+void LowPower_Sleep( uint8_t rm )
 {
-    UINT8  x32Kpw, x32Mpw;
+    uint8_t  x32Kpw, x32Mpw;
     
     x32Kpw = R8_XT32K_TUNE;
     x32Mpw = R8_XT32M_TUNE;
@@ -302,9 +302,9 @@ void LowPower_Sleep( UINT8 rm )
 * Return         : None
 *******************************************************************************/
 __attribute__((section(".highcode")))
-void LowPower_Shutdown( UINT8 rm )
+void LowPower_Shutdown( uint8_t rm )
 {	
-    UINT8  x32Kpw, x32Mpw;
+    uint8_t  x32Kpw, x32Mpw;
     
     x32Kpw = R8_XT32K_TUNE;
     x32Mpw = R8_XT32M_TUNE;

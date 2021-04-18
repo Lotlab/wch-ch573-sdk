@@ -17,10 +17,10 @@
 *******************************************************************************/
 signed short ADC_DataCalib_Rough( void )        // 采样数据粗调,获取偏差值
 {
-    UINT16  i;
-    UINT32  sum=0;
-    UINT8  ch=0;        // 备份通道
-    UINT8   ctrl=0;     // 备份控制寄存器
+    uint16_t  i;
+    uint32_t  sum=0;
+    uint8_t  ch=0;        // 备份通道
+    uint8_t   ctrl=0;     // 备份控制寄存器
     
     ch = R8_ADC_CHANNEL;
     ctrl = R8_ADC_CFG;
@@ -129,7 +129,7 @@ void TouchKey_ChSampInit( void )
 * Input          : None
 * Return         : ADC转换后的数据
 *******************************************************************************/
-UINT16 ADC_ExcutSingleConver( void )
+uint16_t ADC_ExcutSingleConver( void )
 {
     R8_ADC_CONVERT = RB_ADC_START;
     while( R8_ADC_CONVERT & RB_ADC_START );
@@ -144,7 +144,7 @@ UINT16 ADC_ExcutSingleConver( void )
 *                  disch：    Touchkey放电时间,3bits有效, t=disch*Tadc
 * Return         : 当前TouchKey等效数据
 *******************************************************************************/
-UINT16 TouchKey_ExcutSingleConver( UINT8 charg, UINT8 disch )
+uint16_t TouchKey_ExcutSingleConver( uint8_t charg, uint8_t disch )
 {
 	R8_TKEY_COUNT = (disch<<5)|(charg&0x1f);
 	R8_TKEY_CONVERT = RB_TKEY_START;
@@ -159,19 +159,19 @@ UINT16 TouchKey_ExcutSingleConver( UINT8 charg, UINT8 disch )
 * Input          : ts_v：当前温度传感器采样输出
 * Return         : 转换后的温度值（℃）
 *******************************************************************************/
-int ADC_GetCurrentTS( UINT16 ts_v )
+int ADC_GetCurrentTS( uint16_t ts_v )
 {
-    UINT16  vol_ts;
-    UINT16  D85_tem, D85_vol;
-    UINT16  D25_tem, D25_vol;
-    UINT16  temperK;
-    UINT32  temp;
-    UINT8   sum, sumck;
+    uint16_t  vol_ts;
+    uint16_t  D85_tem, D85_vol;
+    uint16_t  D25_tem, D25_vol;
+    uint16_t  temperK;
+    uint32_t  temp;
+    uint8_t   sum, sumck;
     int     cal;    
     
     temperK = 64;    // mV/16^C
     vol_ts = (ts_v*1060)>>11;
-    temp = (*((PUINT32)ROM_TMP_25C_ADDR));
+    temp = (*((uint32_t*)ROM_TMP_25C_ADDR));
     D25_tem = temp;
     D25_vol = (temp>>16);
     
@@ -181,16 +181,16 @@ int ADC_GetCurrentTS( UINT16 ts_v )
         return ( cal );
     }
     else{  // 内置系数换算  D25_tem  
-    	temp = (*((PUINT32)ROM_TMP_85C_ADDR)); 	
-    	sum = (UINT8)(temp>>24);		// 最高字节    	
-    	sumck = (UINT8)(temp>>16);
-    	sumck += (UINT8)(temp>>8);
-    	sumck += (UINT8)temp;
+    	temp = (*((uint32_t*)ROM_TMP_85C_ADDR)); 	
+    	sum = (uint8_t)(temp>>24);		// 最高字节    	
+    	sumck = (uint8_t)(temp>>16);
+    	sumck += (uint8_t)(temp>>8);
+    	sumck += (uint8_t)temp;
     	if( sum != sumck )		return 0xff;		// 校验和出错
     	
         temperK = D25_tem;      // D25_tem = temperK 
-        D85_tem = (UINT16)((temp>>16)&0x00ff); 
-        D85_vol = (UINT16)temp; 
+        D85_tem = (uint16_t)((temp>>16)&0x00ff); 
+        D85_vol = (uint16_t)temp; 
         
         // T = T85 + (V-V85)*16/D25
         cal =  (D85_tem*temperK + vol_ts*16 + (temperK>>1) - D85_vol*16) / temperK ;    

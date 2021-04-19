@@ -1,4 +1,4 @@
-ENTRY( _start )
+ENTRY(_start)
 
 MEMORY
 {
@@ -48,7 +48,7 @@ SECTIONS
 		*(.text.*)
 		*(.rodata)
 		*(.rodata*)
-  *(.sdata2.*)
+		*(.sdata2.*)
 		*(.glue_7)
 		*(.glue_7t)
 		*(.gnu.linkonce.t.*)
@@ -64,14 +64,14 @@ SECTIONS
 	PROVIDE( _etext = . );
 	PROVIDE( _eitcm = . );	
 
-	.preinit_array  :
+	.preinit_array :
 	{
 	  PROVIDE_HIDDEN (__preinit_array_start = .);
 	  KEEP (*(.preinit_array))
 	  PROVIDE_HIDDEN (__preinit_array_end = .);
 	} >FLASH AT>FLASH 
 	
-	.init_array     :
+	.init_array :
 	{
 	  PROVIDE_HIDDEN (__init_array_start = .);
 	  KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
@@ -79,7 +79,7 @@ SECTIONS
 	  PROVIDE_HIDDEN (__init_array_end = .);
 	} >FLASH AT>FLASH 
 	
-	.fini_array     :
+	.fini_array :
 	{
 	  PROVIDE_HIDDEN (__fini_array_start = .);
 	  KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
@@ -87,7 +87,7 @@ SECTIONS
 	  PROVIDE_HIDDEN (__fini_array_end = .);
 	} >FLASH AT>FLASH 
 	
-	.ctors          :
+	.ctors :
 	{
 	  /* gcc uses crtbegin.o to find the start of
 	     the constructors, so we make sure it is
@@ -109,7 +109,7 @@ SECTIONS
 	  KEEP (*(.ctors))
 	} >FLASH AT>FLASH 
 	
-	.dtors          :
+	.dtors :
 	{
 	  KEEP (*crtbegin.o(.dtors))
 	  KEEP (*crtbegin?.o(.dtors))
@@ -118,7 +118,7 @@ SECTIONS
 	  KEEP (*(.dtors))
 	} >FLASH AT>FLASH 
 
-	.dalign    : 
+	.dalign : 
 	{
 		. = ORIGIN(RAM) + MAX(0x800 , SIZEOF(.highcode));
 	} >RAM AT>FLASH	

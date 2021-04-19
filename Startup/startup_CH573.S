@@ -140,7 +140,7 @@ handle_reset:
     addi a1, a1, 4
     bltu a1, a2, 1b
 2:
-    /* clear bss section */
+/* clear bss section */
     la a0, _sbss
     la a1, _ebss
     bgeu a0, a1, 2f
@@ -148,12 +148,15 @@ handle_reset:
     sw zero, (a0)
     addi a0, a0, 4
     bltu a0, a1, 1b
+/* prepare to execute */
 2:
     li t0, 0x88
     csrs mstatus, t0
+/* interrupt table */
     la t0, _vector_base
     ori t0, t0, 1
     csrw mtvec, t0
+/* execute main function */
     la t0, main
     csrw mepc, t0
     

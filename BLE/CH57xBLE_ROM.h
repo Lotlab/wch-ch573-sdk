@@ -17,9 +17,6 @@ extern "C" {
 #ifndef NULL
 #define NULL 0
 #endif
-#ifndef VOID
-#define VOID void
-#endif
 #ifndef bStatus_t
 typedef unsigned char bStatus_t;
 #endif

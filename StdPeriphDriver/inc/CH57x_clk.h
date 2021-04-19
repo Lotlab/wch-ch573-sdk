@@ -124,8 +124,8 @@ typedef enum {
 
 } RTC_MODETypeDef;
 
-uint16_t Int32K_Tune_FLASH;
-uint16_t Int32K_Tune_RAM;
+extern uint16_t Int32K_Tune_FLASH;
+extern uint16_t Int32K_Tune_RAM;
 
 void LClk32K_Select(LClk32KTypeDef hc); /* 32K 低频时钟来源 */
 

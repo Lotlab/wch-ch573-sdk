@@ -114,7 +114,8 @@ handle_reset:
 1:
     la sp, _eusrstack 
 
-/* Load highcode code  section from flash to RAM */
+/* Load highcode code section from flash to RAM */
+/* Copy _highcode_lma to _highcode_vma */
 2:
     la a0, _highcode_lma
     la a1, _highcode_vma_start
@@ -128,6 +129,7 @@ handle_reset:
     bltu a1, a2, 1b
 
 /* Load data section from flash to RAM */
+/* Copy _data_lma to _data_vma */
 2:
     la a0, _data_lma
     la a1, _data_vma
@@ -150,6 +152,7 @@ handle_reset:
     bltu a0, a1, 1b
 /* prepare to execute */
 2:
+/* MIE=1, MPIE=1, Others=0 */
     li t0, 0x88
     csrs mstatus, t0
 /* interrupt table */

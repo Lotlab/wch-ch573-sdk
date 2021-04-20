@@ -29,6 +29,8 @@ SECTIONS
         PROVIDE(_highcode_lma = .); 
     } >FLASH AT>FLASH 
     
+	/* Highcode 是WCH SDK内定义的一个执行代码区域 */
+	/* 这部分的代码被设计在内存中运行，使得在关闭Flash进入低功耗模式后还可以继续运行 */
     .highcode : 
     {
         . = ALIGN(4);

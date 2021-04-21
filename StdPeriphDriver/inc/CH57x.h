@@ -9,6 +9,10 @@
 #define Debug_UART2 2
 #define Debug_UART3 3
 
+#ifndef DEBUG_UART
+#define DEBUG_UART Debug_UART0
+#endif
+
 #ifndef FREQ_SYS
 #define FREQ_SYS 16000000
 #endif

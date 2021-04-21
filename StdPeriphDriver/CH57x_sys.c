@@ -282,19 +282,19 @@ int _write(int fd, char* buf, int size)
 {
     int i;
     for (i = 0; i < size; i++) {
-#if DEBUG == Debug_UART0
+#if DEBUG_UART == Debug_UART0
         while (R8_UART0_TFC == UART_FIFO_SIZE)
             ; /* 等待数据发送 */
         R8_UART0_THR = *buf++; /* 发送数据 */
-#elif DEBUG == Debug_UART1
+#elif DEBUG_UART == Debug_UART1
         while (R8_UART1_TFC == UART_FIFO_SIZE)
             ; /* 等待数据发送 */
         R8_UART1_THR = *buf++; /* 发送数据 */
-#elif DEBUG == Debug_UART2
+#elif DEBUG_UART == Debug_UART2
         while (R8_UART2_TFC == UART_FIFO_SIZE)
             ; /* 等待数据发送 */
         R8_UART2_THR = *buf++; /* 发送数据 */
-#elif DEBUG == Debug_UART3
+#elif DEBUG_UART == Debug_UART3
         while (R8_UART3_TFC == UART_FIFO_SIZE)
             ; /* 等待数据发送 */
         R8_UART3_THR = *buf++; /* 发送数据 */

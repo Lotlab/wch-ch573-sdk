@@ -3,6 +3,9 @@
 #ifndef __CH57x_TIMER_H__
 #define __CH57x_TIMER_H__
 
+#include "CH57x.h"
+#include "CH57x_pwm.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

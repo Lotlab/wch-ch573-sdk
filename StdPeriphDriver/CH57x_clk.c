@@ -6,7 +6,7 @@
 * Description 
 *******************************************************************************/
 
-#include "CH57x_common.h"
+#include "CH57x_clk.h"
 
 uint16_t Int32K_Tune_FLASH = 0;
 uint16_t Int32K_Tune_RAM = 0;

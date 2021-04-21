@@ -6,7 +6,7 @@
 * Description 
 *******************************************************************************/
 
-#include "CH57x_common.h"
+#include "CH57x_usbdev.h"
 
 uint8_t* pEP0_RAM_Addr;
 uint8_t* pEP1_RAM_Addr;

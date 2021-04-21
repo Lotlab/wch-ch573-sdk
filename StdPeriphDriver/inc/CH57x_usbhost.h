@@ -3,6 +3,8 @@
 #ifndef __CH57x_USBHOST_H__
 #define __CH57x_USBHOST_H__
 
+#include "CH57x.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

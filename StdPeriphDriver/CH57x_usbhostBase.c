@@ -6,7 +6,7 @@
 * Description 
 *******************************************************************************/
 
-#include "CH57x_common.h"
+#include "CH57x_usbhost.h"
 #if DISK_LIB_ENABLE
 #include "CHRV3UFI.H"
 #endif

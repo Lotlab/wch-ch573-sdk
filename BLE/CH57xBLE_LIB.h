@@ -10,6 +10,9 @@
 #ifndef __CH57xBLE_LIB_H
 #define __CH57xBLE_LIB_H
 
+#include <stdint.h>
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

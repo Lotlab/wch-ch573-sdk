@@ -10,8 +10,8 @@
 #ifndef __CH57xBLE_LIB_H
 #define __CH57xBLE_LIB_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -1889,9 +1889,12 @@ typedef struct
  * pfnRFStatusCB_t state defined 
  */
 // TX_MODE call RF_Tx
-#define TX_MODE_TX_FINISH 0x01 // basic or auto tx mode sends data successfully \
-    // if it is in basic mode,it will enter idle state;                         \
-    // if it is in auto mode,it will wait for receiving
+/**
+ * basic or auto tx mode sends data successfully
+ * if it is in basic mode,it will enter idle state;
+ * if it is in auto mode,it will wait for receiving
+ */
+#define TX_MODE_TX_FINISH 0x01
 #define TX_MODE_TX_FAIL 0x11 // basic or auto tx mode fail to send data and enter idle state
 #define TX_MODE_TX_TIMEOUT TX_MODE_TX_FAIL // time of data transmission(1bit = 1us)
 #define TX_MODE_RX_DATA 0x02 // auto tx mode receive data(ack) and enter idle state
@@ -1899,10 +1902,13 @@ typedef struct
 #define TX_MODE_HOP_SHUT 0x22
 
 // RX_MODE call RF_Rx
-#define RX_MODE_RX_DATA 0x03 // basic or auto rx mode receive data   \
-    // if it is in basic mode,it will enter idle state;              \
-    // if it is in auto mode,it will judge whether the type matches; \
-    // if it matches,it will send data(ack),otherwise(rsr=2), it will restart receiving
+/**
+ * basic or auto rx mode receive data
+ * if it is in basic mode,it will enter idle state;
+ * if it is in auto mode,it will judge whether the type matches;
+ * if it matches,it will send data(ack),otherwise(rsr=2), it will restart receiving
+ */
+#define RX_MODE_RX_DATA 0x03
 #define RX_MODE_TX_FINISH 0x04 // auto rx mode sends data(ack) successfully and enters idle state
 #define RX_MODE_TX_FAIL 0x14 // auto rx mode fail to send data and enter idle state
 #define RX_MODE_TX_TIMEOUT RX_MODE_TX_FAIL // time of data transmission(1bit = 1us)

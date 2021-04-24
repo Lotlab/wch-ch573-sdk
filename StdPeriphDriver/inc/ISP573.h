@@ -19,6 +19,10 @@
      256 bytes/page for writing, EEPROM_WRITE support one byte or more byte writing, but multiple of 256 is the best,
      0.25KB/4KB (256/4096 bytes) bytes/block for erasing, so multiple of 256 or 4096 is the best */
 
+#pragma once
+
+#include <stdint.h>
+
 #ifndef EEPROM_PAGE_SIZE
 #define EEPROM_PAGE_SIZE 256 // Flash-ROM & Data-Flash page size for writing
 #define EEPROM_BLOCK_SIZE 4096 // Flash-ROM & Data-Flash block size for erasing
@@ -56,8 +60,16 @@
 #define ROM_CFG_MAC_ADDR 0x7F018 // address for MAC address information
 #define ROM_CFG_BOOT_INFO 0x7DFF8 // address for BOOT information
 
-// Buffer:  Must be aligned to 4 bytes
-extern uint32_t FLASH_EEPROM_CMD(uint8_t cmd, uint32_t StartAddr, void* Buffer, uint32_t Length); // execute Flash/EEPROM command, caller from FlashROM or RAM
+/**
+ * @brief execute Flash/EEPROM command, caller from FlashROM or RAM
+ * 
+ * @param cmd 
+ * @param StartAddr 
+ * @param Buffer Must be aligned to 4 bytes
+ * @param Length 
+ * @return uint32_t 
+ */
+uint32_t FLASH_EEPROM_CMD(uint8_t cmd, uint32_t StartAddr, void* Buffer, uint32_t Length); 
 
 #define FLASH_ROM_SW_RESET() FLASH_EEPROM_CMD(CMD_FLASH_ROM_SW_RESET, 0, NULL, 0) // software reset FlashROM
 

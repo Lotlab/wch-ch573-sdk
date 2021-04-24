@@ -116,7 +116,7 @@ uint16_t Calibration_LSI_FLASH(void)
     uint16_t rev, basev;
     uint32_t calv;
     uint16_t i;
-    uint16_t loc, loc_t;
+    uint16_t loc, loc_t = 0;
     float CNT_STEP_K;
     signed short diff_1, diff_2, diffc;
     uint8_t k = 0;
@@ -249,7 +249,7 @@ uint16_t Calibration_LSI_RAM(void)
     uint16_t rev, basev;
     uint32_t calv;
     uint16_t i;
-    uint16_t loc, loc_t;
+    uint16_t loc, loc_t = 0;
     float CNT_STEP_K;
     signed short diff_1, diff_2, diffc;
     uint8_t k = 0;

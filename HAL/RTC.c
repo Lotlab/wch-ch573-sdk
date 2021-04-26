@@ -53,7 +53,7 @@ void RTC_SetTignTime(uint32_t time)
  *
  * @return      None.
  */
-__attribute__((interrupt("WCH-Interrupt-fast")))
+__attribute__((interrupt(WCH_INT_TYPE)))
 __attribute__((section(".highcode"))) void
 RTC_IRQHandler(void)
 {

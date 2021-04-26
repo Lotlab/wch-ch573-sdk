@@ -13,6 +13,13 @@
 #define DEBUG_UART Debug_UART0
 #endif
 
+// 是否使用的是WCH专用的编译器
+#ifndef WCH_RISCV_COMPILER
+#define WCH_INT_TYPE "machine"
+#else
+#define WCH_INT_TYPE "WCH-Interrupt-fast"
+#endif
+
 #ifndef FREQ_SYS
 #define FREQ_SYS 16000000
 #endif

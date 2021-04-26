@@ -215,7 +215,7 @@ void WWDG_ClearFlag(void)
 * Input          : None
 * Return         : None
 *******************************************************************************/
-__attribute__((interrupt("WCH-Interrupt-fast")))
+__attribute__((interrupt(WCH_INT_TYPE)))
 __attribute__((section(".highcode"))) void
 HardFault_Handler(void)
 {

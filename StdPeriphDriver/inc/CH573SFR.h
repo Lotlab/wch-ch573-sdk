@@ -31,6 +31,7 @@ extern "C" {
 #endif
 
 #ifdef DEBUG
+#include <stdio.h>
 #define PRINT(X...) printf(X)
 #else
 #define PRINT(X...)

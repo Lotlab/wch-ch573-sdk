@@ -9,7 +9,7 @@
 /******************************************************************************/
 /* 头文件包含 */
 #include <stdint.h>
-#include "config.h"
+#include "hal_config.h"
 
 #include "SLEEP.h"
 #include "RTC.h"

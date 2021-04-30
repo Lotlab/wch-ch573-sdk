@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#include "config.h"
+#include "hal_config.h"
 
 #define RTC_TIMER_MAX_VALUE 0xa8c00000
 

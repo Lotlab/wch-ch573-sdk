@@ -278,6 +278,7 @@ __attribute__((section(".highcode"))) void mDelaymS(uint16_t t)
 }
 
 #ifdef DEBUG
+__attribute__((used))
 int _write(int fd, char* buf, int size)
 {
     int i;

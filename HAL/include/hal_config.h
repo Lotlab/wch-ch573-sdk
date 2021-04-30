@@ -28,7 +28,7 @@
 #define DCDC_ENABLE TRUE // 是否使能DCDC ( 默认:FALSE )
 #endif
 #ifndef HAL_SLEEP
-#define HAL_SLEEP TRUE // 是否开启睡眠功能 ( 默认:FALSE )
+#define HAL_SLEEP FALSE // 是否开启睡眠功能 ( 默认:FALSE )
 #endif
 #ifndef WAKE_UP_RTC_MAX_TIME
 #define WAKE_UP_RTC_MAX_TIME 50 // 睡眠唤醒所需时间，根据不同睡眠类型取值可分为： 睡眠模式/下电模式       -	50(默认)

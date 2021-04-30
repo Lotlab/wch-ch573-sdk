@@ -29,14 +29,21 @@ target_include_directories(${TARGET}.elf PRIVATE
 )
 
 target_link_options(${TARGET}.elf PRIVATE 
+    "--specs=nosys.specs"
+    "--specs=nano.specs"
     "-nostartfiles"
     "-fno-exceptions"
     "-Xlinker"
     "-T" "${LINKER_SCRIPT}"
     "-Wl,-Map=${TARGET}.map"
+    "-Wl,--print-memory-usage"
 )
 
 # Post processing command to create a hex file 
 add_custom_command(TARGET ${TARGET}.elf POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -O ihex  ${TARGET}.elf  ${TARGET}.hex
         COMMENT "Invoking: Hexdump")
+
+add_custom_command(TARGET ${TARGET}.elf POST_BUILD
+        COMMAND ${CROSS_COMPILE}size ${TARGET}.elf
+        COMMENT "Invoking: filesize")

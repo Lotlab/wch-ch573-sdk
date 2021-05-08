@@ -31,7 +31,7 @@
 #define HAL_SLEEP FALSE // 是否开启睡眠功能 ( 默认:FALSE )
 #endif
 #ifndef WAKE_UP_RTC_MAX_TIME
-#define WAKE_UP_RTC_MAX_TIME 50 // 睡眠唤醒所需时间，根据不同睡眠类型取值可分为： 睡眠模式/下电模式       -	50(默认)
+#define WAKE_UP_RTC_MAX_TIME 45 // - 等待32M晶振稳定时间，根据不同睡眠类型取值可分为： 睡眠模式/下电模式: 45(默认); 暂停模式: 45; 空闲模式: 5
 #endif
 #ifndef TEM_SAMPLE
 #define TEM_SAMPLE TRUE // 是否打开根据温度变化校准的功能，单次校准耗时小于10ms( 默认:TRUE )

@@ -57,12 +57,12 @@ uint32_t CH57X_LowPower(uint32_t time)
 #if (defined(DCDC_ENABLE)) && (DCDC_ENABLE == TRUE)
         PWR_DCDCCfg(ENABLE);
 #endif
-        HSECFG_Current(HSE_RCur_100); // 降为额定电流(低功耗函数中提升了HSE偏置电流)
-        time += 47; // ? 这是什么
+        time += WAKE_UP_RTC_MAX_TIME; // ? 这是什么
         if (time > 0xA8C00000)
             time -= 0xA8C00000;
         RTC_SetTignTime(time);
         LowPower_Idle();
+        HSECFG_Current(HSE_RCur_100); // 降为额定电流(低功耗函数中提升了HSE偏置电流)
     } else {
         return 3;
     }

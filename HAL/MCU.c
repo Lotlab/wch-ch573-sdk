@@ -261,15 +261,14 @@ void HAL_Init()
  */
 uint16_t HAL_GetInterTempValue(void)
 {
-    uint8_t sensor, channel, config;
+    uint8_t sensor, channel, config, tkey_cfg;
     uint16_t adc_data;
 
+    tkey_cfg = R8_TKEY_CFG;
     sensor = R8_TEM_SENSOR;
     channel = R8_ADC_CHANNEL;
     config = R8_ADC_CFG;
-    R8_TEM_SENSOR |= RB_TEM_SEN_PWR_ON;
-    R8_ADC_CHANNEL = CH_INTE_VTEMP;
-    R8_ADC_CFG = RB_ADC_POWER_ON | (2 << 4);
+    ADC_InterTSSampInit();
     R8_ADC_CONVERT |= RB_ADC_START;
     while (R8_ADC_CONVERT & RB_ADC_START)
         ;
@@ -277,6 +276,7 @@ uint16_t HAL_GetInterTempValue(void)
     R8_TEM_SENSOR = sensor;
     R8_ADC_CHANNEL = channel;
     R8_ADC_CFG = config;
+    R8_TKEY_CFG = tkey_cfg;
     return (adc_data);
 }
 

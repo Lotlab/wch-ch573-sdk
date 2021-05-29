@@ -1896,9 +1896,7 @@ typedef struct
  * if it is in basic mode,it will enter idle state;
  * if it is in auto mode,it will wait for receiving
  */
-#define TX_MODE_TX_FINISH 0x01 //!< basic or auto tx mode sends data successfully \
-    //!< if it is in basic mode,it will enter idle state;                         \
-    //!< if it is in auto mode,it will wait for receiving
+#define TX_MODE_TX_FINISH 0x01
 #define TX_MODE_TX_FAIL 0x11 //!< basic or auto tx mode fail to send data and enter idle state
 #define TX_MODE_TX_TIMEOUT TX_MODE_TX_FAIL //!< time of data transmission
 #define TX_MODE_RX_DATA 0x02 //!< auto tx mode receive data(ack) and enter idle state
@@ -1912,10 +1910,7 @@ typedef struct
  * if it is in auto mode,it will judge whether the type matches;
  * if it matches,it will send data(ack),otherwise(rsr=2), it will restart receiving
  */
-#define RX_MODE_RX_DATA 0x03 //!< basic or auto rx mode receive data   \
-    //!< if it is in basic mode,it will enter idle state;              \
-    //!< if it is in auto mode,it will judge whether the type matches; \
-    //!< if it matches,it will send data(ack),otherwise(rsr=2), it will restart receiving
+#define RX_MODE_RX_DATA 0x03 
 #define RX_MODE_TX_FINISH 0x04 //!< auto rx mode sends data(ack) successfully and enters idle state
 #define RX_MODE_TX_FAIL 0x14 //!< auto rx mode fail to send data and enter idle state
 #define RX_MODE_TX_TIMEOUT RX_MODE_TX_FAIL //!< time of data transmission

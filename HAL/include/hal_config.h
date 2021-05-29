@@ -18,6 +18,10 @@
 #include "CH57x_flash.h"
 #include "ISP573.h"
 
+#ifdef USE_CUSTOM_CONFIG
+#include "config.h"
+#endif
+
 /*********************************************************************
  * 默认配置值
  */

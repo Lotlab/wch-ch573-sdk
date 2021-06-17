@@ -9,6 +9,8 @@
 #ifndef __BASE_TYPE__
 #define __BASE_TYPE__
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

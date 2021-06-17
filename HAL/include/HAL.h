@@ -17,6 +17,7 @@ extern "C" {
 #include "RTC.h"
 #include "SLEEP.h"
 #include "CH57x_ble.h"
+#include "hal_config.h"
 
 /* hal task Event */
 #define HAL_REG_INIT_EVENT 0x2000

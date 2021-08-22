@@ -9,10 +9,6 @@
 #define Debug_UART2 2
 #define Debug_UART3 3
 
-#ifndef DEBUG_UART
-#define DEBUG_UART Debug_UART0
-#endif
-
 // 是否使用的是WCH专用的编译器
 #ifndef WCH_RISCV_COMPILER
 #define WCH_INT_TYPE "machine"

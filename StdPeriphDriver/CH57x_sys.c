@@ -277,7 +277,7 @@ __attribute__((section(".highcode"))) void mDelaymS(uint16_t t)
         mDelayuS(1000);
 }
 
-#ifdef DEBUG
+#if (defined(DEBUG)) && (defined(DEBUG_UART))
 __attribute__((used))
 int _write(int fd, char* buf, int size)
 {

@@ -1,20 +1,24 @@
 /********************************** (C) COPYRIGHT *******************************
-* File Name          : CH57x_SYS.c
-* Author             : WCH
-* Version            : V1.0
-* Date               : 2018/12/15
-* Description 
-*******************************************************************************/
+ * File Name          : CH57x_SYS.c
+ * Author             : WCH
+ * Version            : V1.2
+ * Date               : 2021/11/17
+ * Description
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
 
 #include "CH57x_sys.h"
 
-/*******************************************************************************
-* Function Name  : SetSysClock
-* Description    : 配置系统运行时钟
-* Input          : sc: 系统时钟源选择
-          refer to SYS_CLKTypeDef
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      SetSysClock
+ *
+ * @brief   配置系统运行时钟
+ *
+ * @param   sc      - 系统时钟源选择 refer to SYS_CLKTypeDef
+ *
+ * @return  none
+ */
 __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
 {
     uint32_t i;
@@ -43,7 +47,7 @@ __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
         R8_SAFE_ACCESS_SIG = 0;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R8_FLASH_CFG = 0X01;
+        R8_FLASH_CFG = 0X51;
         R8_SAFE_ACCESS_SIG = 0;
     }
 
@@ -67,17 +71,20 @@ __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
         R8_SAFE_ACCESS_SIG = 0;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
         R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-        R8_FLASH_CFG = 0X03;
+        R8_FLASH_CFG = 0X53;
         R8_SAFE_ACCESS_SIG = 0;
     }
 }
 
-/*******************************************************************************
-* Function Name  : GetSysClock
-* Description    : 获取当前系统时钟
-* Input          : None
-* Return         : Hz
-*******************************************************************************/
+/*********************************************************************
+ * @fn      GetSysClock
+ *
+ * @brief   获取当前系统时钟
+ *
+ * @param   none
+ *
+ * @return  Hz
+ */
 uint32_t GetSysClock(void)
 {
     uint16_t rev;
@@ -92,42 +99,51 @@ uint32_t GetSysClock(void)
     }
 }
 
-/*******************************************************************************
-* Function Name  : SYS_GetInfoSta
-* Description    : 获取当前系统信息状态
-* Input          : i: 
-					refer to SYS_InfoStaTypeDef
-* Return         : DISABLE  -  关闭
-				   ENABLE   -  开启
-*******************************************************************************/
+/*********************************************************************
+ * @fn      SYS_GetInfoSta
+ *
+ * @brief   获取当前系统信息状态
+ *
+ * @param   i       - refer to SYS_InfoStaTypeDef
+ *
+ * @return  是否开启
+ */
 uint8_t SYS_GetInfoSta(SYS_InfoStaTypeDef i)
 {
-    if (i == STA_SAFEACC_ACT)
+    if (i == STA_SAFEACC_ACT) {
         return (R8_SAFE_ACCESS_SIG & RB_SAFE_ACC_ACT);
-    else
+    } else {
         return (R8_GLOB_CFG_INFO & (1 << i));
+    }
 }
 
-/*******************************************************************************
-* Function Name  : SYS_ResetExecute
-* Description    : 执行系统软件复位
-* Input          : None
-* Return         : None
-*******************************************************************************/
-void SYS_ResetExecute(void)
+/*********************************************************************
+ * @fn      SYS_ResetExecute
+ *
+ * @brief   执行系统软件复位
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+__attribute__((section(".highcode"))) void SYS_ResetExecute(void)
 {
+    FLASH_ROM_SW_RESET();
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
     R8_RST_WDOG_CTRL |= RB_SOFTWARE_RESET;
     R8_SAFE_ACCESS_SIG = 0;
 }
 
-/*******************************************************************************
-* Function Name  : SYS_DisableAllIrq
-* Description    : 关闭所有中断，并保留当前中断值
-* Input          : pirqv：当前保留中断值
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      SYS_DisableAllIrq
+ *
+ * @brief   关闭所有中断，并保留当前中断值
+ *
+ * @param   pirqv   - 当前保留中断值
+ *
+ * @return  none
+ */
 void SYS_DisableAllIrq(uint32_t* pirqv)
 {
     *pirqv = (PFIC->ISR[0] >> 8) | (PFIC->ISR[1] << 24);
@@ -135,24 +151,30 @@ void SYS_DisableAllIrq(uint32_t* pirqv)
     PFIC->IRER[1] = 0xffffffff;
 }
 
-/*******************************************************************************
- * Function Name  : SYS_RecoverIrq
- * Description    : 恢复之前关闭的中断值
- * Input          : irq_status：当前保留中断值
- * Return         : None
- *******************************************************************************/
+/*********************************************************************
+ * @fn      SYS_RecoverIrq
+ *
+ * @brief   恢复之前关闭的中断值
+ *
+ * @param   irq_status  - 当前保留中断值
+ *
+ * @return  none
+ */
 void SYS_RecoverIrq(uint32_t irq_status)
 {
     PFIC->IENR[0] = (irq_status << 8);
     PFIC->IENR[1] = (irq_status >> 24);
 }
 
-/*******************************************************************************
-* Function Name  : SYS_GetSysTickCnt
-* Description    : 获取当前系统(SYSTICK)计数值
-* Input          : None
-* Return         : 当前计数值
-*******************************************************************************/
+/*********************************************************************
+ * @fn      SYS_GetSysTickCnt
+ *
+ * @brief   获取当前系统(SYSTICK)计数值
+ *
+ * @param   none
+ *
+ * @return  当前计数值
+ */
 uint32_t SYS_GetSysTickCnt(void)
 {
     uint32_t val;
@@ -161,46 +183,57 @@ uint32_t SYS_GetSysTickCnt(void)
     return (val);
 }
 
-/*******************************************************************************
-* Function Name  : WWDG_ITCfg
-* Description    : 看门狗定时器溢出中断使能
-* Input          : DISABLE-溢出不中断      ENABLE-溢出中断
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      WWDG_ITCfg
+ *
+ * @brief   看门狗定时器溢出中断使能
+ *
+ * @param   s       - 溢出是否中断
+ *
+ * @return  none
+ */
 void WWDG_ITCfg(FunctionalState s)
 {
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    if (s == DISABLE)
+    if (s == DISABLE) {
         R8_RST_WDOG_CTRL &= ~RB_WDOG_INT_EN;
-    else
+    } else {
         R8_RST_WDOG_CTRL |= RB_WDOG_INT_EN;
+    }
     R8_SAFE_ACCESS_SIG = 0;
 }
 
-/*******************************************************************************
-* Function Name  : WWDG_ResetCfg
-* Description    : 看门狗定时器复位功能
-* Input          : DISABLE-溢出不复位      ENABLE-溢出系统复位
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      WWDG_ResetCfg
+ *
+ * @brief   看门狗定时器复位功能
+ *
+ * @param   s       - 溢出是否复位
+ *
+ * @return  none
+ */
 void WWDG_ResetCfg(FunctionalState s)
 {
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
-    if (s == DISABLE)
+    if (s == DISABLE) {
         R8_RST_WDOG_CTRL &= ~RB_WDOG_RST_EN;
-    else
+    } else {
         R8_RST_WDOG_CTRL |= RB_WDOG_RST_EN;
+    }
     R8_SAFE_ACCESS_SIG = 0;
 }
 
-/*******************************************************************************
-* Function Name  : WWDG_ClearFlag
-* Description    : 清除看门狗中断标志，重新加载计数值也可清除
-* Input          : None
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      WWDG_ClearFlag
+ *
+ * @brief   清除看门狗中断标志，重新加载计数值也可清除
+ *
+ * @param   none
+ *
+ * @return  none
+ */
 void WWDG_ClearFlag(void)
 {
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
@@ -209,16 +242,20 @@ void WWDG_ClearFlag(void)
     R8_SAFE_ACCESS_SIG = 0;
 }
 
-/*******************************************************************************
-* Function Name  : HardFault_Handler
-* Description    : 硬件错误中断，进入后执行复位，复位类型为上电复位
-* Input          : None
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      HardFault_Handler
+ *
+ * @brief   硬件错误中断，进入后执行复位，复位类型为上电复位
+ *
+ * @param   none
+ *
+ * @return  none
+ */
 __attribute__((interrupt(WCH_INT_TYPE)))
 __attribute__((section(".highcode"))) void
 HardFault_Handler(void)
 {
+    FLASH_ROM_SW_RESET();
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
     R16_INT32K_TUNE = 0xFFFF;
@@ -228,12 +265,15 @@ HardFault_Handler(void)
         ;
 }
 
-/*******************************************************************************
-* Function Name  : mDelayuS
-* Description    : uS 延时
-* Input          : t: 时间参数
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      mDelayuS
+ *
+ * @brief   uS 延时
+ *
+ * @param   t       - 时间参数
+ *
+ * @return  none
+ */
 __attribute__((section(".highcode"))) void mDelayuS(uint16_t t)
 {
     uint32_t i;
@@ -263,18 +303,22 @@ __attribute__((section(".highcode"))) void mDelayuS(uint16_t t)
     } while (--i);
 }
 
-/*******************************************************************************
-* Function Name  : mDelaymS
-* Description    : mS 延时
-* Input          : t: 时间参数
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      mDelaymS
+ *
+ * @brief   mS 延时
+ *
+ * @param   t       - 时间参数
+ *
+ * @return  none
+ */
 __attribute__((section(".highcode"))) void mDelaymS(uint16_t t)
 {
     uint16_t i;
 
-    for (i = 0; i < t; i++)
+    for (i = 0; i < t; i++) {
         mDelayuS(1000);
+    }
 }
 
 #if (defined(DEBUG)) && (defined(DEBUG_UART))

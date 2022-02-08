@@ -1,10 +1,12 @@
 /********************************** (C) COPYRIGHT  *******************************
-* File Name          : core_riscv.c
-* Author             : WCH
-* Version            : V1.0.0
-* Date               : 2020/04/30
-* Description        : RISC-V Core Peripheral Access Layer Source File
-*******************************************************************************/
+ * File Name          : core_riscv.c
+ * Author             : WCH
+ * Version            : V1.0.1
+ * Date               : 2021/10/28
+ * Description        : CH573 RISC-V Core Peripheral Access Layer Source File
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
 #include <stdint.h>
 
 /* define compiler specific symbols */

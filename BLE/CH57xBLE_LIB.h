@@ -1,8 +1,8 @@
 /********************************** (C) COPYRIGHT ******************************
 * File Name         : CH57xBLE_LIB.H
 * Author            : WCH
-* Version           : V1.50
-* Date              : 2021/06/29
+* Version           : V1.60
+* Date              : 2021/11/23
 * Description       : head file
 *******************************************************************************/
 
@@ -118,7 +118,7 @@ typedef struct
 /*********************************************************************
  * GLOBAL MACROS
  */
-#define VER_FILE "CH57x_BLE_LIB_V1.5"
+#define VER_FILE "CH57x_BLE_LIB_V1.6"
 extern const uint8_t VER_LIB[]; // LIB version
 #define SYSTEM_TIME_MICROSEN 625 // unit of process event timer is 625us
 #define MS1_TO_SYSTEM_TIME(x) ((x)*1000 / SYSTEM_TIME_MICROSEN) // transform unit in ms to unit in 625us ( attentional bias )
@@ -181,28 +181,26 @@ extern const uint8_t VER_LIB[]; // LIB version
 
 //! Default Public and Random Address Length
 #define B_ADDR_LEN 6
-//! BLE Random Number Size
+//! Random Number Size
 #define B_RANDOM_NUM_SIZE 8
 //! Default key length
 #define KEYLEN 16
-//! BLE Maximum Advertising Packet Length
-#define B_MAX_ADV_LEN 31
+//! Maximum Advertising Packet Length
+#define B_MAX_ADV_LEN 31 // maximum legacy advertising packet length
 
 #ifndef SUCCESS
 #define SUCCESS 0x00
 #endif
-#define FAILURE 0x01
-#define INVALIDPARAMETER 0x02
-#define INVALID_TASK 0x03
-#define MSG_BUFFER_NOT_AVAIL 0x04
-#define INVALID_MSG_POINTER 0x05
-#define INVALID_EVENT_ID 0x06
-#define INVALID_INTERRUPT_ID 0x07
-#define NO_TIMER_AVAIL 0x08
-#define NV_ITEM_UNINIT 0x09
-#define NV_OPER_FAILED 0x0A
-#define INVALID_MEM_SIZE 0x0B
-#define NV_BAD_ITEM_LEN 0x0C
+#define FAILURE 0x01 //!< Failure
+#define INVALIDPARAMETER 0x02 //!< Invalid request field
+#define INVALID_TASK 0x03 //!< Task ID isn't setup properly
+#define MSG_BUFFER_NOT_AVAIL 0x04 //!< No buffer is available.
+#define INVALID_MSG_POINTER 0x05 //!< No message pointer.
+#define INVALID_EVENT_ID 0x06 //!< Invalid event id.
+#define INVALID_TIMEOUT 0x07 //!< Invalid timeout.
+#define NO_TIMER_AVAIL 0x08 //!< No event is available.
+#define NV_OPER_FAILED 0x0A //!< read a data item to NV failed.
+#define INVALID_MEM_SIZE 0x0B //!< The tokens take up too much space and don't fit into Advertisement data and Scan Response Data
 
 /** BLE_STATUS_VALUES BLE Default BLE Status Values
  * returned as bStatus_t
@@ -220,7 +218,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define bleInvalidRange 0x18 //!< A parameter is out of range
 #define bleLinkEncrypted 0x19 //!< The link is already encrypted
 #define bleProcedureComplete 0x1A //!< The Procedure is completed
-#define bleInvalidMtuSize 0x1B
+#define bleInvalidMtuSize 0x1B //!< SDU size is larger than peer MTU.
 
 /*******************************LinkDB***************************************/
 // Special case connection handles
@@ -374,10 +372,27 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define POS_QUALITY_UUID 0x2A69 // Position Quality
 #define LN_FEATURE_UUID 0x2A6A // LN Feature
 #define LN_CTRL_PT_UUID 0x2A6B // LN Control Point
+#define ELE_UUID 0x2A6C // Elevation
+#define PRESSURE_UUID 0x2A6D // Pressure
+#define TEMP_UUID 0x2A6E // Temperature
+#define HUMI_UUID 0x2A6F // Humidity
+#define TRUE_WIND_SPEED_UUID 0x2A70 // True Wind Speed
+#define TRUE_WIND_DIRECTION_UUID 0x2A71 // True Wind Direction
+#define URI_UUID 0x2AB6 // URI
+#define MEDIA_STATE_UUID 0x2BA3 // Media State
+#define MEDIA_CTRL_PT_UUID 0x2BA4 // Media Control Point
+#define MEDIA_CTRL_PT_OS_UUID 0x2BA5 // Media Control Point Opcodes Supported
+#define CALL_STATE_UUID 0x2BBD // Call State
+#define CALL_CTRL_PT_UUID 0x2BBE // Call Control Point
+#define CALL_CTRL_PT_OO_UUID 0x2BBF // Call Control Point Optional Opcodes
+#define TERM_REASON_UUID 0x2BC0 // Termination Reason
+#define INCOMING_CALL_UUID 0x2BC1 // Incoming Call
+#define MUTE_UUID 0x2BC3 // Mute
+
 /**
  * GATT Unit UUIDs
  */
-#define GATT_UNITLESS_UUID 0x2700 // <Symbol>, <Expressed in terms of SI base units>
+#define GATT_UNITLESS_UUID 0x2700 // unitless
 #define GATT_UNIT_LENGTH_METER_UUID 0x2701 // m, m
 #define GATT_UNIT_MASS_KGRAM_UUID 0x2702 // kg, kg
 #define GATT_UNIT_TIME_SECOND_UUID 0x2703 // s, s
@@ -432,18 +447,18 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GATT_UNIT_VELOCITY_KMPH_UUID 0x27A6 // km/h, 0.2777778 m^s-1
 #define GATT_UNIT_VELOCITY_MPH_UUID 0x27A7 // mi/h, 0.44704 m^ s-1
 #define GATT_UNIT_ANGULAR_VELOCITY_RPM_UUID 0x27A8 // r/min, 0.1047198 rad s-1
-#define GATT_UNIT_ENERGY_GCAL_UUID 0x27A9 //
+#define GATT_UNIT_ENERGY_GCAL_UUID 0x27A9 // energy (gram calorie)
 #define GATT_UNIT_ENERGY_KCAL_UUID 0x27AA // kcal, 4190.02 J
 #define GATT_UNIT_ENERGY_KWH_UUID 0x27AB // kWh, 3600000 J
 #define GATT_UNIT_THERMODYN_TEMP_DF_UUID 0x27AC // oF, t/oF = T/K ?1.8 - 459.67
-#define GATT_UNIT_PERCENTAGE_UUID 0x27AD // %
-#define GATT_UNIT_PER_MILE_UUID 0x27AE //
-#define GATT_UNIT_PERIOD_BPM_UUID 0x27AF //
-#define GATT_UNIT_E_CHARGE_AH_UUID 0x27B0 //
-#define GATT_UNIT_MASS_DENSITY_MGPD_UUID 0x27B1 //
-#define GATT_UNIT_MASS_DENSITY_MMPL_UUID 0x27B2 //
-#define GATT_UNIT_TIME_YEAR_UUID 0x27B3 //
-#define GATT_UNIT_TIME_MONTH_UUID 0x27B4 //
+#define GATT_UNIT_PERCENTAGE_UUID 0x27AD // percentage,%
+#define GATT_UNIT_PER_MILE_UUID 0x27AE // per mille
+#define GATT_UNIT_PERIOD_BPM_UUID 0x27AF // period (beats per minute),BPM
+#define GATT_UNIT_E_CHARGE_AH_UUID 0x27B0 // electric charge (ampere hours)
+#define GATT_UNIT_MASS_DENSITY_MGPD_UUID 0x27B1 // mass density (milligram per decilitre)
+#define GATT_UNIT_MASS_DENSITY_MMPL_UUID 0x27B2 // mass density (millimole per litre)
+#define GATT_UNIT_TIME_YEAR_UUID 0x27B3 // time (year)
+#define GATT_UNIT_TIME_MONTH_UUID 0x27B4 // time (month)
 
 /************************************************ Messages IDs *************************************************************/
 // GATT - Messages IDs
@@ -1365,7 +1380,6 @@ typedef struct
         //!< 0x01 - immediately write all pending prepared values.
 } gattReliableWritesReq_t;
 
-/************************************************************************************************************/
 /**
  * GATT Message format. It's a union of all attribute protocol/profile messages
  * and locally-generated events used between the attribute protocol/profile and
@@ -1461,18 +1475,16 @@ typedef struct
 /**
  * @brief   Callback function prototype to read an attribute value.
  *
- *          Note: blePending can be returned ONLY for the following
- *                read operations:
- *                - Read Request: ATT_READ_REQ
- *                - Read Blob Request: ATT_READ_BLOB_REQ
+ * @note    blePending can be returned ONLY for the following
+ *          read operations:
+ *          - Read Request: ATT_READ_REQ
+ *          - Read Blob Request: ATT_READ_BLOB_REQ
  *
- *          Note: If blePending is returned then it's the responsibility
- *                of the application to respond to ATT_READ_REQ and 
- *                ATT_READ_BLOB_REQ message with ATT_READ_RSP and
- *                ATT_READ_BLOB_RSP message respectively.
+ * @note    If blePending is returned then it's the responsibility of the application to respond to 
+ *          ATT_READ_REQ and ATT_READ_BLOB_REQ message with ATT_READ_RSP and ATT_READ_BLOB_RSP 
+ *          message respectively.
  *
- *          Note: Payload 'pValue' used with ATT_READ_RSP and ATT_READ_BLOB_RSP
- *                must be allocated using GATT_bm_alloc().
+ * @note    Payload 'pValue' used with ATT_READ_RSP and ATT_READ_BLOB_RSP must be allocated using GATT_bm_alloc().
  *
  * @param   connHandle - connection request was received on
  * @param   pAttr - pointer to attribute
@@ -1492,22 +1504,18 @@ typedef uint8_t (*pfnGATTReadAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAt
 /**
  * @brief   Callback function prototype to write an attribute value.
  *
- *          Note: blePending can be returned ONLY for the following
- *                write operations:
- *                - Write Request: ATT_WRITE_REQ
- *                - Write Command: ATT_WRITE_CMD
- *                - Write Long: ATT_EXECUTE_WRITE_REQ
- *                - Reliable Writes: Multiple ATT_PREPARE_WRITE_REQ followed
- *                  by one final ATT_EXECUTE_WRITE_REQ
+ * @note    blePending can be returned ONLY for the following
+ *          write operations:
+ *          - Write Request: ATT_WRITE_REQ
+ *          - Write Command: ATT_WRITE_CMD
+ *          - Write Long: ATT_EXECUTE_WRITE_REQ
+ *          - Reliable Writes: Multiple ATT_PREPARE_WRITE_REQ followed by one final ATT_EXECUTE_WRITE_REQ
  *
- *          Note: If blePending is returned then it's the responsibility
- *                of the application to 1) respond to ATT_WRITE_REQ and 
- *                ATT_EXECUTE_WRITE_REQ message with ATT_WRITE_RSP and
- *                ATT_EXECUTE_WRITE_RSP message respectively, and 2) free
- *                each request payload 'pValue' using BM_free().
+ * @note    If blePending is returned then it's the responsibility of the application to 1) respond to 
+ *          ATT_WRITE_REQ and ATT_EXECUTE_WRITE_REQ message with ATT_WRITE_RSP and ATT_EXECUTE_WRITE_RSP
+ *          message respectively, and 2) free each request payload 'pValue' using BM_free().
  *
- *          Note: Write Command (ATT_WRITE_CMD) does NOT require a response
- *                message.
+ * @note    Write Command (ATT_WRITE_CMD) does NOT require a response message.
  *
  * @param   connHandle - connection request was received on
  * @param   pAttr - pointer to attribute
@@ -2000,213 +2008,130 @@ extern uint32_t tmos_strlen(char* pString);
 extern void tmos_memset(void* pDst, uint8_t Value, uint32_t len);
 extern void tmos_memcpy(void* dst, const void* src, uint32_t len); // Generic memory copy.
 
-/*******************************************************************************
- * @fn          tmos_set_event
- *
+/**
  * @brief       start a event immediately
- *
- * input parameters
  *
  * @param       taskID - task ID of event
  * @param       event - event value
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0 - success.
  */
 extern bStatus_t tmos_set_event(tmosTaskID taskID, tmosEvents event);
 
-/*******************************************************************************
- * @fn          tmos_clear_event
- *
+/**
  * @brief       clear a event already timeout, cannot be used in it own event function.
- *
- * input parameters
  *
  * @param       taskID - task ID of event
  * @param       event - event value
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0 - success.
  */
 extern bStatus_t tmos_clear_event(tmosTaskID taskID, tmosEvents event);
 
-/*******************************************************************************
- * @fn          tmos_start_task
- *
+/**
  * @brief       start a event after period of time
- *
- * input parameters
  *
  * @param       taskID - task ID of event
  * @param       event - event value
  * @param       time - period of time
  *
- * output parameters
- *
- * @param       None.
- *
  * @return      TRUE - success.
  */
 extern bStatus_t tmos_start_task(tmosTaskID taskID, tmosEvents event, tmosTimer time);
 
-/*******************************************************************************
- * @fn          tmos_stop_task
+/**
+ * @brief   This function is called to start a timer to expire in n system clock time.
+ *          When the timer expires, the calling task will get the specified event
+ *          and the timer will be reloaded with the timeout value.
  *
+ * @param   taskID - task ID to set timer for
+ * @param   event - event to be notified with
+ * @param   time - timeout value
+ *
+ * @return  SUCCESS, or NO_TIMER_AVAIL.
+ */
+extern bStatus_t tmos_start_reload_task( tmosTaskID taskID, tmosEvents event, tmosTimer time );
+
+/**
  * @brief       stop a event
- *
- * input parameters
  *
  * @param       taskID - task ID of event
  * @param       event - event value
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0 - success. 
  */
 extern bStatus_t tmos_stop_task(tmosTaskID taskID, tmosEvents event);
 
-/*******************************************************************************
- * @fn          tmos_get_task_timer
- *
+/**
  * @brief       get last period of time for this event
- *
- * input parameters
  *
  * @param       taskID - task ID of event
  * @param       event - event value
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      the timer's tick count if found, zero otherwise.
  */
 extern tmosTimer tmos_get_task_timer(tmosTaskID taskID, tmosEvents event);
 
-/*******************************************************************************
- * @fn          tmos_msg_send
- *
+/**
  * @brief       send msg to a task,callback events&SYS_EVENT_MSG
- *
- * input parameters
  *
  * @param       taskID - task ID of task need to send msg
  * @param       *msg_ptr - point of msg
  *
- * output parameters
- *
- * @param       None.
- *
- * @return      0 - success. 
+ * @return      SUCCESS, INVALID_TASK, INVALID_MSG_POINTER
  */
 extern bStatus_t tmos_msg_send(tmosTaskID taskID, uint8_t* msg_ptr);
 
-/*******************************************************************************
- * @fn          tmos_msg_deallocate
- *
+/**
  * @brief       delete a msg
  *
- * input parameters
- *
  * @param       *msg_ptr - point of msg
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0 - success. 
  */
 extern bStatus_t tmos_msg_deallocate(uint8_t* msg_ptr);
 
-/*******************************************************************************
- * @fn          tmos_msg_receive
- *
+/**
  * @brief       receive a msg
  *
- * input parameters
- *
  * @param       taskID  - task ID of task need to receive msg
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      *uint8_t - message information or NULL if no message
  */
 extern uint8_t* tmos_msg_receive(tmosTaskID taskID);
 
-/*******************************************************************************
- * @fn          tmos_msg_allocate
- *
+/**
  * @brief       allocate buffer for msg when need to send msg
  *
- * input parameters
- *
  * @param       len  - length of msg
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      pointer to allocated buffer or NULL if allocation failed.
  */
 extern uint8_t* tmos_msg_allocate(uint16_t len);
 
-/*******************************************************************************
- * @fn          tmos_snv_read
- *
+/**
  * @brief       read a data item to NV.
- *
- * input parameters
  *
  * @param       id   - Valid NV item Id.
  * @param       len  - Length of data to read.
  * @param       *pBuf - Data to read.
  *
- * output parameters
- *
- * @param       None.
- *
  * @return      SUCCESS if successful, NV_OPER_FAILED if failed.
  */
 extern uint8_t tmos_snv_read(uint8_t id, uint8_t len, void* pBuf);
 
-/*******************************************************************************
- * @fn          TMOS_TimerInit
- *
+/**
  * @brief       tmos system timer initialization
- *
- * input parameters
  *
  * @param       fnGetClock - 0:system clock select RTC timer
  *                       valid:system clock select extend input
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      Command Status.
  */
 extern bStatus_t TMOS_TimerInit(pfnGetSysClock fnGetClock);
 
-/*******************************************************************************
- * @fn          TMOS_SystemProcess
- *
+/**
  * @brief       Process system
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -2214,16 +2139,8 @@ extern bStatus_t TMOS_TimerInit(pfnGetSysClock fnGetClock);
  */
 extern void TMOS_SystemProcess(void);
 
-/*******************************************************************************
- * @fn          TMOS_GetSystemClock
- *
+/**
  * @brief       Get current system clock
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -2231,198 +2148,107 @@ extern void TMOS_SystemProcess(void);
  */
 extern uint32_t TMOS_GetSystemClock(void);
 
-/*******************************************************************************
- * @fn          TMOS_ProcessEventRegister
- *
+/**
  * @brief       register process event callback function
  *
- * input parameters
- *
  * @param       eventCb-events callback function
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0xFF - error,others-task id
  */
 extern tmosTaskID TMOS_ProcessEventRegister(pTaskEventHandlerFn eventCb);
 
-/*******************************************************************************
- * @fn          TMOS_Set32KTuneValue
+/**
+ * @brief       set LSE calibration value
  *
- * @brief
- *
- * input parameters
- *
- * @param       flash_val
- * @param       ram_val
- *
- * output parameters
- *
- * @param       None.
+ * @param       flash_val - the value of flash
+ * @param       ram_val - the value of ram
  *
  * @return      None.
  */
 extern void TMOS_Set32KTuneValue(uint16_t flash_val, uint16_t ram_val);
 
-/*******************************************************************************
- * @fn          LL_AddWhiteListDevice
- *
+/**
  * @brief       Add a device address into white list ( support 16 MAX )
- *
- * input parameters
  *
  * @param       addrType - Type of device address
  * @param       devAddr  - first address of device address
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      Command Status.
  */
 extern bStatus_t LL_AddWhiteListDevice(uint8_t addrType, uint8_t* devAddr);
 
-/*******************************************************************************
- * @fn          LL_RemoveWhiteListDevice API
- *
+/**
  * @brief       Remove a device address from white list
- *
- * input parameters
  *
  * @param       addrType - Type of device address
  * @param       devAddr  - first address of device address
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      Command Status.
  */
 extern bStatus_t LL_RemoveWhiteListDevice(uint8_t addrType, uint8_t* devAddr);
 
-/*******************************************************************************
- * @fn          LL_ClearWhiteList
- *
+/**
  * @brief       Clear white list
  *
- * input parameters
- *
  * @param       None
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      Command Status.
  */
 extern bStatus_t LL_ClearWhiteList(void);
 
-/*******************************************************************************
- * @fn          LL_Encrypt
- *
+/**
  * @brief       Encrypt data
- *
- * input parameters
  *
  * @param       key - key
  * @param       plaintextData - original data
  * @param       encryptData - encrypted data
  *
- * output parameters
- *
- * @param       None.
- *
  * @return      Command Status.
  */
 extern bStatus_t LL_Encrypt(uint8_t* key, uint8_t* plaintextData, uint8_t* encryptData);
 
-/*******************************************************************************
- * @fn          LL_Decrypt
- *
+/**
  * @brief       Decrypt data
- *
- *
- * input parameters
  *
  * @param       key - key
  * @param       plaintextData - original data
  * @param       decryptData - decrypted data
  *
- * output parameters
- *
- * @param       None.
- *
  * @return      Command Status.
  */
 extern bStatus_t LL_Decrypt(uint8_t* key, uint8_t* plaintextData, uint8_t* decryptData);
 
-/*******************************************************************************
- * @fn          LL_GetNumberOfUnAckPacket
- *
+/**
  * @brief       get number of unAck packet in current connect buffer
  *
- *
- * input parameters
- *
  * @param       handle - connect handle
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0xFFFFFFFF-handle error,number of packets not receiving ack 
  */
 extern uint32_t LL_GetNumberOfUnAckPacket(uint16_t handle);
 
-/*******************************************************************************
- * @fn          LL_ConnectEventRegister
- *
+/**
  * @brief       Register a callback function will be called after each connect event.
  *              Only effect in single connection
  *
- * input parameters
- *
  * @param       connectEventCB - callback function
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      None.
  */
 extern void LL_ConnectEventRegister(pfnConnectEventCB connectEventCB);
 
-/*******************************************************************************
- * @fn          LL_SetTxPowerLevel
- *
+/**
  * @brief       set tx power level
  *
- *
- * input parameters
- *
  * @param       power - tx power level
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      Command Status.
  */
 extern bStatus_t LL_SetTxPowerLevel(uint8_t power);
 
-/*******************************************************************************
- * @fn          BLE_ReadRssi
- *
+/**
  * @brief       read rssi
  *
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -2430,17 +2256,9 @@ extern bStatus_t LL_SetTxPowerLevel(uint8_t power);
  */
 extern int8_t BLE_ReadRssi(void);
 
-/*******************************************************************************
- * @fn          BLE_ReadCfo
- *
+/**
  * @brief       read cfo
  *
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -2448,30 +2266,18 @@ extern int8_t BLE_ReadRssi(void);
  */
 extern int16_t BLE_ReadCfo(void);
 
-/*******************************************************************************
- * @fn          BLE_PAControlInit
- *
+/**
  * @brief       pa control init
- *              Can't be called until  role Init
- *
- * input parameters
+ * @note        Can't be called until  role Init
  *
  * @param       paControl - pa control parameters(global variable)
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      Command Status.
  */
 extern void BLE_PAControlInit(blePaControlConfig_t* paControl);
 
-/*******************************************************************************
- * @fn          BLE_RegInit
- *
+/**
  * @brief       ble register reset and rf calibration 
- *
- * input parameters
  *
  * @param          - 
  *
@@ -2483,33 +2289,17 @@ extern void BLE_PAControlInit(blePaControlConfig_t* paControl);
  */
 extern void BLE_RegInit(void);
 
-/*******************************************************************************
- * @fn          BLE_LibInit
- *
+/**
  * @brief       Init BLE lib. RTC will be occupied at the same time.
  *
- * input parameters
- *
  * @param       pCfg - config of BLE lib
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0-success. error defined @ ERR_LIB_INIT
  */
 extern bStatus_t BLE_LibInit(bleConfig_t* pCfg);
 
-/*******************************************************************************
- * @fn          BLE_AccessAddressGenerate
- *
+/**
  * @brief       generate a valid access address
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -2617,9 +2407,8 @@ extern gattAttribute_t* GATT_FindHandle(uint16_t handle, uint16_t* pHandle);
  *          application task will receive an tmos GATT_MSG_EVENT message.
  *          The type of the message will be ATT_HANDLE_VALUE_CFM.
  *
- *          Note: This sub-procedure is complete when ATT_HANDLE_VALUE_CFM
- *                (with SUCCESS or bleTimeout status) is received by the 
- *                calling application task.
+ * @note    This sub-procedure is complete when ATT_HANDLE_VALUE_CFM
+ *          (with SUCCESS or bleTimeoutstatus) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pInd - pointer to indication to be sent
@@ -2643,8 +2432,7 @@ extern bStatus_t GATT_Indication(uint16_t connHandle, attHandleValueInd_t* pInd,
  *
  *          The ATT Handle Value Notification is used in this sub-procedure.
  *
- *          Note: A notification may be sent at any time and does not
- *          invoke a confirmation.
+ * @note    A notification may be sent at any time and does not invoke a confirmation.
  *
  *          No confirmation will be sent to the calling application task for
  *          this sub-procedure.
@@ -2676,9 +2464,9 @@ extern bStatus_t GATT_Notification(uint16_t connHandle, attHandleValueNoti_t* pN
  *          The type of the message will be either ATT_EXCHANGE_MTU_RSP or
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_EXCHANGE_MTU_RSP
- *                (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *                SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_EXCHANGE_MTU_RSP
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2708,10 +2496,9 @@ extern bStatus_t GATT_ExchangeMTU(uint16_t connHandle, attExchangeMTUReq_t* pReq
  *          The type of the messages will be either ATT_READ_BY_GRP_TYPE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_BY_GRP_TYPE_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application
- *                task.
+ * @note    This sub-procedure is complete when either ATT_READ_BY_GRP_TYPE_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   taskId - task to be notified of response
@@ -2744,9 +2531,9 @@ extern bStatus_t GATT_DiscAllPrimaryServices(uint16_t connHandle, uint8_t taskId
  *          The type of the messages will be either ATT_FIND_BY_TYPE_VALUE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_FIND_BY_TYPE_VALUE_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_FIND_BY_TYPE_VALUE_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pUUID - pointer to service UUID to look for
@@ -2779,9 +2566,9 @@ extern bStatus_t GATT_DiscPrimaryServiceByUUID(uint16_t connHandle, uint8_t* pUU
  *          The type of the messages will be either ATT_READ_BY_TYPE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   startHandle - starting handle
@@ -2814,9 +2601,9 @@ extern bStatus_t GATT_FindIncludedServices(uint16_t connHandle, uint16_t startHa
  *          The type of the messages will be either ATT_READ_BY_TYPE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   startHandle - starting handle
@@ -2850,9 +2637,9 @@ extern bStatus_t GATT_DiscAllChars(uint16_t connHandle, uint16_t startHandle, ui
  *          The type of the messages will be either ATT_READ_BY_TYPE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2885,9 +2672,9 @@ extern bStatus_t GATT_DiscCharsByUUID(uint16_t connHandle, attReadByTypeReq_t* p
  *          The type of the messages will be either ATT_FIND_INFO_RSP or
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_FIND_INFO_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_FIND_INFO_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   startHandle - starting handle
@@ -2922,9 +2709,9 @@ extern bStatus_t GATT_DiscAllCharDescs(uint16_t connHandle, uint16_t startHandle
  *          The type of the message will be either ATT_READ_RSP or
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_RSP
- *                (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *                SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_RSP
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
+ *          SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2957,9 +2744,9 @@ extern bStatus_t GATT_ReadCharValue(uint16_t connHandle, attReadReq_t* pReq, uin
  *          The type of the message will be either ATT_READ_BY_TYPE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
- *                (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *                SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
+ *          SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2987,9 +2774,9 @@ extern bStatus_t GATT_ReadUsingCharUUID(uint16_t connHandle, attReadByTypeReq_t*
  *          The type of the messages will be either ATT_READ_BLOB_RSP or
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_BLOB_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_BLOB_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3020,9 +2807,9 @@ extern bStatus_t GATT_ReadLongCharValue(uint16_t connHandle, attReadBlobReq_t* p
  *          The type of the message will be either ATT_READ_MULTI_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_MULTI_RSP
- *                (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *                SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_MULTI_RSP
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
+ *          SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3127,9 +2914,9 @@ extern bStatus_t GATT_SignedWriteNoRsp(uint16_t connHandle, attWriteReq_t* pReq)
  *          The type of the message will be either ATT_WRITE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_WRITE_RSP
- *                (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *                SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_WRITE_RSP
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
+ *          SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3160,13 +2947,13 @@ extern bStatus_t GATT_WriteCharValue(uint16_t connHandle, attWriteReq_t* pReq, u
  *          ATT_EXECUTE_WRITE_RSP or ATT_ERROR_RSP (if an error occurred on
  *          the server).
  *
- *          Note: This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
- *                (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
- *                or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
- *                is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
+ *          (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
+ *          or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
+ *          is received by the calling application task.
  *
- *          Note: The 'pReq->pValue' pointer will be freed when the sub-procedure
- *                is complete. 
+ * @note    The 'pReq->pValue' pointer will be freed when the sub-procedure
+ *          is complete. 
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3206,13 +2993,13 @@ extern bStatus_t GATT_WriteLongCharValue(uint16_t connHandle, attPrepareWriteReq
  *          ATT_EXECUTE_WRITE_RSP or ATT_ERROR_RSP (if an error occurred on
  *          the server).
  *
- *          Note: This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
- *                (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
- *                or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
- *                is received by the calling application task. 
+ * @note    This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
+ *          (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
+ *          or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
+ *          is received by the calling application task. 
  *
- *          Note: The 'pReqs' pointer will be freed when the sub-procedure is
- *                complete. 
+ * @note    The 'pReqs' pointer will be freed when the sub-procedure is
+ *          complete. 
  *
  * @param   connHandle - connection to use
  * @param   pReqs - pointer to requests to be sent (must be allocated)
@@ -3244,9 +3031,9 @@ extern bStatus_t GATT_ReliableWrites(uint16_t connHandle, attPrepareWriteReq_t* 
  *          The type of the message will be either ATT_READ_RSP or
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_RSP
- *                (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *                SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_RSP
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
+ *          SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3279,9 +3066,9 @@ extern bStatus_t GATT_ReadCharDesc(uint16_t connHandle, attReadReq_t* pReq, uint
  *          The type of the messages will be either ATT_READ_BLOB_RSP or
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_READ_BLOB_RSP
- *                (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
- *                (with SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_READ_BLOB_RSP
+ *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3312,9 +3099,9 @@ extern bStatus_t GATT_ReadLongCharDesc(uint16_t connHandle, attReadBlobReq_t* pR
  *          The type of the message will be either ATT_WRITE_RSP
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
- *          Note: This sub-procedure is complete when either ATT_WRITE_RSP
- *                (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *                SUCCESS status) is received by the calling application task.
+ * @note    This sub-procedure is complete when either ATT_WRITE_RSP
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
+ *          SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3345,12 +3132,12 @@ extern bStatus_t GATT_WriteCharDesc(uint16_t connHandle, attWriteReq_t* pReq, ui
  *          ATT_EXECUTE_WRITE_RSP or ATT_ERROR_RSP (if an error occurred on
  *          the server).
  *
- *          Note: This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
+ * @note    This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
  *                (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
  *                or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
  *                is received by the calling application task.
  *
- *          Note: The 'pReq->pValue' pointer will be freed when the sub-procedure
+ * @note    The 'pReq->pValue' pointer will be freed when the sub-procedure
  *                is complete.
  *
  * @param   connHandle - connection to use
@@ -3370,8 +3157,7 @@ extern bStatus_t GATT_WriteLongCharDesc(uint16_t connHandle, attPrepareWriteReq_
 /**
  * @brief   GATT implementation of the allocator functionality.
  *
- *          Note: This function should only be called by GATT and
- *                the upper layer protocol/application.
+ * @note    This function should only be called by GATT and the upper layer protocol/application.
  *
  * @param   connHandle - connection that message is to be sent on.
  * @param   opcode - opcode of message that buffer to be allocated for.
@@ -3429,7 +3215,7 @@ extern bStatus_t GATTServApp_AddService(uint32_t services);
  * @brief   Deregister a service's attribute list and callback functions from
  *          the GATT Server Application.
  *
- *          NOTE: It's the caller's responsibility to free the service attribute
+ * @note    It's the caller's responsibility to free the service attribute
  *          list returned from this API.
  *
  * @param   handle - handle of service to be deregistered
@@ -3443,10 +3229,10 @@ extern bStatus_t GATTServApp_DeregisterService(uint16_t handle, gattAttribute_t*
 /**
  * @brief   Initialize the client characteristic configuration table.
  *
- *          Note: Each client has its own instantiation of the Client
- *                Characteristic Configuration. Reads/Writes of the Client
- *                Characteristic Configuration only only affect the
- *                configuration of that client.
+ * @note    Each client has its own instantiation of the Client
+ *          Characteristic Configuration. Reads/Writes of the Client
+ *          Characteristic Configuration only only affect the
+ *          configuration of that client.
  *
  * @param   connHandle - connection handle (0xFFFF for all connections).
  * @param   charCfgTbl - client characteristic configuration table.
@@ -3456,13 +3242,26 @@ extern bStatus_t GATTServApp_DeregisterService(uint16_t handle, gattAttribute_t*
 extern void GATTServApp_InitCharCfg(uint16_t connHandle, gattCharCfg_t* charCfgTbl);
 
 /**
- * @brief   Read the client characteristic configuration for a given
- *          client.
+ * @brief   Send out a Service Changed Indication.
  *
- *          Note: Each client has its own instantiation of the Client
- *                Characteristic Configuration. Reads of the Client
- *                Characteristic Configuration only shows the configuration
- *                for that client.
+ * @param   connHandle - connection to use
+ * @param   taskId - task to be notified of confirmation
+ *
+ * @return  SUCCESS: Indication was sent successfully.<BR>
+ *          FAILURE: Service Changed attribute not found.<BR>
+ *          INVALIDPARAMETER: Invalid connection handle or request field.<BR>
+ *          MSG_BUFFER_NOT_AVAIL: No HCI buffer is available.<BR>
+ *          bleNotConnected: Connection is down.<BR>
+ *          blePending: A confirmation is pending with this client.<BR>
+ */
+extern bStatus_t GATTServApp_SendServiceChangedInd( uint16_t connHandle, uint8_t taskId );
+
+/**
+ * @brief   Read the client characteristic configuration for a given client.
+ *
+ * @note    Each client has its own instantiation of the Client Characteristic Configuration.
+ *          Reads of the Client Characteristic Configuration only shows the configuration
+ *          for that client.
  *
  * @param   connHandle - connection handle.
  * @param   charCfgTbl - client characteristic configuration table.
@@ -3475,10 +3274,10 @@ extern uint16_t GATTServApp_ReadCharCfg(uint16_t connHandle, gattCharCfg_t* char
  * @brief   Write the client characteristic configuration for a given
  *          client.
  *
- *          Note: Each client has its own instantiation of the Client
- *                Characteristic Configuration. Writes of the Client
- *                Characteristic Configuration only only affect the
- *                configuration of that client.
+ * @note    Each client has its own instantiation of the Client
+ *          Characteristic Configuration. Writes of the Client
+ *          Characteristic Configuration only only affect the
+ *          configuration of that client.
  *
  * @param   connHandle - connection handle.
  * @param   charCfgTbl - client characteristic configuration table.
@@ -3549,88 +3348,52 @@ extern bStatus_t GGS_AddService(uint32_t services);
  * FUNCTIONS - Initialization and Configuration
  */
 
-/*******************************************************************************
- * @fn          GAP_SetParamValue
- *
+/**
  * @brief       Set a GAP Parameter value.  Use this function to change
  *              the default GAP parameter values.
  *
- * input parameters
- *
  * @param       paramID - parameter ID: @ref GAP_PARAMETER_ID_DEFINES
  * @param       paramValue - new param value
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      SUCCESS or INVALIDPARAMETER (invalid paramID)
  */
 extern bStatus_t GAP_SetParamValue(uint16_t paramID, uint16_t paramValue);
 
-/*******************************************************************************
- * @fn          GAP_GetParamValue
- *
+/**
  * @brief       Get a GAP Parameter value.
  *
  * NOTE:        This function is the same as GAP_PasskeyUpdate(), except that
  *              the passkey is passed in as a non-string format.
  *
- * input parameters
- *
  * @param       paramID - parameter ID: @ref GAP_PARAMETER_ID_DEFINES
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      GAP Parameter value or 0xFFFF if invalid
  */
 extern uint16_t GAP_GetParamValue(uint16_t paramID);
 
-/*******************************************************************************
- * @fn          GAP_ConfigDeviceAddr
- *
+/**
  * @brief       Setup the device's address type.  If ADDRTYPE_PRIVATE_RESOLVE
  *              is selected, the address will change periodically.
  *
- * input parameters
- *
  * @param       addrType - @ref GAP_ADDR_TYPE_DEFINES
- * @param       pStaticAddr - Only used with ADDRTYPE_STATIC
- *                       or ADDRTYPE_PRIVATE_NONRESOLVE type.<BR>
- *                   NULL to auto generate otherwise the application
- *                   can specify the address value
- *
- * output parameters
- *
- * @param       None.
+ * @param       pStaticAddr - Only used with ADDRTYPE_STATIC or ADDRTYPE_PRIVATE_NONRESOLVE type
+ *                   NULL to auto generate otherwise the application can specify the address value
  *
  * @return      SUCCESS: address type updated,<BR>
- *              bleNotReady: Can't be called until GAP_DeviceInit() is called
- *                   and the init process is completed,<BR>
- *              bleIncorrectMode: can't change with an active connection,<BR>
- *               or INVALIDPARAMETER.<BR>
- *
- *              If return value isn't SUCCESS, the address type remains
- *              the same as before this call.
+ *              bleNotReady: Can't be called until GAP_DeviceInit() is called and the init process is completed
+ *              bleIncorrectMode: can't change with an active connection,or INVALIDPARAMETER
+ *              If return value isn't SUCCESS, the address type remains the same as before this call.
  */
 extern bStatus_t GAP_ConfigDeviceAddr(uint8_t addrType, uint8_t* pStaticAddr);
 
-/*******************************************************************************
- * @fn          GAP_ResolvePrivateAddr
- *
+/**
  * @brief       Resolves a private address against an IRK.
  *
- * input parameters
+ * @param       pIRK - (in) pointer to the IRK
+ * @param       pAddr - (in) pointer to the Resolvable Private address
  *
- * @param       pIRK - pointer to the IRK
- * @param       pAddr - pointer to the Resolvable Private address
- *
- * output parameters
- *
- * @param       pIRK
- * @param       pAddr
+ * @param       pIRK (out)
+ * @param       pAddr (out)
  *
  * @return      SUCCESS: match,<BR>
  *              FAILURE: don't match,<BR>
@@ -3638,28 +3401,19 @@ extern bStatus_t GAP_ConfigDeviceAddr(uint8_t addrType, uint8_t* pStaticAddr);
  */
 extern bStatus_t GAP_ResolvePrivateAddr(uint8_t* pIRK, uint8_t* pAddr);
 
-/*******************************************************************************
- * @fn          GAP_UpdateAdvertisingData
- *
+/**
  * @brief       Setup or change advertising and scan response data.
  *
- *       NOTE:  if the return status from this function is SUCCESS,
- *              the task isn't complete until the GAP_ADV_DATA_UPDATE_DONE_EVENT
- *              is sent to the calling application task.
- *
- * input parameters
+ * @note        if the return status from this function is SUCCESS,the task isn't complete
+ *              until the GAP_ADV_DATA_UPDATE_DONE_EVENT is sent to the calling application task.
  *
  * @param       taskID - task ID of the app requesting the change
  * @param       adType - TRUE - advertisement data, FALSE  - scan response data
  * @param       dataLen - Octet length of advertData
  * @param       pAdvertData - advertising or scan response data
  *
- * output parameters
- *
- * @param       None.
- *
- * @return      SUCCESS: data accepted,<BR>
- *              bleIncorrectMode: invalid profile role,<BR>
+ * @return      SUCCESS: data accepted,
+ *              bleIncorrectMode: invalid profile role,
  */
 extern bStatus_t GAP_UpdateAdvertisingData(uint8_t taskID, uint8_t adType, uint8_t dataLen, uint8_t* pAdvertData);
 
@@ -3669,8 +3423,7 @@ extern bStatus_t GAP_UpdateAdvertisingData(uint8_t taskID, uint8_t adType, uint8
 /**
  * @brief       Set a GAP Bond Manager parameter.
  *
- *  NOTE: You can call this function with a GAP Parameter ID and it will set the
- *        GAP Parameter.
+ * @note        You can call this function with a GAP Parameter ID and it will set the GAP Parameter.
  *
  * @param       param - Profile parameter ID: @ref GAPBOND_PROFILE_PARAMETERS
  * @param       len - length of data to write
@@ -3970,16 +3723,8 @@ extern bStatus_t GAPRole_CentralEstablishLink(uint8_t highDutyCycle, uint8_t whi
 /*-------------------------------------------------------------------
  * FUNCTIONS - RF_PHY Profile API
  */
-/*******************************************************************************
- * @fn          RF_RoleInit
- *
+/**
  * @brief       RF_PHY Profile Task initialization function.
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -3987,29 +3732,17 @@ extern bStatus_t GAPRole_CentralEstablishLink(uint8_t highDutyCycle, uint8_t whi
  */
 extern bStatus_t RF_RoleInit(void);
 
-/*******************************************************************************
- * @fn          RF_Config
- *
+/**
  * @brief       rf config.
  *
- * input parameters
- *
- * @param       pConfig - rf config parameters(global variable)
- *
- * output parameters
- *
- * @param       None.
+ * @param       pConfig - rf config parameters
  *
  * @return      0 - success.
  */
 extern bStatus_t RF_Config(rfConfig_t* pConfig);
 
-/*******************************************************************************
- * @fn          RF_Rx
- *
+/**
  * @brief       rx mode.
- *
- * input parameters
  *
  * @param       txBuf - rx mode tx data
  * @param       txLen - rx mode tx length(0-251)
@@ -4020,20 +3753,12 @@ extern bStatus_t RF_Config(rfConfig_t* pConfig);
  *                        broadcast type(0xFF):received by all matching types; 
  *                        others:only received by matching type
  *
- * output parameters
- *
- * @param       None.
- *
  * @return      0 - success.
  */
 extern bStatus_t RF_Rx(uint8_t* txBuf, uint8_t txLen, uint8_t pktRxType, uint8_t pktTxType);
 
-/*******************************************************************************
- * @fn          RF_Tx
- *
+/**
  * @brief       tx mode.
- *
- * input parameters
  *
  * @param       txBuf - tx mode tx data
  * @param       txLen - tx mode tx length(0-251)
@@ -4044,24 +3769,12 @@ extern bStatus_t RF_Rx(uint8_t* txBuf, uint8_t txLen, uint8_t pktRxType, uint8_t
  *                        broadcast type(0xFF):receive all matching types,
  *                        others:receive match type or broadcast type
  *
- * output parameters
- *
- * @param       None.
- *
  * @return      0 - success.
  */
 extern bStatus_t RF_Tx(uint8_t* txBuf, uint8_t txLen, uint8_t pktTxType, uint8_t pktRxType);
 
-/*******************************************************************************
- * @fn          RF_Shut
- *
+/**
  * @brief       shut down,stop tx/rx mode.
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -4069,16 +3782,8 @@ extern bStatus_t RF_Tx(uint8_t* txBuf, uint8_t txLen, uint8_t pktTxType, uint8_t
  */
 extern bStatus_t RF_Shut(void);
 
-/*******************************************************************************
- * @fn          RF_SetChannel
- *
+/**
  * @brief       rf mode set radio channel/frequency.
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -4086,16 +3791,8 @@ extern bStatus_t RF_Shut(void);
  */
 extern void RF_SetChannel(uint32_t channel);
 
-/*******************************************************************************
- * @fn          RF_FrequencyHoppingShut
- *
+/**
  * @brief       shut down rf frequency hopping 
- *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
  *
  * @param       None.
  *
@@ -4103,46 +3800,26 @@ extern void RF_SetChannel(uint32_t channel);
  */
 extern void RF_FrequencyHoppingShut(void);
 
-/*******************************************************************************
- * @fn          RF_FreqiemcyHoppingTx
- *
+/**
  * @brief       
  *
- * input parameters
- *
  * @param       resendCount - Maximum count of sending HOP_TX pdu,0 = unlimited.
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0 - success.
  */
 extern uint8_t RF_FrequencyHoppingTx(uint8_t resendCount);
 
-/*******************************************************************************
- * @fn          RF_FrequencyHoppingRx
- *
+/**
  * @brief       
  *
- * input parameters
- *
  * @param       timeoutMS - Maximum time to wait for receiving HOP_TX pdu(Time = n * 1mSec),0 = unlimited.
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0 - success.1-fail.2-LLEMode error(shall AUTO)
  */
 extern uint8_t RF_FrequencyHoppingRx(uint32_t timeoutMS);
 
-/*******************************************************************************
- * @fn          RF_BondingErase
- *
+/**
  * @brief       Erase FH bonded device
- *
- * input parameters
  *
  * @param       None.
  *
@@ -4154,39 +3831,90 @@ extern uint8_t RF_FrequencyHoppingRx(uint32_t timeoutMS);
  */
 extern void RF_BondingErase(void);
 
-/*******************************************************************************
- * @fn          LL_SingleChannel
- *
+/**
  * @brief       single channel mode.
  *
- * input parameters
- *
  * @param       ch - rf channel,f=2402+ch*2 MHz, ch=0,...,39
- *
- * output parameters
- *
- * @param       None.
  *
  * @return      0 - success.
  */
 extern bStatus_t LL_SingleChannel(uint8_t ch);
 
-/*******************************************************************************
- * @fn          LL_TestEnd
+/**
+ * @brief       used to stop any test which is in progress.
  *
- * @brief       end test mode(single channel mode or direct test mode).
- *
- * input parameters
- *
- * @param       pPktNum - null
- *
- * output parameters
- *
- * @param       None.
+ * @param       pPktNum (out) - the number of received packets.
  *
  * @return      0 - success.
  */
 extern bStatus_t LL_TestEnd(uint8_t* pPktNum);
+
+/**
+ * @brief   used to start a test where the DUT receives test reference packets at a fixed interval
+ *
+ * @param       rx_channel
+ *
+ * @return  0 - success.
+ */
+extern bStatus_t API_LE_ReceiverTestCmd( uint8_t rx_channel );
+
+/**
+ * @brief   used to start a test where the DUT generates test reference packets at a fixed interval
+ *
+ * @param       tx_channel - RF channel(0-39)
+ *              len        - test data length
+ *              payload    - test data type
+ *              tx_power   - tx power
+ *
+ * @return  0 - success.
+ */
+extern bStatus_t API_LE_TransmitterTestCmd( uint8_t tx_channel, uint8_t len, uint8_t payload, uint8_t tx_power );
+
+/**
+ * @brief   used to stop any test which is in progress
+ *
+ * @param   None
+ *
+ * @return      0 - success.
+ */
+extern bStatus_t API_LE_TestEndCmd( void );
+
+/**
+ * @brief   used to set sensitivity level
+ *
+ * @param   None
+ *
+ * @return  None.
+ */
+extern void RFEND_SetSensitivity( void );
+
+/**
+ * @brief   used to set rf TxCtune value
+ *
+ * @param   pParm(in) - Must provide length of parameter followed by 6 bytes parameter
+ *
+ * @return  Command Status.
+ */
+extern bStatus_t RFEND_TXCtuneSet( uint8_t *pParm );
+
+/**
+ * @brief   used to get rf TxCtune value
+ *
+ * @param   pParm(out) - length of parameter(6) followed by 6 bytes parameter
+ *
+ * @return  Command Status.
+ */
+extern bStatus_t RFEND_TXCtuneGet( uint8_t *pParm );
+
+/**
+ * @brief   used to set  RF-ADC calibration mode
+ *
+ * @param   mode = 0 basic mode
+ *          mode = 1 auto mode
+ *
+ * @return  none.
+ */
+extern void RFEND_SetAdcMode( uint8_t mode );
 
 /*
  * END @ Profile API

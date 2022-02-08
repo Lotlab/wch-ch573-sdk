@@ -1,9 +1,11 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : MCU.c
  * Author             : WCH
- * Version            : V1.1
- * Date               : 2019/11/05
+ * Version            : V1.2
+ * Date               : 2022/01/18
  * Description        : 硬件任务处理函数及BLE和硬件初始化
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
  *******************************************************************************/
 
 /******************************************************************************/
@@ -19,19 +21,13 @@
 tmosTaskID halTaskID;
 
 /*******************************************************************************
- * @fn          Lib_Calibration_LSI
+ * @fn      Lib_Calibration_LSI
  *
- * @brief       内部32k校准
+ * @brief   内部32k校准
  *
- * input parameters
+ * @param   None.
  *
- * @param       None.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  None.
  */
 void Lib_Calibration_LSI(void)
 {
@@ -45,22 +41,17 @@ void Lib_Calibration_LSI(void)
 }
 
 #if (defined(BLE_SNV)) && (BLE_SNV == TRUE)
+
 /*******************************************************************************
- * @fn          Lib_Read_Flash
+ * @fn      Lib_Read_Flash
  *
- * @brief       Lib 操作Flash回调
+ * @brief   Lib 操作Flash回调
  *
- * input parameters
+ * @param   addr.
+ * @param   num.
+ * @param   pBuf.
  *
- * @param       addr.
- * @param       num.
- * @param       pBuf.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  None.
  */
 uint32_t Lib_Read_Flash(uint32_t addr, uint32_t num, uint32_t* pBuf)
 {
@@ -69,21 +60,15 @@ uint32_t Lib_Read_Flash(uint32_t addr, uint32_t num, uint32_t* pBuf)
 }
 
 /*******************************************************************************
- * @fn          Lib_Write_Flash
+ * @fn      Lib_Write_Flash
  *
- * @brief       Lib 操作Flash回调
+ * @brief   Lib 操作Flash回调
  *
- * input parameters
+ * @param   addr.
+ * @param   num.
+ * @param   pBuf.
  *
- * @param       addr.
- * @param       num.
- * @param       pBuf.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  None.
  */
 uint32_t Lib_Write_Flash(uint32_t addr, uint32_t num, uint32_t* pBuf)
 {
@@ -94,19 +79,13 @@ uint32_t Lib_Write_Flash(uint32_t addr, uint32_t num, uint32_t* pBuf)
 #endif
 
 /*******************************************************************************
- * @fn          CH57X_BLEInit
+ * @fn      CH57X_BLEInit
  *
- * @brief       BLE 库初始化
+ * @brief   BLE 库初始化
  *
- * input parameters
+ * @param   None.
  *
- * @param       None.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  None.
  */
 void CH57X_BLEInit(void)
 {
@@ -128,7 +107,6 @@ void CH57X_BLEInit(void)
     cfg.TxNumEvent = (uint32_t)BLE_TX_NUM_EVENT;
     cfg.TxPower = (uint32_t)BLE_TX_POWER;
 #if (defined(BLE_SNV)) && (BLE_SNV == TRUE)
-    FLASH_ROM_LOCK(0); // 解锁flash
     cfg.SNVAddr = (uint32_t)BLE_SNV_ADDR;
     cfg.readFlashCB = Lib_Read_Flash;
     cfg.writeFlashCB = Lib_Write_Flash;
@@ -149,19 +127,22 @@ void CH57X_BLEInit(void)
     cfg.sleepCB = CH57X_LowPower; // 启用睡眠
 #endif
 #if (defined(BLE_MAC)) && (BLE_MAC == TRUE)
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < 6; i++) {
         cfg.MacAddr[i] = MacAddr[5 - i];
+    }
 #else
     {
         uint8_t MacAddr[6];
         GetMACAddress(MacAddr);
-        for (i = 0; i < 6; i++)
+        for (i = 0; i < 6; i++) {
             cfg.MacAddr[i] = MacAddr[i]; // 使用芯片mac地址
+        }
     }
 #endif
-    if (!cfg.MEMAddr || cfg.MEMLen < 4 * 1024)
+    if (!cfg.MEMAddr || cfg.MEMLen < 4 * 1024) {
         while (1)
             ;
+    }
     i = BLE_LibInit(&cfg);
     if (i) {
         PRINT("LIB init error code: %x ...\n", i);
@@ -171,20 +152,15 @@ void CH57X_BLEInit(void)
 }
 
 /*******************************************************************************
- * @fn          HAL_ProcessEvent
+ * @fn      HAL_ProcessEvent
  *
- * @brief       硬件层事务处理
+ * @brief   硬件层事务处理
  *
- * input parameters
+ * @param   task_id - The TMOS assigned task ID.
+ * @param   events  - events to process.  This is a bit map and can
+ *                      contain more than one event.
  *
- * @param       task_id.
- * @param       events.
- *
- * output parameters
- *
- * @param       events.
- *
- * @return      None.
+ * @return  events.
  */
 tmosEvents HAL_ProcessEvent(tmosTaskID task_id, tmosEvents events)
 {
@@ -217,19 +193,13 @@ tmosEvents HAL_ProcessEvent(tmosTaskID task_id, tmosEvents events)
 }
 
 /*******************************************************************************
- * @fn          HAL_Init
+ * @fn      HAL_Init
  *
- * @brief       硬件初始化
+ * @brief   硬件初始化
  *
- * input parameters
+ * @param   None.
  *
- * @param       None.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  None.
  */
 void HAL_Init()
 {
@@ -241,23 +211,15 @@ void HAL_Init()
 #if (defined BLE_CALIBRATION_ENABLE) && (BLE_CALIBRATION_ENABLE == TRUE)
     tmos_start_task(halTaskID, HAL_REG_INIT_EVENT, MS1_TO_SYSTEM_TIME(BLE_CALIBRATION_PERIOD)); // 添加校准任务，单次校准耗时小于10ms
 #endif
-    //  tmos_start_task( halTaskID, HAL_TEST_EVENT, 1000 );    // 添加一个测试任务
+    //  tmos_start_task( halTaskID, HAL_TEST_EVENT, 1600 );    // 添加一个测试任务
 }
 
 /*******************************************************************************
- * @fn          HAL_GetInterTempValue
+ * @fn      HAL_GetInterTempValue
  *
- * @brief       如果使用了ADC中断采样，需在此函数中暂时屏蔽中断.
+ * @brief   获取内部温感采样值，如果使用了ADC中断采样，需在此函数中暂时屏蔽中断.
  *
- * input parameters
- *
- * @param       None.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  内部温感采样值.
  */
 uint16_t HAL_GetInterTempValue(void)
 {

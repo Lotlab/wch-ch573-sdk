@@ -1,10 +1,12 @@
 /********************************** (C) COPYRIGHT  *******************************
-* File Name          : core_riscv.h
-* Author             : WCH
-* Version            : V1.0.0
-* Date               : 2020/07/31
-* Description        : RISC-V Core Peripheral Access Layer Header File
-*******************************************************************************/
+ * File Name          : core_riscv.h
+ * Author             : WCH
+ * Version            : V1.0.1
+ * Date               : 2021/10/28
+ * Description        : CH573 RISC-V Core Peripheral Access Layer Header File
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
 #ifndef __CORE_RV3A_H__
 #define __CORE_RV3A_H__
 
@@ -24,10 +26,14 @@ extern "C" {
 
 //typedef enum {SUCCESS = 0, ERROR = !SUCCESS} ErrorStatus;
 
-typedef enum { DISABLE = 0,
-    ENABLE = !DISABLE } FunctionalState;
-typedef enum { RESET = 0,
-    SET = !RESET } FlagStatus,
+typedef enum {
+    DISABLE = 0,
+    ENABLE = !DISABLE
+} FunctionalState;
+typedef enum {
+    RESET = 0,
+    SET = !RESET
+} FlagStatus,
     ITStatus;
 
 /* memory mapped structure for Program Fast Interrupt Controller (PFIC) */
@@ -77,22 +83,24 @@ typedef struct __attribute__((packed)) {
 /* ##########################   PFIC functions  #################################### */
 
 /*******************************************************************************
-* Function Name  : PFIC_EnableIRQ
-* Description    : Enable Interrupt
-* Input          : IRQn: Interrupt Numbers
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_EnableIRQ
+ *
+ * @brief   Enable Interrupt
+ *
+ * @param   IRQn    - Interrupt Numbers
+ */
 RV_STATIC_INLINE void PFIC_EnableIRQ(IRQn_Type IRQn)
 {
     PFIC->IENR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn)&0x1F));
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_DisableIRQ
-* Description    : Disable Interrupt
-* Input          : IRQn: Interrupt Numbers
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_DisableIRQ
+ *
+ * @brief   Disable Interrupt
+ *
+ * @param   IRQn    - Interrupt Numbers
+ */
 RV_STATIC_INLINE void PFIC_DisableIRQ(IRQn_Type IRQn)
 {
     uint32_t tem;
@@ -105,83 +113,96 @@ RV_STATIC_INLINE void PFIC_DisableIRQ(IRQn_Type IRQn)
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_GetStatusIRQ
-* Description    : Get Interrupt Enable State
-* Input          : IRQn: Interrupt Numbers
-* Return         : 1: Interrupt Enable
-*                  0: Interrupt Disable
-*******************************************************************************/
+ * @fn      PFIC_GetStatusIRQ
+ *
+ * @brief   Get Interrupt Enable State
+ *
+ * @param   IRQn    - Interrupt Numbers
+ *
+ * @return  1: Interrupt Enable
+ *          0: Interrupt Disable
+ */
 RV_STATIC_INLINE uint32_t PFIC_GetStatusIRQ(IRQn_Type IRQn)
 {
     return ((uint32_t)((PFIC->ISR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn)&0x1F))) ? 1 : 0));
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_GetPendingIRQ
-* Description    : Get Interrupt Pending State
-* Input          : IRQn: Interrupt Numbers
-* Return         : 1: Interrupt Pending Enable
-*                  0: Interrupt Pending Disable
-*******************************************************************************/
+ * @fn      PFIC_GetPendingIRQ
+ *
+ * @brief   Get Interrupt Pending State
+ *
+ * @param   IRQn    - Interrupt Numbers
+ *
+ * @return  1: Interrupt Pending Enable
+ *          0: Interrupt Pending Disable
+ */
 RV_STATIC_INLINE uint32_t PFIC_GetPendingIRQ(IRQn_Type IRQn)
 {
     return ((uint32_t)((PFIC->IPR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn)&0x1F))) ? 1 : 0));
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_SetPendingIRQ
-* Description    : Set Interrupt Pending
-* Input          : IRQn: Interrupt Numbers
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_SetPendingIRQ
+ *
+ * @brief   Set Interrupt Pending
+ *
+ * @param   IRQn    - Interrupt Numbers
+ */
 RV_STATIC_INLINE void PFIC_SetPendingIRQ(IRQn_Type IRQn)
 {
     PFIC->IPSR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn)&0x1F));
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_ClearPendingIRQ
-* Description    : Clear Interrupt Pending
-* Input          : IRQn: Interrupt Numbers
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_ClearPendingIRQ
+ *
+ * @brief   Clear Interrupt Pending
+ *
+ * @param   IRQn    - Interrupt Numbers
+ */
 RV_STATIC_INLINE void PFIC_ClearPendingIRQ(IRQn_Type IRQn)
 {
     PFIC->IPRR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn)&0x1F));
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_GetActive
-* Description    : Get Interrupt Active State
-* Input          : IRQn: Interrupt Numbers
-* Return         : 1: Interrupt Active
-*                  0: Interrupt No Active
-*******************************************************************************/
+ * @fn      PFIC_GetActive
+ *
+ * @brief   Get Interrupt Active State
+ *
+ * @param   IRQn    - Interrupt Numbers
+ *
+ * @return  1: Interrupt Active
+ *          0: Interrupt No Active.
+ */
 RV_STATIC_INLINE uint32_t PFIC_GetActive(IRQn_Type IRQn)
 {
     return ((uint32_t)((PFIC->IACTR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn)&0x1F))) ? 1 : 0));
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_SetPriority
-* Description    : Set Interrupt Priority
-* Input          : IRQn: Interrupt Numbers
-*                  priority: bit7:pre-emption priority
-*                            bit6-bit4: subpriority
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_SetPriority
+ *
+ * @brief   Set Interrupt Priority
+ *
+ * @param   IRQn        - Interrupt Numbers
+ * @param   priority    - bit7:         pre-emption priority
+ *                        bit6-bit4:    subpriority
+ */
 RV_STATIC_INLINE void PFIC_SetPriority(IRQn_Type IRQn, uint8_t priority)
 {
     PFIC->IPRIOR[(uint32_t)(IRQn)] = priority;
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_FastINT0CFG
-* Description    : Set fast Interrupt 0,
-* Input          : IRQn: Interrupt Numbers
-*                  addr: interrupt service addr
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_FastINT0CFG
+ *
+ * @brief   Set fast Interrupt 0
+ *
+ * @param   IRQn    - Interrupt Numbers
+ * @param   addr    - interrupt service addr
+ */
 RV_STATIC_INLINE void PFIC_FastINT0CFG(IRQn_Type IRQn, uint32_t addr)
 {
     PFIC->FIBADDRR = addr & 0xF0000000;
@@ -189,12 +210,13 @@ RV_STATIC_INLINE void PFIC_FastINT0CFG(IRQn_Type IRQn, uint32_t addr)
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_FastINT1CFG
-* Description    : Set fast Interrupt 1,
-* Input          : IRQn: Interrupt Numbers
-*                  addr: interrupt service addr
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_FastINT1CFG
+ *
+ * @brief   Set fast Interrupt 1
+ *
+ * @param   IRQn    - Interrupt Numbers
+ * @param   addr    - interrupt service addr
+ */
 RV_STATIC_INLINE void PFIC_FastINT1CFG(IRQn_Type IRQn, uint32_t addr)
 {
     PFIC->FIBADDRR = addr & 0xF0000000;
@@ -202,12 +224,13 @@ RV_STATIC_INLINE void PFIC_FastINT1CFG(IRQn_Type IRQn, uint32_t addr)
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_FastINT2CFG
-* Description    : Set fast Interrupt 2, occupied if use BLE.
-* Input          : IRQn: Interrupt Numbers
-*                  addr: interrupt service addr
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_FastINT2CFG
+ *
+ * @brief   Set fast Interrupt 2, occupied if use BLE.
+ *
+ * @param   IRQn    - Interrupt Numbers
+ * @param   addr    - interrupt service addr
+ */
 RV_STATIC_INLINE void PFIC_FastINT2CFG(IRQn_Type IRQn, uint32_t addr)
 {
     PFIC->FIBADDRR = addr & 0xF0000000;
@@ -215,12 +238,13 @@ RV_STATIC_INLINE void PFIC_FastINT2CFG(IRQn_Type IRQn, uint32_t addr)
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_FastINT3CFG
-* Description    : Set fast Interrupt 3, occupied if use BLE.
-* Input          : IRQn: Interrupt Numbers
-*                  addr: interrupt service addr
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_FastINT3CFG
+ *
+ * @brief   Set fast Interrupt 3, occupied if use BLE.
+ *
+ * @param   IRQn    - Interrupt Numbers
+ * @param   addr    - interrupt service addr
+ */
 RV_STATIC_INLINE void PFIC_FastINT3CFG(IRQn_Type IRQn, uint32_t addr)
 {
     PFIC->FIBADDRR = addr & 0xF0000000;
@@ -228,22 +252,20 @@ RV_STATIC_INLINE void PFIC_FastINT3CFG(IRQn_Type IRQn, uint32_t addr)
 }
 
 /*******************************************************************************
-* Function Name  : __SEV
-* Description    : Wait for Events
-* Input          : None
-* Return         : None
-*******************************************************************************/
+ * @fn      __SEV
+ *
+ * @brief   Wait for Events
+ */
 __attribute__((always_inline)) RV_STATIC_INLINE void __SEV(void)
 {
     PFIC->SCTLR |= (1 << 3);
 }
 
 /*******************************************************************************
-* Function Name  : __WFI
-* Description    : Wait for Interrupt
-* Input          : None
-* Return         : None
-*******************************************************************************/
+ * @fn      __WFI
+ *
+ * @brief   Wait for Interrupt
+ */
 __attribute__((always_inline)) RV_STATIC_INLINE void __WFI(void)
 {
     PFIC->SCTLR &= ~(1 << 3); // wfi
@@ -251,11 +273,10 @@ __attribute__((always_inline)) RV_STATIC_INLINE void __WFI(void)
 }
 
 /*******************************************************************************
-* Function Name  : __WFE
-* Description    : Wait for Events
-* Input          : None
-* Return         : None
-*******************************************************************************/
+ * @fn      __WFE
+ *
+ * @brief   Wait for Events
+ */
 __attribute__((always_inline)) RV_STATIC_INLINE void __WFE(void)
 {
     PFIC->SCTLR |= (1 << 3) | (1 << 5); // (wfi->wfe)+(__sev)
@@ -265,13 +286,14 @@ __attribute__((always_inline)) RV_STATIC_INLINE void __WFE(void)
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_SetFastIRQ
-* Description    : Set Fast Interrupt
-* Input          : addr：Fast interrupt service function base address.
-*                  IRQn：Interrupt Numbers
-*                  num：Fast Interrupt Numbers
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_SetFastIRQ
+ *
+ * @brief   Set Fast Interrupt
+ *
+ * @param   addr    - Fast interrupt service function base address
+ * @param   IRQn    - Interrupt Numbers
+ * @param   num     - Fast Interrupt Numbers
+ */
 RV_STATIC_INLINE void PFIC_SetFastIRQ(uint32_t addr, IRQn_Type IRQn, uint8_t num)
 {
     if (num > 3)
@@ -281,22 +303,22 @@ RV_STATIC_INLINE void PFIC_SetFastIRQ(uint32_t addr, IRQn_Type IRQn, uint8_t num
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_SystemReset
-* Description    : Initiate a system reset request
-* Input          : None
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_SystemReset
+ *
+ * @brief   Initiate a system reset request
+ */
 RV_STATIC_INLINE void PFIC_SystemReset(void)
 {
     PFIC->CFGR = PFIC_KEY3 | (1 << 7);
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_HaltPushCfg
-* Description    : Enable Hardware Stack
-* Input          : NewState: DISABLE or ENABLE
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_HaltPushCfg
+ *
+ * @brief   Enable Hardware Stack
+ *
+ * @param   NewState    - DISABLE or ENABLE
+ */
 RV_STATIC_INLINE void PFIC_HaltPushCfg(FunctionalState NewState)
 {
     if (NewState != DISABLE) {
@@ -307,11 +329,12 @@ RV_STATIC_INLINE void PFIC_HaltPushCfg(FunctionalState NewState)
 }
 
 /*******************************************************************************
-* Function Name  : PFIC_INTNestCfg
-* Description    : Enable Interrupt Nesting
-* Input          : NewState: DISABLE or ENABLE
-* Return         : None
-*******************************************************************************/
+ * @fn      PFIC_INTNestCfg
+ *
+ * @brief   Enable Interrupt Nesting
+ *
+ * @param   NewState    - DISABLE or ENABLE
+ */
 RV_STATIC_INLINE void PFIC_INTNestCfg(FunctionalState NewState)
 {
     if (NewState != DISABLE) {
@@ -327,6 +350,15 @@ RV_STATIC_INLINE void PFIC_INTNestCfg(FunctionalState NewState)
 #define SysTick_CTRL_TICKINT_Msk (1 << 1)
 #define SysTick_CTRL_ENABLE_Msk (1 << 0)
 
+/*******************************************************************************
+ * @fn      SysTick_Config
+ *
+ * @brief   Set reload register, enable SysTick IRQ and SysTick Timer
+ *
+ * @param   ticks   - reload value.
+ *
+ * @return  0 - success, 1 - error.
+ */
 RV_STATIC_INLINE uint32_t SysTick_Config(uint64_t ticks)
 {
     if ((ticks - 1) > SysTick_LOAD_RELOAD_Msk)

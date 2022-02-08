@@ -1,8 +1,8 @@
 #pragma once
 
-#include <stdint.h>
 #include "CH573SFR.h"
 #include "core_riscv.h"
+#include <stdint.h>
 
 #define Debug_UART0 0
 #define Debug_UART1 1

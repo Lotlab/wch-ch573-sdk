@@ -47,7 +47,7 @@
 #define BLE_CALIBRATION_PERIOD 120000 // 定时校准的周期，单位ms( 默认:120000 ) 
 #endif
 #ifndef BLE_SNV
-#define BLE_SNV TRUE // 是否开启SNV功能，用于储存绑定信息( 默认:TRUE )
+#define BLE_SNV TRUE // 是否开启SNV功能，用于储存绑定信息( 默认:TRUE ) 如果配置了SNVNum参数，则需要对应修改Lib_Write_Flash函数内擦除的flash大小，大小为SNVBlock*SNVNum
 #endif
 #ifndef BLE_SNV_ADDR
 #define BLE_SNV_ADDR 0x77E00 - FLASH_ROM_MAX_SIZE // SNV信息保存地址，使用data flash最后( 默认:0x77E00 )
@@ -62,7 +62,7 @@
 #define BLE_BUFF_MAX_LEN 27 // 单个连接最大包长度( 默认:27 (ATT_MTU=23)，取值范围[27~251] )
 #endif
 #ifndef BLE_BUFF_NUM
-#define BLE_BUFF_NUM 5 // 控制器缓存的包数量( 默认:5 )
+#define BLE_BUFF_NUM 10 // 控制器缓存的包数量( 默认:10 )
 #endif
 #ifndef BLE_TX_NUM_EVENT
 #define BLE_TX_NUM_EVENT 1 // 单个连接事件最多可以发多少个数据包( 默认:1 )
@@ -81,5 +81,3 @@ extern uint32_t MEM_BUF[BLE_MEMHEAP_SIZE / 4];
 extern uint8_t MacAddr[6];
 
 #endif
-
-/******************************* endfile @ config ******************************/

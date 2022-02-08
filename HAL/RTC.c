@@ -1,9 +1,11 @@
 /********************************** (C) COPYRIGHT *******************************
  * File Name          : RTC.c
  * Author             : WCH
- * Version            : V1.1
- * Date               : 2019/11/05
+ * Version            : V1.2
+ * Date               : 2022/01/18
  * Description        : RTC配置及其初始化
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
  *******************************************************************************/
 
 /******************************************************************************/
@@ -24,12 +26,14 @@
 volatile uint32_t RTCTigFlag;
 
 /*******************************************************************************
- * Function Name  : RTC_SetTignTime
- * Description    : 配置RTC触发时间
- * Input          : 
- * Output         : None
- * Return         : None
- *******************************************************************************/
+ * @fn      RTC_SetTignTime
+ *
+ * @brief   配置RTC触发时间
+ *
+ * @param   time    - 触发时间.
+ *
+ * @return  None.
+ */
 void RTC_SetTignTime(uint32_t time)
 {
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
@@ -39,19 +43,13 @@ void RTC_SetTignTime(uint32_t time)
 }
 
 /*******************************************************************************
- * @fn          RTC_IRQHandler
+ * @fn      RTC_IRQHandler
  *
- * @brief       RTC中断处理
+ * @brief   RTC中断处理
  *
- * input parameters
+ * @param   None.
  *
- * @param       None.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  None.
  */
 __attribute__((interrupt(WCH_INT_TYPE)))
 __attribute__((section(".highcode"))) void
@@ -62,26 +60,20 @@ RTC_IRQHandler(void)
 }
 
 /*******************************************************************************
- * @fn          HAL_Time0Init
+ * @fn      HAL_Time0Init
  *
- * @brief       系统定时器初始化
+ * @brief   系统定时器初始化
  *
- * input parameters
+ * @param   None.
  *
- * @param       None.
- *
- * output parameters
- *
- * @param       None.
- *
- * @return      None.
+ * @return  None.
  */
 void HAL_TimeInit(void)
 {
 #if (CLK_OSC32K)
     R8_SAFE_ACCESS_SIG = 0x57;
     R8_SAFE_ACCESS_SIG = 0xa8;
-    R8_CK32K_CONFIG &= ~(RB_CLK_OSC32K_XT|RB_CLK_XT32K_PON);
+    R8_CK32K_CONFIG &= ~(RB_CLK_OSC32K_XT | RB_CLK_XT32K_PON);
     R8_CK32K_CONFIG |= RB_CLK_INT32K_PON;
     Lib_Calibration_LSI();
 #else

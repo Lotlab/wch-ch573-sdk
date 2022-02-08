@@ -1,10 +1,12 @@
 /********************************** (C) COPYRIGHT *******************************
-* File Name          : CH57x_usbdev.c
-* Author             : WCH
-* Version            : V1.0
-* Date               : 2018/12/15
-* Description 
-*******************************************************************************/
+ * File Name          : CH57x_usbdev.c
+ * Author             : WCH
+ * Version            : V1.2
+ * Date               : 2021/11/17
+ * Description
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
 
 #include "CH57x_usbdev.h"
 
@@ -13,12 +15,15 @@ uint8_t* pEP1_RAM_Addr;
 uint8_t* pEP2_RAM_Addr;
 uint8_t* pEP3_RAM_Addr;
 
-/*******************************************************************************
-* Function Name  : USB_DeviceInit
-* Description    : USB设备功能初始化，4个端点，8个通道。
-* Input          : None			   				
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      USB_DeviceInit
+ *
+ * @brief   USB设备功能初始化，4个端点，8个通道。
+ *
+ * @param   none
+ *
+ * @return  none
+ */
 void USB_DeviceInit(void)
 {
     R8_USB_CTRL = 0x00; // 先设定模式,取消 RB_UC_CLR_ALL
@@ -45,48 +50,60 @@ void USB_DeviceInit(void)
     R8_USB_INT_EN = RB_UIE_SUSPEND | RB_UIE_BUS_RST | RB_UIE_TRANSFER;
 }
 
-/*******************************************************************************
-* Function Name  : DevEP1_IN_Deal
-* Description    : 端点1数据上传
-* Input          : l: 上传数据长度(<64B)			   				
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      DevEP1_IN_Deal
+ *
+ * @brief   端点1数据上传
+ *
+ * @param   l   - 上传数据长度(<64B)
+ *
+ * @return  none
+ */
 void DevEP1_IN_Deal(uint8_t l)
 {
     R8_UEP1_T_LEN = l;
     R8_UEP1_CTRL = (R8_UEP1_CTRL & ~MASK_UEP_T_RES) | UEP_T_RES_ACK;
 }
 
-/*******************************************************************************
-* Function Name  : DevEP2_IN_Deal
-* Description    : 端点2数据上传
-* Input          : l: 上传数据长度(<64B)			   				
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      DevEP2_IN_Deal
+ *
+ * @brief   端点2数据上传
+ *
+ * @param   l   - 上传数据长度(<64B)
+ *
+ * @return  none
+ */
 void DevEP2_IN_Deal(uint8_t l)
 {
     R8_UEP2_T_LEN = l;
     R8_UEP2_CTRL = (R8_UEP2_CTRL & ~MASK_UEP_T_RES) | UEP_T_RES_ACK;
 }
 
-/*******************************************************************************
-* Function Name  : DevEP3_IN_Deal
-* Description    : 端点3数据上传
-* Input          : l: 上传数据长度(<64B)			   				
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      DevEP3_IN_Deal
+ *
+ * @brief   端点3数据上传
+ *
+ * @param   l   - 上传数据长度(<64B)
+ *
+ * @return  none
+ */
 void DevEP3_IN_Deal(uint8_t l)
 {
     R8_UEP3_T_LEN = l;
     R8_UEP3_CTRL = (R8_UEP3_CTRL & ~MASK_UEP_T_RES) | UEP_T_RES_ACK;
 }
 
-/*******************************************************************************
-* Function Name  : DevEP4_IN_Deal
-* Description    : 端点4数据上传
-* Input          : l: 上传数据长度(<64B)			   				
-* Return         : None
-*******************************************************************************/
+/*********************************************************************
+ * @fn      DevEP4_IN_Deal
+ *
+ * @brief   端点4数据上传
+ *
+ * @param   l   - 上传数据长度(<64B)
+ *
+ * @return  none
+ */
 void DevEP4_IN_Deal(uint8_t l)
 {
     R8_UEP4_T_LEN = l;

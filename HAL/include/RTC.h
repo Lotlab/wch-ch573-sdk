@@ -1,10 +1,12 @@
 /********************************** (C) COPYRIGHT *******************************
-* File Name          : RTC.h
-* Author             : WCH
-* Version            : V1.0
-* Date               : 2016/04/12
-* Description        : 
-*******************************************************************************/
+ * File Name          : RTC.h
+ * Author             : WCH
+ * Version            : V1.0
+ * Date               : 2016/04/12
+ * Description        :
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
 
 /******************************************************************************/
 #ifndef __RTC_H
@@ -20,13 +22,15 @@ extern "C" {
 
 extern volatile uint32_t RTCTigFlag;
 
-/*
- * Initialize time Service.
+/**
+ * @brief   Initialize time Service.
  */
 void HAL_TimeInit(void);
 
-/*
- * System Clock Service.
+/**
+ * @brief   配置RTC触发时间
+ *
+ * @param   time    - 触发时间.
  */
 extern void RTC_SetTignTime(uint32_t time);
 

@@ -30,7 +30,8 @@ signed short ADC_DataCalib_Rough(void) // 采样数据粗调,获取偏差值
     ctrl = R8_ADC_CFG;
 
     R8_ADC_CFG = 0;
-    ADC_ChannelCfg(6); // 6/7/10/11 可选
+    ADC_ChannelCfg(ADC_CALIB_CH); // 6/7/10/11 可选
+
     R8_ADC_CFG |= RB_ADC_OFS_TEST | RB_ADC_POWER_ON | (2 << 4); // 进入测试模式
     R8_ADC_CONVERT = RB_ADC_START;
     while (R8_ADC_CONVERT & RB_ADC_START)
@@ -219,11 +220,18 @@ void ADC_DMACfg(uint8_t s, uint16_t startAddr, uint16_t endAddr, ADC_DMAModeType
  */
 int ADC_GetCurrentTS(uint16_t ts_v)
 {
+    int cal = (ts_v * 2100) >> 12;
+
+#ifdef CH57x
     uint32_t C25_Data[2];
-    int cal;
 
     FLASH_EEPROM_CMD(CMD_GET_ROM_INFO, ROM_CFG_TMP_25C, C25_Data, 0);
-    cal = (ts_v * 2100) >> 12;
     cal = (((C25_Data[0] >> 16) & 0xFFFF) ? ((C25_Data[0] >> 16) & 0xFFFF) : 25) + ((cal - ((int)(C25_Data[0] & 0xFFFF) - 1050 / 2) * 2) * 10 / 14);
+#else
+#ifdef CH58x
+    uint32_t C25 = (*((uint32_t*)ROM_CFG_TMP_25C));
+    cal = (((C25 >> 16) & 0xFFFF) ? ((C25 >> 16) & 0xFFFF) : 25) + ((cal - ((int)(C25 & 0xFFFF) - 1050 / 2) * 2) * 10 / 14);
+#endif
+#endif
     return (cal);
 }

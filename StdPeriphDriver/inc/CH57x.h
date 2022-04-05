@@ -1,7 +1,17 @@
 #pragma once
 
+#ifdef CH57x
 #include "CH573SFR.h"
-#include "core_riscv.h"
+#include "core_riscv_ch573.h"
+#else
+#ifdef CH58x
+#include "CH583SFR.h"
+#include "core_riscv_ch583.h"
+#else
+#error "Please define your chip, CH57x or CH58x"
+#endif
+#endif
+
 #include <stdint.h>
 
 #define Debug_UART0 0
@@ -16,8 +26,22 @@
 #define WCH_INT_TYPE "WCH-Interrupt-fast"
 #endif
 
+#ifndef __HIGH_CODE
+#define __HIGH_CODE __attribute__((section(".highcode")))
+#endif
+
+#ifndef __INTERRUPT
+#define __INTERRUPT __attribute__((interrupt(WCH_INT_TYPE)))
+#endif
+
 #ifndef FREQ_SYS
 #define FREQ_SYS 16000000
+#endif
+
+#ifndef SAFEOPERATE
+#define SAFEOPERATE \
+    __nop();        \
+    __nop()
 #endif
 
 #if (CLK_OSC32K == 1)

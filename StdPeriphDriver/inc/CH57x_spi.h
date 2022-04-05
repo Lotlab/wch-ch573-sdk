@@ -190,6 +190,19 @@ void SPI0_SlaveDMARecv(uint8_t* pbuf, uint16_t len);
  */
 #define SPI0_ClearITFlag(f) (R8_SPI0_INT_FLAG = f)
 
+#ifdef CH58x
+void SPI1_MasterDefInit(void); /* 主机模式默认初始化：模式0+3线全双工+8MHz */
+void SPI1_CLKCfg(uint8_t c); /* SPI1 基准时钟配置，= d*Tsys */
+void SPI1_DataMode(ModeBitOrderTypeDef m); /* 设置数据流模式 */
+
+void SPI1_MasterSendByte(uint8_t d); /* 发送单字节 (buffer) */
+uint8_t SPI1_MasterRecvByte(void); /* 接收单字节 (buffer) */
+
+void SPI1_MasterTrans(uint8_t* pbuf, uint16_t len); /* 使用FIFO连续发送多字节 */
+void SPI1_MasterRecv(uint8_t* pbuf, uint16_t len); /* 使用FIFO连续接收多字节 */
+
+#endif
+
 #ifdef __cplusplus
 }
 #endif

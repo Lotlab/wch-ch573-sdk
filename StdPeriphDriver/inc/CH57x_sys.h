@@ -12,7 +12,13 @@
 #define __CH57x_SYS_H__
 
 #include "CH57x.h"
+#ifdef CH57x
 #include "CH57x_clk.h"
+#else
+#ifdef CH58x
+#include "CH58x_clk.h"
+#endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -19,6 +19,14 @@ extern "C" {
 
 #define ROM_CFG_TMP_25C 0x7F014
 
+#ifdef CH57x
+#define ADC_CALIB_CH 6 // 6/7/10/11 可选
+#else
+#ifdef CH58x
+#define ADC_CALIB_CH 1
+#endif
+#endif
+
 /**
  * @brief  adc single channel define
  */

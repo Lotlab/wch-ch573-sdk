@@ -26,6 +26,17 @@ extern "C" {
  */
 void FLASH_ROM_READ(uint32_t StartAddr, void* Buffer, uint32_t len);
 
+#ifdef CH58x
+
+uint8_t UserOptionByteConfig(FunctionalState RESET_EN, FunctionalState BOOT_PIN, FunctionalState UART_NO_KEY_EN,
+    uint32_t FLASHProt_Size);
+
+uint8_t UserOptionByteClose_SWD(void);
+
+void UserOptionByte_Active(void);
+
+#endif
+
 #ifdef __cplusplus
 }
 #endif

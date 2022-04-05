@@ -19,7 +19,7 @@ add_executable(${TARGET}.elf
     ${WCH_DRIVER_ROOT}/CH57x_gpio.c
     ${WCH_DRIVER_ROOT}/CH57x_sys.c
     ${WCH_SDK_ROOT}/RVMSIS/core_riscv.c
-    ${WCH_SDK_ROOT}/Startup/startup_CH573.S
+    ${WCH_SDK_ROOT}/Startup/startup_CH573.s
 ) 
 
 target_include_directories(${TARGET}.elf PRIVATE 

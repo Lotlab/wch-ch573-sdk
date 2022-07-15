@@ -6,7 +6,7 @@ NOT FULLY TEST YET, USE AT YOUR OWN RISK!
 
 SDK List:
 - CH573: SDK v1.7
-- CH583: SDK v1.2
+- CH583: SDK v1.4
 
 CH573 and CH583 share some peripherals, those code are same and I remove them. Use ch573 version and it might work.
 

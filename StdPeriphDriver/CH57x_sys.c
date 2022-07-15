@@ -253,7 +253,8 @@ void WWDG_ClearFlag(void)
  * @return  none
  */
 __attribute__((interrupt(WCH_INT_TYPE)))
-__attribute__((section(".highcode"))) void
+__attribute__((section(".highcode"))) 
+__attribute__((weak)) void
 HardFault_Handler(void)
 {
     FLASH_ROM_SW_RESET();

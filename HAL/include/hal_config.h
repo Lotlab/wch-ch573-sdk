@@ -59,7 +59,7 @@
 #define BLE_MEMHEAP_SIZE (1024 * 6) // 蓝牙协议栈使用的RAM大小，不小于6K ( 默认:(1024*6) )
 #endif
 #ifndef BLE_BUFF_MAX_LEN
-#define BLE_BUFF_MAX_LEN 27 // 单个连接最大包长度( 默认:27 (ATT_MTU=23)，取值范围[27~251] )
+#define BLE_BUFF_MAX_LEN 27 // 单个连接最大包长度( 默认:27 (ATT_MTU=23)，取值范围[27~516] )
 #endif
 #ifndef BLE_BUFF_NUM
 #define BLE_BUFF_NUM 10 // 控制器缓存的包数量( 默认:10 )

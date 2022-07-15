@@ -37,7 +37,7 @@ typedef enum {
     ITStatus;
 
 /* memory mapped structure for Program Fast Interrupt Controller (PFIC) */
-typedef struct __attribute__((packed)) {
+typedef struct {
     __I uint32_t ISR[8]; // 0
     __I uint32_t IPR[8]; // 20H
     __IO uint32_t ITHRESDR; // 40H

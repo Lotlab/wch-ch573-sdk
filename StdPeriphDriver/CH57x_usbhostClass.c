@@ -588,7 +588,7 @@ uint8_t SETorOFFNumLock(uint8_t* buf)
 {
     uint8_t tmp[] = { 0x21, 0x09, 0x00, 0x02, 0x00, 0x00, 0x01, 0x00 };
     uint8_t len, s;
-    if ((buf[2] == 0x53) & (buf[0] | buf[1] | buf[3] | buf[4] | buf[5] | buf[6] | buf[7] == 0)) {
+    if ((buf[2] == 0x53) & ((buf[0] | buf[1] | buf[3] | buf[4] | buf[5] | buf[6] | buf[7]) == 0)) {
         for (s = 0; s != sizeof(tmp); s++) {
             ((uint8_t*)pSetupReq)[s] = tmp[s];
         }

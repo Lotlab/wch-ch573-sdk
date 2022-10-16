@@ -172,6 +172,21 @@ void mDelayuS(uint16_t t);
  */
 void mDelaymS(uint16_t t);
 
+/* Safe access */
+__attribute__((always_inline)) static inline void sys_safe_access_enable(void)
+{
+    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
+    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+#ifdef CH58x
+    SAFEOPERATE;
+#endif
+}
+
+__attribute__((always_inline)) static inline void sys_safe_access_disable(void)
+{
+    R8_SAFE_ACCESS_SIG = 0;
+}
+
 #ifdef __cplusplus
 }
 #endif

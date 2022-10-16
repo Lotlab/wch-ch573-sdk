@@ -36,10 +36,10 @@ volatile uint32_t RTCTigFlag;
  */
 void RTC_SetTignTime(uint32_t time)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R32_RTC_TRIG = time;
     RTCTigFlag = 0;
+    sys_safe_access_disable();
 }
 
 /*******************************************************************************
@@ -71,17 +71,17 @@ RTC_IRQHandler(void)
 void HAL_TimeInit(void)
 {
 #if (CLK_OSC32K)
-    R8_SAFE_ACCESS_SIG = 0x57;
-    R8_SAFE_ACCESS_SIG = 0xa8;
+    sys_safe_access_enable();
     R8_CK32K_CONFIG &= ~(RB_CLK_OSC32K_XT | RB_CLK_XT32K_PON);
+    sys_safe_access_enable();
     R8_CK32K_CONFIG |= RB_CLK_INT32K_PON;
     Lib_Calibration_LSI();
 #else
-    R8_SAFE_ACCESS_SIG = 0x57;
-    R8_SAFE_ACCESS_SIG = 0xa8;
+    sys_safe_access_enable();
     R8_CK32K_CONFIG |= RB_CLK_OSC32K_XT | RB_CLK_INT32K_PON | RB_CLK_XT32K_PON;
-    R8_SAFE_ACCESS_SIG = 0;
 #endif
+    sys_safe_access_disable();
+
     RTC_InitTime(2020, 1, 1, 0, 0, 0); //RTC时钟初始化当前时间
     TMOS_TimerInit(0);
 }

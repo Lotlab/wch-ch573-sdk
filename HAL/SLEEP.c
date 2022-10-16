@@ -10,15 +10,15 @@
 
 /******************************************************************************/
 /* 头文件包含 */
-#include <stdint.h>
 #include "hal_config.h"
+#include <stdint.h>
 
-#include "SLEEP.h"
-#include "RTC.h"
-#include "CH57x_sys.h"
-#include "CH57x_pwr.h"
-#include "CH57x_clk.h"
 #include "CH57x_ble.h"
+#include "CH57x_clk.h"
+#include "CH57x_pwr.h"
+#include "CH57x_sys.h"
+#include "RTC.h"
+#include "SLEEP.h"
 // #include "HAL.h"
 
 /*******************************************************************************
@@ -33,11 +33,18 @@
 uint32_t CH57X_LowPower(uint32_t time)
 {
 #if (defined(HAL_SLEEP)) && (HAL_SLEEP == TRUE)
-    uint32_t tmp, irq_status;
+    uint32_t time_sleep, time_curr, irq_status;
 
     SYS_DisableAllIrq(&irq_status);
-    tmp = RTC_GetCycle32k();
-    if ((time < tmp) || ((time - tmp) < 30)) { // 检测睡眠的最短时间
+    time_curr = RTC_GetCycle32k();
+    // 检测睡眠时间
+    if (time < time_curr) {
+        time_sleep = time + (RTC_TIMER_MAX_VALUE - time_curr);
+    } else {
+        time_sleep = time - time_curr;
+    }
+
+    if ((time_sleep < SLEEP_RTC_MIN_TIME)) {
         SYS_RecoverIrq(irq_status);
         return 2;
     }
@@ -54,7 +61,7 @@ uint32_t CH57X_LowPower(uint32_t time)
 #if (defined(DCDC_ENABLE)) && (DCDC_ENABLE == TRUE)
         PWR_DCDCCfg(ENABLE);
 #endif
-        if (!RTCTigFlag) // 注意如果使用了RTC以外的唤醒方式，需要注意此时32M晶振未稳定
+        if (RTCTigFlag) // 注意如果使用了RTC以外的唤醒方式，需要注意此时32M晶振未稳定
         {
             time += WAKE_UP_RTC_MAX_TIME;
             if (time > 0xA8C00000) {
@@ -83,11 +90,11 @@ uint32_t CH57X_LowPower(uint32_t time)
 void HAL_SleepInit(void)
 {
 #if (defined(HAL_SLEEP)) && (HAL_SLEEP == TRUE)
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_SLP_WAKE_CTRL |= RB_SLP_RTC_WAKE; // RTC唤醒
+    sys_safe_access_enable();
     R8_RTC_MODE_CTRL |= RB_RTC_TRIG_EN; // 触发模式
-    R8_SAFE_ACCESS_SIG = 0; //
+    sys_safe_access_disable();
     PFIC_EnableIRQ(RTC_IRQn);
 #endif
 }

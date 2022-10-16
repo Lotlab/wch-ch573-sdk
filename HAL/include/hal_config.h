@@ -34,8 +34,11 @@
 #ifndef HAL_SLEEP
 #define HAL_SLEEP TRUE // 是否开启睡眠功能 ( 默认:FALSE )
 #endif
+#ifndef SLEEP_RTC_MIN_TIME
+#define SLEEP_RTC_MIN_TIME (30U) // 非空闲模式下睡眠的最小时间（单位：625us）
+#endif
 #ifndef WAKE_UP_RTC_MAX_TIME
-#define WAKE_UP_RTC_MAX_TIME 45 // - 等待32M晶振稳定时间，根据不同睡眠类型取值可分为： 睡眠模式/下电模式: 45(默认); 暂停模式: 45; 空闲模式: 5
+#define WAKE_UP_RTC_MAX_TIME (45U) // - 等待32M晶振稳定时间，根据不同睡眠类型取值可分为： 睡眠模式/下电模式: 45(默认); 暂停模式: 45; 空闲模式: 5
 #endif
 #ifndef TEM_SAMPLE
 #define TEM_SAMPLE TRUE // 是否打开根据温度变化校准的功能，单次校准耗时小于10ms( 默认:TRUE )
@@ -44,7 +47,7 @@
 #define BLE_CALIBRATION_ENABLE TRUE // 是否打开定时校准的功能，单次校准耗时小于10ms( 默认:TRUE )
 #endif
 #ifndef BLE_CALIBRATION_PERIOD
-#define BLE_CALIBRATION_PERIOD 120000 // 定时校准的周期，单位ms( 默认:120000 ) 
+#define BLE_CALIBRATION_PERIOD 120000 // 定时校准的周期，单位ms( 默认:120000 )
 #endif
 #ifndef BLE_SNV
 #define BLE_SNV TRUE // 是否开启SNV功能，用于储存绑定信息( 默认:TRUE ) 如果配置了SNVNum参数，则需要对应修改Lib_Write_Flash函数内擦除的flash大小，大小为SNVBlock*SNVNum
@@ -53,7 +56,7 @@
 #define BLE_SNV_ADDR 0x77E00 - FLASH_ROM_MAX_SIZE // SNV信息保存地址，使用data flash最后( 默认:0x77E00 )
 #endif
 #ifndef CLK_OSC32K
-#define CLK_OSC32K 0 // RTC时钟选择，如包含主机角色必须使用外部32K( 默认:0 外部(32768Hz)，1：内部(32000Hz)，2：内部(32768Hz) ). 该项请勿在此修改，必须在工程配置里的预处理中修改，如包含主机角色必须使用外部32K
+#define CLK_OSC32K 1 // RTC时钟选择，如包含主机角色必须使用外部32K( 0 外部(32768Hz)，默认: 1：内部(32000Hz)，2：内部(32768Hz) ). 该项请勿在此修改，必须在工程配置里的预处理中修改，如包含主机角色必须使用外部32K
 #endif
 #ifndef BLE_MEMHEAP_SIZE
 #define BLE_MEMHEAP_SIZE (1024 * 6) // 蓝牙协议栈使用的RAM大小，不小于6K ( 默认:(1024*6) )

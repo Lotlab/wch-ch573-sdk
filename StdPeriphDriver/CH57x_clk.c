@@ -24,14 +24,17 @@ uint16_t Int32K_Tune_RAM = 0;
  */
 void LClk32K_Select(LClk32KTypeDef hc)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    uint8_t cfg = R8_CK32K_CONFIG;
+
     if (hc == Clk32K_LSI) {
-        R8_CK32K_CONFIG &= ~RB_CLK_OSC32K_XT;
+        cfg &= ~RB_CLK_OSC32K_XT;
     } else {
-        R8_CK32K_CONFIG |= RB_CLK_OSC32K_XT;
+        cfg |= RB_CLK_OSC32K_XT;
     }
-    R8_SAFE_ACCESS_SIG = 0;
+    
+    sys_safe_access_enable();
+    R8_CK32K_CONFIG = cfg;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -50,10 +53,9 @@ void HSECFG_Current(HSECurrentTypeDef c)
     x32M_c = R8_XT32M_TUNE;
     x32M_c = (x32M_c & 0xfc) | (c & 0x03);
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_XT32M_TUNE = x32M_c;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -72,10 +74,9 @@ void HSECFG_Capacitance(HSECapTypeDef c)
     x32M_c = R8_XT32M_TUNE;
     x32M_c = (x32M_c & 0x8f) | (c << 4);
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_XT32M_TUNE = x32M_c;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -94,10 +95,9 @@ void LSECFG_Current(LSECurrentTypeDef c)
     x32K_c = R8_XT32K_TUNE;
     x32K_c = (x32K_c & 0xfc) | (c & 0x03);
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_XT32K_TUNE = x32K_c;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -116,10 +116,9 @@ void LSECFG_Capacitance(LSECapTypeDef c)
     x32K_c = R8_XT32K_TUNE;
     x32K_c = (x32K_c & 0x0f) | (c << 4);
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_XT32K_TUNE = x32K_c;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -169,14 +168,12 @@ uint16_t Calibration_LSI_FLASH(void)
     diff_2 = 0;
     diffc = 0;
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_OSC_CAL_CTRL = RB_OSC_CNT_EN;
     do {
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        sys_safe_access_enable();
         R16_INT32K_TUNE = loc;
-        R8_SAFE_ACCESS_SIG = 0;
+        sys_safe_access_disable();
 
         /* 读取当前值 */
         while (!(R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT))
@@ -203,10 +200,9 @@ uint16_t Calibration_LSI_FLASH(void)
                 }
 
                 if (diff_1 > diff_2) {
-                    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-                    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+                    sys_safe_access_enable();
                     R16_INT32K_TUNE = loc_t;
-                    R8_SAFE_ACCESS_SIG = 0;
+                    sys_safe_access_disable();
 
                     return (diff_2 * 10000 / basev); // 返回误差值，万分之
                 } else {
@@ -249,10 +245,9 @@ __attribute__((section(".highcode"))) uint16_t Get_Calibration_Cnt_RAM(uint16_t 
 {
     uint16_t i;
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R16_INT32K_TUNE = loc;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
     /* 读取当前值 */
     while (!(R8_OSC_CAL_CTRL & RB_OSC_CNT_HALT))
         ;
@@ -312,8 +307,7 @@ uint16_t Calibration_LSI_RAM(void)
     diff_2 = 0;
     diffc = 0;
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_OSC_CAL_CTRL = RB_OSC_CNT_EN;
     do {
         i = Get_Calibration_Cnt_RAM(loc); // 实时校准后采样值
@@ -333,10 +327,9 @@ uint16_t Calibration_LSI_RAM(void)
                 }
 
                 if (diff_1 > diff_2) {
-                    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-                    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+                    sys_safe_access_enable();
                     R16_INT32K_TUNE = loc_t;
-                    R8_SAFE_ACCESS_SIG = 0;
+                    sys_safe_access_disable();
 
                     return (diff_2 * 10000 / basev); // 返回误差值，万分之
                 } else {
@@ -377,10 +370,9 @@ uint16_t Calibration_LSI_RAM(void)
  */
 void LSI_SetTune_FLASH(void)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R16_INT32K_TUNE = Int32K_Tune_FLASH;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -394,10 +386,9 @@ void LSI_SetTune_FLASH(void)
  */
 void LSI_SetTune_RAM(void)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R16_INT32K_TUNE = Int32K_Tune_RAM;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -442,13 +433,12 @@ void RTC_InitTime(uint16_t y, uint16_t mon, uint16_t d, uint16_t h, uint16_t m, 
         clk_pin = (R8_CK32K_CONFIG & RB_32K_CLK_PIN);
     } while ((clk_pin != (R8_CK32K_CONFIG & RB_32K_CLK_PIN)) || (!clk_pin));
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R32_RTC_TRIG = day;
     R8_RTC_MODE_CTRL |= RB_RTC_LOAD_HI;
     R32_RTC_TRIG = t;
     R8_RTC_MODE_CTRL |= RB_RTC_LOAD_LO;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -511,11 +501,11 @@ void RTC_SetCycle32k(uint32_t cyc)
         clk_pin = (R8_CK32K_CONFIG & RB_32K_CLK_PIN);
     } while ((clk_pin != (R8_CK32K_CONFIG & RB_32K_CLK_PIN)) || (!clk_pin));
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R32_RTC_TRIG = cyc;
+    sys_safe_access_enable();
     R8_RTC_MODE_CTRL |= RB_RTC_LOAD_LO;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -549,11 +539,11 @@ uint32_t RTC_GetCycle32k(void)
  */
 void RTC_TMRFunCfg(RTC_TMRCycTypeDef t)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_RTC_MODE_CTRL &= ~(RB_RTC_TMR_EN | RB_RTC_TMR_MODE);
+    sys_safe_access_enable();
     R8_RTC_MODE_CTRL |= RB_RTC_TMR_EN | (t);
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -571,11 +561,11 @@ void RTC_TRIGFunCfg(uint32_t cyc)
 
     t = RTC_GetCycle32k() + cyc;
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R32_RTC_TRIG = t;
+    sys_safe_access_enable();
     R8_RTC_MODE_CTRL |= RB_RTC_TRIG_EN;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -597,10 +587,9 @@ void RTC_ModeFunDisable(RTC_MODETypeDef m)
         i |= RB_RTC_TMR_EN;
     }
 
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_RTC_MODE_CTRL &= ~(i);
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************

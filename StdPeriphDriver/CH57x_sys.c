@@ -23,14 +23,12 @@
 __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
 {
     uint32_t i;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_PLL_CONFIG &= ~(1 << 5); //
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
     if (sc & 0x20) { // HSE div
         if (!(R8_HFCK_PWR_CTRL & RB_CLK_XT32M_PON)) {
-            R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-            R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+            sys_safe_access_enable();
             R8_HFCK_PWR_CTRL |= RB_CLK_XT32M_PON; // HSE power on
             for (i = 0; i < 1200; i++) {
                 __nop();
@@ -38,42 +36,37 @@ __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
             }
         }
 
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        sys_safe_access_enable();
         R16_CLK_SYS_CFG = (0 << 6) | (sc & 0x1f);
         __nop();
         __nop();
         __nop();
         __nop();
-        R8_SAFE_ACCESS_SIG = 0;
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        sys_safe_access_disable();
+        sys_safe_access_enable();
         R8_FLASH_CFG = 0X51;
-        R8_SAFE_ACCESS_SIG = 0;
+        sys_safe_access_disable();
     }
 
     else if (sc & 0x40) { // PLL div
         if (!(R8_HFCK_PWR_CTRL & RB_CLK_PLL_PON)) {
-            R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-            R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+            sys_safe_access_enable();
             R8_HFCK_PWR_CTRL |= RB_CLK_PLL_PON; // PLL power on
             for (i = 0; i < 2000; i++) {
                 __nop();
                 __nop();
             }
         }
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        sys_safe_access_enable();
         R16_CLK_SYS_CFG = (1 << 6) | (sc & 0x1f);
         __nop();
         __nop();
         __nop();
         __nop();
-        R8_SAFE_ACCESS_SIG = 0;
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-        R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+        sys_safe_access_disable();
+        sys_safe_access_enable();
         R8_FLASH_CFG = 0X53;
-        R8_SAFE_ACCESS_SIG = 0;
+        sys_safe_access_disable();
     }
 }
 
@@ -130,10 +123,9 @@ uint8_t SYS_GetInfoSta(SYS_InfoStaTypeDef i)
 __attribute__((section(".highcode"))) void SYS_ResetExecute(void)
 {
     FLASH_ROM_SW_RESET();
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_RST_WDOG_CTRL |= RB_SOFTWARE_RESET;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -195,14 +187,17 @@ uint32_t SYS_GetSysTickCnt(void)
  */
 void WWDG_ITCfg(FunctionalState s)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    uint8_t ctrl = R8_RST_WDOG_CTRL;
+
     if (s == DISABLE) {
-        R8_RST_WDOG_CTRL &= ~RB_WDOG_INT_EN;
+        ctrl &= ~RB_WDOG_INT_EN;
     } else {
-        R8_RST_WDOG_CTRL |= RB_WDOG_INT_EN;
+        ctrl |= RB_WDOG_INT_EN;
     }
-    R8_SAFE_ACCESS_SIG = 0;
+
+    sys_safe_access_enable();
+    R8_RST_WDOG_CTRL = ctrl;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -216,14 +211,17 @@ void WWDG_ITCfg(FunctionalState s)
  */
 void WWDG_ResetCfg(FunctionalState s)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    uint8_t ctrl = R8_RST_WDOG_CTRL;
+
     if (s == DISABLE) {
-        R8_RST_WDOG_CTRL &= ~RB_WDOG_RST_EN;
+        ctrl &= ~RB_WDOG_RST_EN;
     } else {
-        R8_RST_WDOG_CTRL |= RB_WDOG_RST_EN;
+        ctrl |= RB_WDOG_RST_EN;
     }
-    R8_SAFE_ACCESS_SIG = 0;
+
+    sys_safe_access_enable();
+    R8_RST_WDOG_CTRL = ctrl;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -237,10 +235,9 @@ void WWDG_ResetCfg(FunctionalState s)
  */
 void WWDG_ClearFlag(void)
 {
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R8_RST_WDOG_CTRL |= RB_WDOG_INT_FLAG;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -253,15 +250,16 @@ void WWDG_ClearFlag(void)
  * @return  none
  */
 __attribute__((interrupt(WCH_INT_TYPE)))
-__attribute__((section(".highcode"))) void
+__attribute__((section(".highcode")))
+__attribute__((weak)) void
 HardFault_Handler(void)
 {
     FLASH_ROM_SW_RESET();
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
-    R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
+    sys_safe_access_enable();
     R16_INT32K_TUNE = 0xFFFF;
+    sys_safe_access_enable();
     R8_RST_WDOG_CTRL |= RB_SOFTWARE_RESET;
-    R8_SAFE_ACCESS_SIG = 0;
+    sys_safe_access_disable();
     while (1)
         ;
 }
@@ -323,8 +321,7 @@ __attribute__((section(".highcode"))) void mDelaymS(uint16_t t)
 }
 
 #if (defined(DEBUG)) && (defined(DEBUG_UART))
-__attribute__((used))
-int _write(int fd, char* buf, int size)
+__attribute__((used)) int _write(int fd, char* buf, int size)
 {
     int i;
     for (i = 0; i < size; i++) {

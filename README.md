@@ -5,8 +5,8 @@ Formatted (and partly refactored) sdk from wch original SDK.
 NOT FULLY TEST YET, USE AT YOUR OWN RISK!
 
 SDK List:
-- CH573: SDK v1.7
-- CH583: SDK v1.2
+- CH573: SDK v2.1
+- CH583: SDK v1.5
 
 CH573 and CH583 share some peripherals, those code are same and I remove them. Use ch573 version and it might work.
 

@@ -29,10 +29,10 @@ signed short ADC_DataCalib_Rough(void) // 采样数据粗调,获取偏差值
     ch = R8_ADC_CHANNEL;
     ctrl = R8_ADC_CFG;
 
-    R8_ADC_CFG = 0;
     ADC_ChannelCfg(ADC_CALIB_CH); // 6/7/10/11 可选
 
-    R8_ADC_CFG |= RB_ADC_OFS_TEST | RB_ADC_POWER_ON | (2 << 4); // 进入测试模式
+    R8_ADC_CFG |= RB_ADC_OFS_TEST; // 进入测试模式
+    R8_ADC_CFG &= ~RB_ADC_DIFF_EN; // 关闭差分
     R8_ADC_CONVERT = RB_ADC_START;
     while (R8_ADC_CONVERT & RB_ADC_START)
         ;
@@ -45,8 +45,8 @@ signed short ADC_DataCalib_Rough(void) // 采样数据粗调,获取偏差值
     sum = (sum + 8) >> 4;
     R8_ADC_CFG &= ~RB_ADC_OFS_TEST; // 关闭测试模式
 
-    R8_ADC_CHANNEL = ch;
     R8_ADC_CFG = ctrl;
+    R8_ADC_CHANNEL = ch;
     return (2048 - sum);
 }
 
@@ -126,7 +126,7 @@ void ADC_InterBATSampInit(void)
  */
 void TouchKey_ChSampInit(void)
 {
-    R8_ADC_CFG = RB_ADC_POWER_ON | RB_ADC_BUF_EN | (2 << 4);
+    R8_ADC_CFG = RB_ADC_POWER_ON | RB_ADC_BUF_EN | (1 << 4); // 使用-6dB模式，
     R8_TKEY_CFG |= RB_TKEY_PWR_ON;
 }
 
@@ -196,7 +196,7 @@ void ADC_AutoConverCycle(uint8_t cycle)
 void ADC_DMACfg(uint8_t s, uint16_t startAddr, uint16_t endAddr, ADC_DMAModeTypeDef m)
 {
     if (s == DISABLE) {
-        R8_ADC_CTRL_DMA &= ~RB_ADC_DMA_ENABLE;
+        R8_ADC_CTRL_DMA &= ~(RB_ADC_DMA_ENABLE | RB_ADC_IE_DMA_END);
     } else {
         R16_ADC_DMA_BEG = startAddr;
         R16_ADC_DMA_END = endAddr;

@@ -91,10 +91,10 @@ uint8_t AnalyzeBulkEndp(uint8_t* buf, uint8_t HubPortIndex)
         memset(ThisUsbDev.GpVar, 0, sizeof(ThisUsbDev.GpVar)); //清空数组
     }
 
-    for (i = 0; i < ((PUSB_CFG_DESCR)buf)->wTotalLength; i += l) // 搜索中断端点描述符,跳过配置描述符和接口描述符
+    for (i = 0; i < ((PUSB_CFG_DESCR)buf)->wTotalLength; i += l) // 搜索批量端点描述符,跳过配置描述符和接口描述符
     {
         if ((((PUSB_ENDP_DESCR)(buf + i))->bDescriptorType == USB_DESCR_TYP_ENDP) // 是端点描述符
-            && ((((PUSB_ENDP_DESCR)(buf + i))->bmAttributes & USB_ENDP_TYPE_MASK) == USB_ENDP_TYPE_BULK)) // 是中断端点
+            && ((((PUSB_ENDP_DESCR)(buf + i))->bmAttributes & USB_ENDP_TYPE_MASK) == USB_ENDP_TYPE_BULK)) // 是批量端点
 
         {
             if (HubPortIndex) {
@@ -220,7 +220,13 @@ uint8_t InitRootDevice(void)
                     if_cls = ((PUSB_CFG_DESCR_LONG)Com_Buffer)->itf_descr.bInterfaceProtocol;
                     s = CtrlSetUsbConfig(cfg); // 设置USB设备配置
                     if (s == ERR_SUCCESS) {
-                        //	    					Set_Idle( );
+                        s = CtrlGetHIDDeviceReport(dv_cls); //获取报表描述符
+                        if (s == ERR_SUCCESS) {
+                            for (i = 0; i < 64; i++) {
+                                PRINT("x%02X ", (uint16_t)(Com_Buffer[i]));
+                            }
+                            PRINT("\n");
+                        }
                         //	需保存端点信息以便主程序进行USB传输
                         ThisUsbDev.DeviceStatus = ROOT_DEV_SUCCESS;
                         if (if_cls == 1) {
@@ -614,14 +620,14 @@ uint8_t CtrlGetHIDDeviceReport(uint8_t infc)
     uint8_t s;
     uint8_t len;
 
-    CopySetupReqPkg((int8_t*)SetupSetHIDIdle);
+    CopySetupReqPkg(SetupSetHIDIdle);
     pSetupReq->wIndex = infc;
     s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
     if (s != ERR_SUCCESS) {
         return (s);
     }
 
-    CopySetupReqPkg((int8_t*)SetupGetHIDDevReport);
+    CopySetupReqPkg(SetupGetHIDDevReport);
     pSetupReq->wIndex = infc;
     s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
     if (s != ERR_SUCCESS) {
@@ -645,7 +651,7 @@ uint8_t CtrlGetHubDescr(void)
     uint8_t s;
     uint8_t len;
 
-    CopySetupReqPkg((int8_t*)SetupGetHubDescr);
+    CopySetupReqPkg(SetupGetHubDescr);
     s = HostCtrlTransfer(Com_Buffer, &len); // 执行控制传输
     if (s != ERR_SUCCESS) {
         return (s);

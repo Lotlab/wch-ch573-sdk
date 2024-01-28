@@ -39,6 +39,7 @@ void PWR_DCDCCfg(FunctionalState s)
         sys_safe_access_enable();
         R16_AUX_POWER_ADJ = adj;
         R16_POWER_PLAN = plan;
+        sys_safe_access_disable();
         DelayUs(10);
         sys_safe_access_enable();
         R16_POWER_PLAN |= RB_PWR_DCDC_EN;
@@ -60,11 +61,11 @@ void PWR_UnitModCfg(FunctionalState s, uint8_t unit)
 {
     uint8_t pwr_ctrl = R8_HFCK_PWR_CTRL;
     uint8_t ck32k_cfg = R8_CK32K_CONFIG;
-    if (s == DISABLE) //关闭
+    if (s == DISABLE) // 关闭
     {
         pwr_ctrl &= ~(unit & 0x1c);
         ck32k_cfg &= ~(unit & 0x03);
-    } else //打开
+    } else // 打开
     {
         pwr_ctrl |= (unit & 0x1c);
         ck32k_cfg |= (unit & 0x03);
@@ -121,6 +122,7 @@ void PWR_PeriphWakeUpCfg(FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mod
     if (s == DISABLE) {
         sys_safe_access_enable();
         R8_SLP_WAKE_CTRL &= ~perph;
+        sys_safe_access_disable();
     } else {
         switch (mode) {
         case Short_Delay:
@@ -138,12 +140,14 @@ void PWR_PeriphWakeUpCfg(FunctionalState s, uint8_t perph, WakeUP_ModeypeDef mod
         __nop();
         sys_safe_access_enable();
         R8_SLP_WAKE_CTRL |= RB_WAKE_EV_MODE | perph;
+        sys_safe_access_disable();
         sys_safe_access_enable();
         R8_SLP_POWER_CTRL &= ~(RB_WAKE_DLY_MOD);
+        sys_safe_access_disable();
         sys_safe_access_enable();
         R8_SLP_POWER_CTRL |= m;
+        sys_safe_access_disable();
     }
-    sys_safe_access_disable();
 }
 
 /*********************************************************************
@@ -196,7 +200,7 @@ void PowerMonitor(FunctionalState s, VolM_LevelypeDef vl)
 __attribute__((section(".highcode"))) void LowPower_Idle(void)
 {
     FLASH_ROM_SW_RESET();
-    R8_FLASH_CTRL = 0x04; //flash关闭
+    R8_FLASH_CTRL = 0x04; // flash关闭
 
     PFIC->SCTLR &= ~(1 << 2); // sleep
     __WFI();
@@ -218,7 +222,7 @@ __attribute__((section(".highcode"))) void LowPower_Halt(void)
     uint8_t x32Kpw, x32Mpw;
 
     FLASH_ROM_SW_RESET();
-    R8_FLASH_CTRL = 0x04; //flash关闭
+    R8_FLASH_CTRL = 0x04; // flash关闭
     x32Kpw = R8_XT32K_TUNE;
     x32Mpw = R8_XT32M_TUNE;
     x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
@@ -228,14 +232,16 @@ __attribute__((section(".highcode"))) void LowPower_Halt(void)
 
     sys_safe_access_enable();
     R8_BAT_DET_CTRL = 0; // 关闭电压监控
+    sys_safe_access_disable();
     sys_safe_access_enable();
     R8_XT32K_TUNE = x32Kpw;
     R8_XT32M_TUNE = x32Mpw;
+    sys_safe_access_disable();
     sys_safe_access_enable();
     R8_PLL_CONFIG |= (1 << 5);
     sys_safe_access_disable();
 
-    PFIC->SCTLR |= (1 << 2); //deep sleep
+    PFIC->SCTLR |= (1 << 2); // deep sleep
     __WFI();
     __nop();
     __nop();
@@ -258,8 +264,12 @@ __attribute__((section(".highcode"))) void LowPower_Halt(void)
 *******************************************************************************/
 __attribute__((section(".highcode"))) void LowPower_Sleep(uint8_t rm)
 {
+    __attribute__((aligned(4))) uint8_t MacAddr[6] = { 0 };
     uint8_t x32Kpw, x32Mpw;
     uint16_t power_plan;
+
+    GetMACAddress(MacAddr);
+
     x32Kpw = R8_XT32K_TUNE;
     x32Mpw = R8_XT32M_TUNE;
     x32Mpw = (x32Mpw & 0xfc) | 0x03; // 150%额定电流
@@ -269,12 +279,13 @@ __attribute__((section(".highcode"))) void LowPower_Sleep(uint8_t rm)
 
     sys_safe_access_enable();
     R8_BAT_DET_CTRL = 0; // 关闭电压监控
+    sys_safe_access_disable();
     sys_safe_access_enable();
     R8_XT32K_TUNE = x32Kpw;
     R8_XT32M_TUNE = x32Mpw;
     sys_safe_access_disable();
 
-    PFIC->SCTLR |= (1 << 2); //deep sleep
+    PFIC->SCTLR |= (1 << 2); // deep sleep
 
     power_plan = R16_POWER_PLAN & (RB_PWR_DCDC_EN | RB_PWR_DCDC_PRE);
     power_plan |= RB_PWR_PLAN_EN | RB_PWR_MUST_0010 | RB_PWR_CORE | rm;
@@ -283,23 +294,23 @@ __attribute__((section(".highcode"))) void LowPower_Sleep(uint8_t rm)
     R8_SLP_POWER_CTRL |= RB_RAM_RET_LV;
     R8_PLL_CONFIG |= (1 << 5);
     power_plan = DCDCState;
+    sys_safe_access_disable();
     do {
         __WFI();
         __nop();
         __nop();
-        DelayUs(70);
+        DelayUs(300);
 
-        uint8_t mac[6] = { 0 };
-
+        __attribute__((aligned(4))) uint8_t mac[6] = { 0 };
         GetMACAddress(mac);
-
-        if (mac[5] != 0xff)
+        if (*((uint32_t*)mac) == *((uint32_t*)MacAddr))
             break;
     } while (1);
 
     sys_safe_access_enable();
     R8_PLL_CONFIG &= ~(1 << 5);
     sys_safe_access_disable();
+    DelayUs(20);
 }
 
 /*********************************************************************
@@ -329,17 +340,21 @@ __attribute__((section(".highcode"))) void LowPower_Shutdown(uint8_t rm)
 
     sys_safe_access_enable();
     R8_BAT_DET_CTRL = 0; // 关闭电压监控
+    sys_safe_access_disable();
     sys_safe_access_enable();
     R8_XT32K_TUNE = x32Kpw;
     R8_XT32M_TUNE = x32Mpw;
     sys_safe_access_disable();
     SetSysClock(CLK_SOURCE_HSE_6_4MHz);
 
-    PFIC->SCTLR |= (1 << 2); //deep sleep
+    PFIC->SCTLR |= (1 << 2); // deep sleep
 
     sys_safe_access_enable();
     R8_SLP_POWER_CTRL |= RB_RAM_RET_LV;
+    sys_safe_access_disable();
+    sys_safe_access_enable();
     R16_POWER_PLAN = RB_PWR_PLAN_EN | RB_PWR_MUST_0010 | rm;
+    sys_safe_access_disable();
     __WFI();
     __nop();
     __nop();

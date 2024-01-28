@@ -1,11 +1,13 @@
 /********************************** (C) COPYRIGHT ******************************
-* File Name         : CH57xBLE_LIB.H
-* Author            : WCH
-* Version           : V1.90
-* Date              : 2022/08/08
-* Description       : head file
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-*******************************************************************************/
+ * File Name         : CH57xBLE_LIB.H
+ * Author            : WCH
+ * Version           : V2.20
+ * Date              : 2024/01/02
+ * Description       : head file
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /******************************************************************************/
 #ifndef __CH57xBLE_LIB_H
@@ -48,6 +50,7 @@ typedef uint8_t tmosSnvId_t;
 #ifndef tmosSnvLen_t
 typedef uint8_t tmosSnvLen_t;
 #endif
+
 // Define function type that generate a random seed callback
 typedef uint32_t (*pfnSrandCB)(void);
 // Define function type that switch to idle mode callback
@@ -73,23 +76,24 @@ typedef uint32_t (*pfnGetSysClock)(void);
 typedef struct tag_ble_config {
     uint32_t MEMAddr; // library memory start address
     uint16_t MEMLen; // library memory size
-    uint32_t SNVAddr; // SNV flash start addr( if NULL,bonding information will not be saved )
+    uint32_t SNVAddr; // SNV flash start address( if NULL,bonding information will not be saved )
     uint16_t SNVBlock; // SNV flash block size ( default 256 )
     uint8_t SNVNum; // SNV flash block number ( default 1 )
-    uint8_t BufMaxLen; // Maximum length (in octets) of the data portion of each HCI data packet( default 27 ). ATT_MTU = BufMaxLen-4,Range[23,ATT_MAX_MTU_SIZE]
+    uint8_t BufMaxLen; // Maximum length (in octets) of the data portion of each HCI data packet( default 27 )
+                       // ATT_MTU = BufMaxLen-4,Range[23,ATT_MAX_MTU_SIZE]
     uint8_t BufNumber; // Maximum number of sent and received packages cached by the controller( default 5 )
-        // Must be greater than the mumber of connections.
+                       // Must be greater than the number of connections.
     uint8_t TxNumEvent; // Maximum number of TX data in a connection event ( default 1 )
-    uint8_t TxPower; // Tx power ( defautl LL_TX_POWEER_0_DBM(0dBm) )
+    uint8_t TxPower; // Maximum transmit power level( default LL_TX_POWEER_0_DBM(0dBm) )
     uint8_t WakeUpTime; // Wake up time value in one RTC count
     uint8_t SelRTCClock; // system clock select
-        // bit0-1 00: LSE(32768Hz) 01:LSI(32000Hz) 10:LSI(32768Hz)
-        // bit7:  1: ble timer(HSE)(must disable sleep)
-    uint8_t RxNumEvent; // Maximum number of RX data in a connection event ( default equal BufNumber )
+                         // bit0-1 00: LSE(32768Hz) 01:LSI(32000Hz) 10:LSI(32768Hz)
+                         // bit7:  1: ble timer(HSE)(must disable sleep)
+    uint8_t RxNumEvent; // Maximum number of RX data in a connection event ( default equal to BufNumber )
     uint8_t MacAddr[6]; // MAC address,little-endian( factory default )
     uint8_t ConnectNumber; // Connect number,lower two bits are peripheral number,followed by central number
     uint8_t WindowWidening; // Wait rf start window
-    uint8_t WaitWindow; // Wait connect event arrive window
+    uint8_t WaitWindow; // Wait event arrive window
     pfnSrandCB srandCB; // Register a program that generate a random seed
     pfnIdleCB sleepCB; // Register a program that set idle
     pfnTempSampleCB tsCB; // Register a program that read the current temperature,determine whether calibration is need
@@ -97,7 +101,7 @@ typedef struct tag_ble_config {
     pfnLibStatusErrorCB staCB; // Register a program that library status callback
     pfnFlashReadCB readFlashCB; // Register a program that read flash
     pfnFlashWriteCB writeFlashCB; // Register a program that write flash
-} bleConfig_t; // Library init call BLE_LibInit function
+} bleConfig_t; // Library initialization call BLE_LibInit function
 
 /* BLE pa control config struct */
 typedef struct tag_ble_pa_control_config {
@@ -123,22 +127,22 @@ typedef struct
 /*********************************************************************
  * GLOBAL MACROS
  */
-#define VER_FILE "CH57x_BLE_LIB_V1.9"
+#define VER_FILE "CH57x_BLE_LIB_V2.2"
 extern const uint8_t VER_LIB[]; // LIB version
 #define SYSTEM_TIME_MICROSEN 625 // unit of process event timer is 625us
-#define MS1_TO_SYSTEM_TIME(x) ((x)*1000 / SYSTEM_TIME_MICROSEN) // transform unit in ms to unit in 625us ( attentional bias )
+#define MS1_TO_SYSTEM_TIME(x) ((x) * 1000 / SYSTEM_TIME_MICROSEN) // transform unit in ms to unit in 625us ( attentional bias )
 /* takes a byte out of a uint32_t : var - uint32_t,  ByteNum - byte to take out (0 - 3) */
-#define BREAK_UINT32(var, ByteNum) (uint8_t)((uint32_t)(((var) >> ((ByteNum)*8)) & 0x00FF))
+#define BREAK_UINT32(var, ByteNum) (uint8_t)((uint32_t)(((var) >> ((ByteNum) * 8)) & 0x00FF))
 #define HI_UINT16(a) (((a) >> 8) & 0xFF)
-#define LO_UINT16(a) ((a)&0xFF)
+#define LO_UINT16(a) ((a) & 0xFF)
 #define HI_UINT8(a) (((a) >> 4) & 0x0F)
-#define LO_UINT8(a) ((a)&0x0F)
+#define LO_UINT8(a) ((a) & 0x0F)
 #define BUILD_UINT32(Byte0, Byte1, Byte2, Byte3) \
-    ((uint32_t)(((uint32_t)(Byte0)&0x00FF)       \
-        + (((uint32_t)(Byte1)&0x00FF) << 8)      \
-        + (((uint32_t)(Byte2)&0x00FF) << 16)     \
-        + (((uint32_t)(Byte3)&0x00FF) << 24)))
-#define BUILD_UINT16(loByte, hiByte) ((uint16_t)(((loByte)&0x00FF) | (((hiByte)&0x00FF) << 8)))
+    ((uint32_t)(((uint32_t)(Byte0) & 0x00FF)     \
+        + (((uint32_t)(Byte1) & 0x00FF) << 8)    \
+        + (((uint32_t)(Byte2) & 0x00FF) << 16)   \
+        + (((uint32_t)(Byte3) & 0x00FF) << 24)))
+#define BUILD_UINT16(loByte, hiByte) ((uint16_t)(((loByte) & 0x00FF) | (((hiByte) & 0x00FF) << 8)))
 
 #define ACTIVE_LOW !
 #define ACTIVE_HIGH !! // double negation forces result to be '1'
@@ -163,7 +167,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define ABS(n) (((n) < 0) ? -(n) : (n))
 #endif
 
-/* TxPower define(Accuracy:1dBm) */
+/* TxPower define(Accuracy:±2dBm) */
 #define LL_TX_POWEER_MINUS_20_DBM 0x01
 #define LL_TX_POWEER_MINUS_14_DBM 0x03
 #define LL_TX_POWEER_MINUS_8_DBM 0x07
@@ -222,7 +226,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define bleProcedureComplete 0x1A //!< The Procedure is completed
 #define bleInvalidMtuSize 0x1B //!< SDU size is larger than peer MTU.
 
-/*******************************LinkDB***************************************/
+/********************************LinkDB****************************************/
 // Special case connection handles
 #define INVALID_CONNHANDLE 0xFFFF // Invalid connection handle, used for no connection handle
 #define LOOPBACK_CONNHANDLE 0xFFFE // Loopback connection handle, used to loopback a message
@@ -242,6 +246,7 @@ extern const uint8_t VER_LIB[]; // LIB version
  */
 #define GAP_SERVICE_UUID 0x1800 // Generic Access Profile
 #define GATT_SERVICE_UUID 0x1801 // Generic Attribute Profile
+
 /**
  * GATT Declarations
  */
@@ -249,6 +254,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GATT_SECONDARY_SERVICE_UUID 0x2801 // Secondary Service
 #define GATT_INCLUDE_UUID 0x2802 // Include
 #define GATT_CHARACTER_UUID 0x2803 // Characteristic
+
 /**
  * GATT Descriptors
  */
@@ -261,6 +267,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GATT_VALID_RANGE_UUID 0x2906 // Valid Range
 #define GATT_EXT_REPORT_REF_UUID 0x2907 // External Report Reference Descriptor
 #define GATT_REPORT_REF_UUID 0x2908 // Report Reference Descriptor
+
 /**
  * GATT Characteristics
  */
@@ -271,6 +278,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define PERI_CONN_PARAM_UUID 0x2A04 // Peripheral Preferred Connection Parameters
 #define SERVICE_CHANGED_UUID 0x2A05 // Service Changed
 #define CENTRAL_ADDRESS_RESOLUTION_UUID 0x2AA6 // Central Address Resolution
+
 /**
  * GATT Service UUIDs
  */
@@ -295,6 +303,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define CSC_SERV_UUID 0x1816 // Cycling Speed and Cadence
 #define CYCPWR_SERV_UUID 0x1818 // Cycling Power
 #define LOC_NAV_SERV_UUID 0x1819 // Location and Navigation
+
 /**
  * GATT Characteristic UUIDs
  */
@@ -462,13 +471,13 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GATT_UNIT_TIME_YEAR_UUID 0x27B3 // time (year)
 #define GATT_UNIT_TIME_MONTH_UUID 0x27B4 // time (month)
 
-/************************************************ Messages IDs *************************************************************/
+/*********************************Messages IDs*********************************/
 // GATT - Messages IDs
 #define GATT_MSG_EVENT 0xB0 //!< Incoming GATT message
 #define GATT_SERV_MSG_EVENT 0xB1 //!< Incoming GATT ServApp message
 // GAP - Messages IDs
 #define GAP_MSG_EVENT 0xD0 //!< Incoming GAP message
-/************************************************ ATT *************************************************************/
+/************************************ATT***************************************/
 #define ATT_MTU_SIZE 23 //!< Minimum ATT MTU size
 #define ATT_MAX_MTU_SIZE 247 //!< Maximum ATT MTU size
 // ATT Methods
@@ -545,7 +554,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define ATT_BT_UUID_SIZE 2
 // Size of 128-bit UUID
 #define ATT_UUID_SIZE 16
-/************************************************ GATT *************************************************************/
+/******************************** GATT ***********************************/
 
 // GATT Attribute Access Permissions Bit Fields
 #define GATT_PERMIT_READ 0x01 //!< Attribute is Readable
@@ -562,8 +571,8 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GATT_PROP_READ 0x02 //!< Permits reads of the Characteristic Value
 #define GATT_PROP_WRITE_NO_RSP 0x04 //!< Permits writes of the Characteristic Value without response
 #define GATT_PROP_WRITE 0x08 //!< Permits writes of the Characteristic Value with response
-#define GATT_PROP_NOTIFY 0x10 //!< Permits notifications of a Characteristic Value without acknowledgment
-#define GATT_PROP_INDICATE 0x20 //!< Permits indications of a Characteristic Value with acknowledgment
+#define GATT_PROP_NOTIFY 0x10 //!< Permits notifications of a Characteristic Value without acknowledgement
+#define GATT_PROP_INDICATE 0x20 //!< Permits indications of a Characteristic Value with acknowledgement
 #define GATT_PROP_AUTHEN 0x40 //!< Permits signed writes to the Characteristic Value
 #define GATT_PROP_EXTENDED 0x80 //!< Additional characteristic properties are defined in the Characteristic Extended Properties Descriptor
 
@@ -583,24 +592,20 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GATT_MAX_MTU 0xFFFF // Maximum MTU size
 
 // Attribute Access Permissions
-#define gattPermitRead(a) ((a)&GATT_PERMIT_READ)
-#define gattPermitWrite(a) ((a)&GATT_PERMIT_WRITE)
-#define gattPermitAuthenRead(a) ((a)&GATT_PERMIT_AUTHEN_READ)
-#define gattPermitAuthenWrite(a) ((a)&GATT_PERMIT_AUTHEN_WRITE)
-#define gattPermitAuthorRead(a) ((a)&GATT_PERMIT_AUTHOR_READ)
-#define gattPermitAuthorWrite(a) ((a)&GATT_PERMIT_AUTHOR_WRITE)
-#define gattPermitEncryptRead(a) ((a)&GATT_PERMIT_ENCRYPT_READ)
-#define gattPermitEncryptWrite(a) ((a)&GATT_PERMIT_ENCRYPT_WRITE)
+#define gattPermitRead(a) ((a) & GATT_PERMIT_READ)
+#define gattPermitWrite(a) ((a) & GATT_PERMIT_WRITE)
+#define gattPermitAuthenRead(a) ((a) & GATT_PERMIT_AUTHEN_READ)
+#define gattPermitAuthenWrite(a) ((a) & GATT_PERMIT_AUTHEN_WRITE)
+#define gattPermitAuthorRead(a) ((a) & GATT_PERMIT_AUTHOR_READ)
+#define gattPermitAuthorWrite(a) ((a) & GATT_PERMIT_AUTHOR_WRITE)
+#define gattPermitEncryptRead(a) ((a) & GATT_PERMIT_ENCRYPT_READ)
+#define gattPermitEncryptWrite(a) ((a) & GATT_PERMIT_ENCRYPT_WRITE)
 
 // Check for different UUID types
-#define gattPrimaryServiceType(t) (ATT_CompareUUID(primaryServiceUUID, ATT_BT_UUID_SIZE, \
-    (t).uuid, (t).len))
-#define gattSecondaryServiceType(t) (ATT_CompareUUID(secondaryServiceUUID, ATT_BT_UUID_SIZE, \
-    (t).uuid, (t).len))
-#define gattCharacterType(t) (ATT_CompareUUID(characterUUID, ATT_BT_UUID_SIZE, \
-    (t).uuid, (t).len))
-#define gattIncludeType(t) (ATT_CompareUUID(includeUUID, ATT_BT_UUID_SIZE, \
-    (t).uuid, (t).len))
+#define gattPrimaryServiceType(t) (ATT_CompareUUID(primaryServiceUUID, ATT_BT_UUID_SIZE, (t).uuid, (t).len))
+#define gattSecondaryServiceType(t) (ATT_CompareUUID(secondaryServiceUUID, ATT_BT_UUID_SIZE, (t).uuid, (t).len))
+#define gattCharacterType(t) (ATT_CompareUUID(characterUUID, ATT_BT_UUID_SIZE, (t).uuid, (t).len))
+#define gattIncludeType(t) (ATT_CompareUUID(includeUUID, ATT_BT_UUID_SIZE, (t).uuid, (t).len))
 #define gattServiceType(t) (gattPrimaryServiceType((t)) || gattSecondaryServiceType((t)))
 #define GATT_MAX_NUM_CONN (4)
 
@@ -625,7 +630,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 // Client Characteristic Configuration table (from CCC attribute value pointer)
 #define GATT_CCC_TBL(pValue) ((gattCharCfg_t*)(*((PTR_TYPE)(&pValue))))
 
-/************************************************ GAP  *************************************************************/
+/************************************ GAP *************************************/
 #define GAP_MSG_EVENT_DEFINES //!< GAP type of command
 #define GAP_DEVICE_INIT_DONE_EVENT 0x00 //!< Sent when the Device Initialization is complete.  This event is sent as an tmos message defined as gapDeviceInitDoneEvent_t.
 #define GAP_DEVICE_DISCOVERY_EVENT 0x01 //!< Sent when the Device Discovery Process is complete. This event is sent as an tmos message defined as gapDevDiscEvent_t.
@@ -643,7 +648,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GAP_DEVICE_INFO_EVENT 0x0D //!< Sent during the Device Discovery Process when a device is discovered. This event is sent as an tmos message defined as gapDeviceInfoEvent_t.
 #define GAP_BOND_COMPLETE_EVENT 0x0E //!< Sent when the bonding process is complete. This event is sent as an tmos message defined as gapBondCompleteEvent_t.
 #define GAP_PAIRING_REQ_EVENT 0x0F //!< Sent when an unexpected Pairing Request is received. This event is sent as an tmos message defined as gapPairingReqEvent_t.
-#define GAP_DIRECT_DEVICE_INFO_EVENT 0x10 //!< Sent when an direct Advertising Data is received. This event is sent as an tmos message defined as gapDirectDeviceInfoEvent_t.
+#define GAP_DIRECT_DEVICE_INFO_EVENT 0x10 //!< Sent when a direct Advertising Data is received. This event is sent as an tmos message defined as gapDirectDeviceInfoEvent_t.
 
 // GAP_PROFILE_ROLE_DEFINES GAP Profile Roles
 #define GAP_PROFILE_BROADCASTER 0x01 //!< A device that sends advertising events only.
@@ -712,7 +717,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define TGAP_CONN_EST_MAX_CE_LEN 16 //!< Local informational parameter about maximum length of connection needed.Default 0. (n * 0.625 mSec)
 
 // Proprietary
-#define TGAP_PRIVATE_ADDR_INT 17 //!< Minimum Time Interval between private (resolvable) address changes.Default 900. (n * 1 minute)
+#define TGAP_PRIVATE_ADDR_INT 17 //!< Minimum Time Interval between private (resolvable) address changes.Default 900. (n * 1 seconds)
 #define TGAP_SM_TIMEOUT 18 //!< SM Message Timeout (milliseconds). Default 30 seconds.
 #define TGAP_SM_MIN_KEY_LEN 19 //!< SM Minimum Key Length supported. Default 7.
 #define TGAP_SM_MAX_KEY_LEN 20 //!< SM Maximum Key Length supported. Default 16.
@@ -720,7 +725,8 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define TGAP_SCAN_RSSI_MIN 22 //!< Minimum RSSI required for scan advertising to be reported to the app. Default -127.
 #define TGAP_REJECT_CONN_PARAMS 23 //!< Whether or not to reject Connection Parameter Update Request received on Central device. Default FALSE.
 #define TGAP_AUTH_TASK_ID 24 //!< Task ID override for Task Authentication control (for stack internal use only)
-#define TGAP_PARAMID_MAX 25 //!< ID MAX-valid Parameter ID
+#define TGAP_ADV_RSP_RSSI_MIN 25 //!< The minimum RSSI for advertising to send scanning response. Default -127.
+#define TGAP_PARAMID_MAX 26 //!< ID MAX-valid Parameter ID
 
 // GAP_DEVDISC_MODE_DEFINES GAP Device Discovery Modes
 #define DEVDISC_MODE_NONDISCOVERABLE 0x00 //!< No discoverable setting
@@ -838,7 +844,8 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GAP_APPEARE_HID_DIGITAL_CARDREADER 0x03C6 //!< HID Card Reader
 #define GAP_APPEARE_HID_DIGITAL_PEN 0x03C7 //!< HID Digital Pen
 #define GAP_APPEARE_HID_BARCODE_SCANNER 0x03C8 //!< HID Barcode Scanner
-/*********************************************gapRole*********************************************************/
+
+/************************************gapRole***********************************/
 // GAPROLE_PROFILE_PARAMETERS GAP Role Manager Parameters
 #define GAPROLE_PROFILEROLE 0x300 //!< Reading this parameter will return GAP Role type. Read Only. Size is uint8_t.
 #define GAPROLE_IRK 0x301 //!< Identity Resolving Key. Read/Write. Size is uint8_t[KEYLEN]. Default is all 0, which means that the IRK will be randomly generated.
@@ -846,8 +853,8 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GAPROLE_SIGNCOUNTER 0x303 //!< Sign Counter. Read/Write. Size is uint32_t. Default is 0.
 #define GAPROLE_BD_ADDR 0x304 //!< Device's Address. Read Only. Size is uint8_t[B_ADDR_LEN]. This item is read from the controller.
 #define GAPROLE_ADVERT_ENABLED 0x305 //!< Enable/Disable Advertising. Read/Write. Size is uint8_t. Default is TRUE=Enabled.
-#define GAPROLE_ADVERT_DATA 0x306 //!< Advertisement Data. Read/Write. Max size is uint8[B_MAX_ADV_LEN]. Defaults to all 0.
-#define GAPROLE_SCAN_RSP_DATA 0x307 //!< Scan Response Data. Read/Write. Max size is uint8_t[B_MAX_ADV_LEN]. Defaults to all 0.
+#define GAPROLE_ADVERT_DATA 0x306 //!< Advertisement Data. Read/Write. Max size is B_MAX_ADV_EXT_LEN. Default to all 0.
+#define GAPROLE_SCAN_RSP_DATA 0x307 //!< Scan Response Data. Read/Write. Max size is B_MAX_ADV_EXT_LEN. Defaults to all 0.
 #define GAPROLE_ADV_EVENT_TYPE 0x308 //!< Advertisement Type. Read/Write. Size is uint8_t.  Default is GAP_ADTYPE_ADV_IND.
 #define GAPROLE_ADV_DIRECT_TYPE 0x309 //!< Direct Advertisement Address Type. Read/Write. Size is uint8_t. Default is ADDRTYPE_PUBLIC.
 #define GAPROLE_ADV_DIRECT_ADDR 0x30A //!< Direct Advertisement Address. Read/Write. Size is uint8_t[B_ADDR_LEN]. Default is NULL.
@@ -858,7 +865,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GAPROLE_MIN_CONN_INTERVAL 0x311 //!< Minimum Connection Interval to allow (n * 1.25ms).  Range: 7.5 msec to 4 seconds (0x0006 to 0x0C80). Read/Write. Size is uint16_t. Default is 7.5 milliseconds (0x0006).
 #define GAPROLE_MAX_CONN_INTERVAL 0x312 //!< Maximum Connection Interval to allow (n * 1.25ms).  Range: 7.5 msec to 4 seconds (0x0006 to 0x0C80). Read/Write. Size is uint16_t. Default is 4 seconds (0x0C80).
 
-/*****************************************************GAPBOND*****************************************************************/
+/************************************GAPBOND***********************************/
 // GAPBOND_PROFILE_PARAMETERS GAP Bond Manager Parameters
 #define GAPBOND_PERI_PAIRING_MODE 0x400 //!< Pairing Mode: @ref  GAPBOND_PAIRING_MODE_DEFINES. Read/Write. Size is uint8_t. Default is GAPBOND_PAIRING_MODE_WAIT_FOR_REQ.
 #define GAPBOND_PERI_MITM_PROTECTION 0x401 //!< Man-In-The-Middle (MITM) basically turns on Passkey protection in the pairing algorithm. Read/Write. Size is uint8_t. Default is 0(disabled).
@@ -866,7 +873,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GAPBOND_PERI_OOB_ENABLED 0x403 //!< OOB data available for pairing algorithm. Read/Write. Size is uint8_t. Default is 0(disabled).
 #define GAPBOND_PERI_OOB_DATA 0x404 //!< OOB Data. Read/Write. size uint8_t[16]. Default is all 0's.
 #define GAPBOND_PERI_BONDING_ENABLED 0x405 //!< Request Bonding during the pairing process if enabled.  Read/Write. Size is uint8_t. Default is 0(disabled).
-#define GAPBOND_PERI_KEY_DIST_LIST 0x406 //!< The key distribution list for bonding.  size is uint8_t.  @ref GAPBOND_KEY_DIST_DEFINES. Default is sEncKey, sIdKey, mIdKey, mSign enabled.
+#define GAPBOND_PERI_KEY_DIST_LIST 0x406 //!< The key distribution list for bonding.  size is uint8_t.  @ref GAPBOND_KEY_DIST_DEFINES. Default is 0x77.
 #define GAPBOND_PERI_DEFAULT_PASSCODE 0x407 //!< The default passcode for MITM protection. size is uint32_t. Range is 0 - 999,999. Default is 0.
 #define GAPBOND_CENT_PAIRING_MODE 0x408 //!< Pairing Mode: @ref  GAPBOND_PAIRING_MODE_DEFINES. Read/Write. Size is uint8_t. Default is GAPBOND_PAIRING_MODE_WAIT_FOR_REQ.
 #define GAPBOND_CENT_MITM_PROTECTION 0x409 //!< Man-In-The-Middle (MITM) basically turns on Passkey protection in the pairing algorithm. Read/Write. Size is uint8_t. Default is 0(disabled).
@@ -874,7 +881,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GAPBOND_CENT_OOB_ENABLED 0x40B //!< OOB data available for pairing algorithm. Read/Write. Size is uint8_t. Default is 0(disabled).
 #define GAPBOND_CENT_OOB_DATA 0x40C //!< OOB Data. Read/Write. size uint8_t[16]. Default is all 0's.
 #define GAPBOND_CENT_BONDING_ENABLED 0x40D //!< Request Bonding during the pairing process if enabled.  Read/Write. Size is uint8_t. Default is 0(disabled).
-#define GAPBOND_CENT_KEY_DIST_LIST 0x40E //!< The key distribution list for bonding.  size is uint8_t.  @ref GAPBOND_KEY_DIST_DEFINES. Default is sEncKey, sIdKey, mIdKey, mSign enabled.
+#define GAPBOND_CENT_KEY_DIST_LIST 0x40E //!< The key distribution list for bonding.  size is uint8_t.  @ref GAPBOND_KEY_DIST_DEFINES. Default is 0x77.
 #define GAPBOND_CENT_DEFAULT_PASSCODE 0x40F //!< The default passcode for MITM protection. size is uint32_t. Range is 0 - 999,999. Default is 0.
 #define GAPBOND_ERASE_ALLBONDS 0x410 //!< Erase all of the bonded devices. Write Only. No Size.
 #define GAPBOND_AUTO_FAIL_PAIRING 0x411 //!< TEST MODE (DO NOT USE) to automatically send a Pairing Fail when a Pairing Request is received. Read/Write. size is uint8_t. Default is 0 (disabled).
@@ -960,7 +967,7 @@ extern const uint8_t VER_LIB[]; // LIB version
 #define GAP_BOND_REC_IDS 6
 
 // Macros to calculate the index/offset in to NV space
-#define calcNvID(Idx, offset) (((((Idx)*GAP_BOND_REC_IDS) + (offset))) + BLE_NVID_GAP_BOND_START)
+#define calcNvID(Idx, offset) (((((Idx) * GAP_BOND_REC_IDS) + (offset))) + BLE_NVID_GAP_BOND_START)
 #define mainRecordNvID(bondIdx) (calcNvID((bondIdx), GAP_BOND_REC_ID_OFFSET))
 #define localLTKNvID(bondIdx) (calcNvID((bondIdx), GAP_BOND_LOCAL_LTK_OFFSET))
 #define devLTKNvID(bondIdx) (calcNvID((bondIdx), GAP_BOND_DEV_LTK_OFFSET))
@@ -1035,7 +1042,7 @@ typedef struct
     uint8_t addrType; // Address type of connected device
     uint8_t addr[B_ADDR_LEN]; // Other Device's address
     uint8_t connRole; // Connection formed as central or peripheral
-    uint16_t connInterval; // The connection's interval (n * 1.25m)
+    uint16_t connInterval; // The connection's interval (n * 1.25ms)
     uint16_t connLatency;
     uint16_t connTimeout;
     uint16_t MTU; // The connection's MTU size
@@ -1045,6 +1052,7 @@ typedef struct
     void* pPairingParams;
     void* pAuthLink;
 } linkDBItem_t;
+
 // function pointer used to register for a status callback
 typedef void (*pfnLinkDBCB_t)(uint16_t connectionHandle, uint8_t changeType);
 // function pointer used to perform specialized link database searches
@@ -1267,7 +1275,7 @@ typedef struct
 typedef struct
 {
     uint8_t flags; //!< 0x00 - cancel all prepared writes.
-        //!< 0x01 - immediately write all pending prepared values.
+                   //!< 0x01 - immediately write all pending prepared values.
 } attExecuteWriteReq_t;
 
 /**
@@ -1297,7 +1305,7 @@ typedef struct
  * All subsequent ATT Requests and Indications received by the local ATT Server
  * and Client respectively will be dropped.
  *
- * This message is to inform the app (that has registered with GAP by calling 
+ * This message is to inform the app (that has registered with GAP by calling
  * GAP_RegisterForMsgs()) in case it wants to drop the connection.
  */
 typedef struct
@@ -1311,7 +1319,7 @@ typedef struct
  * by the local ATT Server or Client when the ATT MTU size is updated for a
  * connection. The default ATT MTU size is 23 octets.
  *
- * This message is to inform the app (that has registered with GAP by calling 
+ * This message is to inform the app (that has registered with GAP by calling
  * GAP_RegisterForMsgs()) about the new ATT MTU size negotiated for a connection.
  */
 typedef struct
@@ -1398,7 +1406,7 @@ typedef struct
     uint8_t numReqs; //!< Number of Prepare Write Requests
     uint8_t index; //!< Index of last Prepare Write Request sent
     uint8_t flags; //!< 0x00 - cancel all prepared writes.
-        //!< 0x01 - immediately write all pending prepared values.
+                   //!< 0x01 - immediately write all pending prepared values.
 } gattReliableWritesReq_t;
 
 /**
@@ -1474,8 +1482,8 @@ typedef struct attAttribute_t {
     uint8_t permissions; //!< Attribute permissions
     uint16_t handle; //!< Attribute handle - assigned internally by attribute server
     uint8_t* pValue; //!< Attribute value - encoding of the octet array is defined in
-        //!< the applicable profile. The maximum length of an attribute
-        //!< value shall be 512 octets.
+                     //!< the applicable profile. The maximum length of an attribute
+                     //!< value shall be 512 octets.
 } gattAttribute_t;
 
 /**
@@ -1487,7 +1495,7 @@ typedef struct
     uint8_t encKeySize; //!< Minimum encryption key size required by service (7-16 bytes)
 
     /** Array of attribute records.
-     *  NOTE: The list must start with a Service attribute followed by
+     *  note: The list must start with a Service attribute followed by
      *        all attributes associated with this Service attribute.
      */
     gattAttribute_t* attrs;
@@ -1501,8 +1509,8 @@ typedef struct
  *          - Read Request: ATT_READ_REQ
  *          - Read Blob Request: ATT_READ_BLOB_REQ
  *
- * @note    If blePending is returned then it's the responsibility of the application to respond to 
- *          ATT_READ_REQ and ATT_READ_BLOB_REQ message with ATT_READ_RSP and ATT_READ_BLOB_RSP 
+ * @note    If blePending is returned then it's the responsibility of the application to respond to
+ *          ATT_READ_REQ and ATT_READ_BLOB_REQ message with ATT_READ_RSP and ATT_READ_BLOB_RSP
  *          message respectively.
  *
  * @note    Payload 'pValue' used with ATT_READ_RSP and ATT_READ_BLOB_RSP must be allocated using GATT_bm_alloc().
@@ -1519,9 +1527,9 @@ typedef struct
  *          blePending: A response is pending for this client.<BR>
  *          Error, otherwise: ref ATT_ERR_CODE_DEFINES.<BR>
  */
-typedef uint8_t (*pfnGATTReadAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAttr,
-    uint8_t* pValue, uint16_t* pLen, uint16_t offset,
-    uint16_t maxLen, uint8_t method);
+typedef uint8_t (*pfnGATTReadAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAttr, uint8_t* pValue,
+    uint16_t* pLen, uint16_t offset, uint16_t maxLen, uint8_t method);
+
 /**
  * @brief   Callback function prototype to write an attribute value.
  *
@@ -1532,7 +1540,7 @@ typedef uint8_t (*pfnGATTReadAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAt
  *          - Write Long: ATT_EXECUTE_WRITE_REQ
  *          - Reliable Writes: Multiple ATT_PREPARE_WRITE_REQ followed by one final ATT_EXECUTE_WRITE_REQ
  *
- * @note    If blePending is returned then it's the responsibility of the application to 1) respond to 
+ * @note    If blePending is returned then it's the responsibility of the application to 1) respond to
  *          ATT_WRITE_REQ and ATT_EXECUTE_WRITE_REQ message with ATT_WRITE_RSP and ATT_EXECUTE_WRITE_RSP
  *          message respectively, and 2) free each request payload 'pValue' using BM_free().
  *
@@ -1549,9 +1557,9 @@ typedef uint8_t (*pfnGATTReadAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAt
  *          blePending: A response is pending for this client.<BR>
  *          Error, otherwise: ref ATT_ERR_CODE_DEFINES.<BR>
  */
-typedef uint8_t (*pfnGATTWriteAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAttr,
-    uint8_t* pValue, uint16_t len, uint16_t offset,
-    uint8_t method);
+typedef uint8_t (*pfnGATTWriteAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAttr, uint8_t* pValue,
+    uint16_t len, uint16_t offset, uint8_t method);
+
 /**
  * @brief   Callback function prototype to authorize a Read or Write operation
  *          on a given attribute.
@@ -1563,7 +1571,8 @@ typedef uint8_t (*pfnGATTWriteAttrCB_t)(uint16_t connHandle, gattAttribute_t* pA
  * @return  SUCCESS: Operation authorized.<BR>
  *          ATT_ERR_INSUFFICIENT_AUTHOR: Authorization required.<BR>
  */
-typedef bStatus_t (*pfnGATTAuthorizeAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAttr, uint8_t opcode);
+typedef bStatus_t (*pfnGATTAuthorizeAttrCB_t)(uint16_t connHandle, gattAttribute_t* pAttr,
+    uint8_t opcode);
 
 /**
  * GATT Structure for Client Characteristic Configuration.
@@ -1585,7 +1594,20 @@ typedef struct
     pfnGATTAuthorizeAttrCB_t pfnAuthorizeAttrCB; //!< Authorization callback function pointer
 } gattServiceCBs_t;
 
-/*******************************************gap******************************************************/
+/*************************************gap**************************************/
+/**
+ * Connection parameters for the peripheral device.  These numbers are used
+ * to compare against connection events and request connection parameter
+ * updates with the central.
+ */
+typedef struct
+{
+    uint16_t intervalMin; //!< Minimum value for the connection event (interval. 0x0006 - 0x0C80 * 1.25ms)
+    uint16_t intervalMax; //!< Maximum value for the connection event (interval. 0x0006 - 0x0C80 * 1.25ms)
+    uint16_t latency; //!< Number of LL latency connection events (0x0000 - 0x03e8)
+    uint16_t timeout; //!< Connection Timeout (0x000A - 0x0C80 * 10ms)
+} gapPeriConnectParams_t;
+
 /**
  * GAP event header format.
  */
@@ -1769,11 +1791,11 @@ typedef struct
     uint8_t uiInputs; //!< Pairing User Interface Inputs - Ask user to input passcode
     uint8_t uiOutputs; //!< Pairing User Interface Outputs - Display passcode
 } gapPasskeyNeededEvent_t;
+
 /**
  * Passcode Callback Function
  */
-typedef void (*pfnPasscodeCB_t)(
-    uint8_t* deviceAddr, //!< address of device to pair with, and could be either public or random.
+typedef void (*pfnPasscodeCB_t)(uint8_t* deviceAddr, //!< address of device to pair with, and could be either public or random.
     uint16_t connectionHandle, //!< Connection handle
     uint8_t uiInputs, //!< Pairing User Interface Inputs - Ask user to input passcode
     uint8_t uiOutputs //!< Pairing User Interface Outputs - Display passcode
@@ -1782,8 +1804,7 @@ typedef void (*pfnPasscodeCB_t)(
 /**
  * Pairing State Callback Function
  */
-typedef void (*pfnPairStateCB_t)(
-    uint16_t connectionHandle, //!< Connection handle
+typedef void (*pfnPairStateCB_t)(uint16_t connectionHandle, //!< Connection handle
     uint8_t state, //!< Pairing state @ref GAPBOND_PAIRING_STATE_DEFINES
     uint8_t status //!< Pairing status
 );
@@ -1808,7 +1829,7 @@ typedef enum {
 } gapRole_States_t;
 
 /**
- * Central Event Structure
+ * gapRole Event Structure
  */
 typedef union {
     gapEventHdr_t gap; //!< GAP_MSG_EVENT and status.
@@ -1851,8 +1872,7 @@ typedef struct
 /**
  * Observer Event Callback Function
  */
-typedef void (*pfnGapObserverRoleEventCB_t)(
-    gapRoleEvent_t* pEvent //!< Pointer to event structure.
+typedef void (*pfnGapObserverRoleEventCB_t)(gapRoleEvent_t* pEvent //!< Pointer to event structure.
 );
 
 /**
@@ -1877,10 +1897,8 @@ typedef void (*gapRolesStateNotify_t)(gapRole_States_t newState, gapRoleEvent_t*
 /**
  * Callback when the connection parameteres are updated.
  */
-typedef void (*gapRolesParamUpdateCB_t)(uint16_t connHandle,
-    uint16_t connInterval,
-    uint16_t connSlaveLatency,
-    uint16_t connTimeout);
+typedef void (*gapRolesParamUpdateCB_t)(uint16_t connHandle, uint16_t connInterval,
+    uint16_t connSlaveLatency, uint16_t connTimeout);
 
 /**
  * Callback structure - must be setup by the application and used when gapRoles_StartDevice() is called.
@@ -1896,12 +1914,11 @@ typedef struct
  * Central Event Callback Function
  */
 typedef void (*pfnGapCentralRoleEventCB_t)(gapRoleEvent_t* pEvent); //!< Pointer to event structure.
+
 /**
  * HCI Data Length Change Event Callback Function
  */
-typedef void (*pfnHciDataLenChangeEvCB_t)(
-    uint16_t connHandle,
-    uint16_t maxTxOctets,
+typedef void (*pfnHciDataLenChangeEvCB_t)(uint16_t connHandle, uint16_t maxTxOctets,
     uint16_t maxRxOctets);
 
 /**
@@ -1920,12 +1937,9 @@ typedef struct
  * RF_ROLE_STATUS_TYPE pfnRFStatusCB_t state defined
  */
 // TX_MODE call RF_Tx
-/**
- * basic or auto tx mode sends data successfully
- * if it is in basic mode,it will enter idle state;
- * if it is in auto mode,it will wait for receiving
- */
-#define TX_MODE_TX_FINISH 0x01
+#define TX_MODE_TX_FINISH 0x01 //!< basic or auto tx mode sends data successfully
+                               //!< if it is in basic mode,it will enter idle state;
+                               //!< if it is in auto mode,it will wait for receiving
 #define TX_MODE_TX_FAIL 0x11 //!< basic or auto tx mode fail to send data and enter idle state
 #define TX_MODE_TX_TIMEOUT TX_MODE_TX_FAIL //!< time of data transmission
 #define TX_MODE_RX_DATA 0x02 //!< auto tx mode receive data(ack) and enter idle state
@@ -1933,13 +1947,10 @@ typedef struct
 #define TX_MODE_HOP_SHUT 0x22
 
 // RX_MODE call RF_Rx
-/**
- * basic or auto rx mode receive data
- * if it is in basic mode,it will enter idle state;
- * if it is in auto mode,it will judge whether the type matches;
- * if it matches,it will send data(ack),otherwise(rsr=2), it will restart receiving
- */
-#define RX_MODE_RX_DATA 0x03
+#define RX_MODE_RX_DATA 0x03 //!< basic or auto rx mode receive data
+                             //!< if it is in basic mode,it will enter idle state;
+                             //!< if it is in auto mode,it will judge whether the type matches;
+                             //!< if it matches,it will send data(ack),otherwise(rsr=2), it will restart receiving
 #define RX_MODE_TX_FINISH 0x04 //!< auto rx mode sends data(ack) successfully and enters idle state
 #define RX_MODE_TX_FAIL 0x14 //!< auto rx mode fail to send data and enter idle state
 #define RX_MODE_TX_TIMEOUT RX_MODE_TX_FAIL //!< time of data transmission
@@ -1947,12 +1958,14 @@ typedef struct
 
 // LLE_MODE_TYPE
 #define LLE_MODE_BASIC (0) //!< basic mode, enter idle state after sending or receive
-#define LLE_MODE_AUTO (1 << 0) //!< auto mode, auto swtich to the receiving status after sending and the sending status after receiving
+#define LLE_MODE_AUTO (1) //!< auto mode, auto swtich to the receiving status after sending and the sending status after receiving
+
 // LLE_WHITENING_TYPE
 #define LLE_WHITENING_ON (0 << 1)
 #define LLE_WHITENING_OFF (1 << 1)
 
 #define LLE_MODE_EX_CHANNEL (1 << 6)
+
 #define LLE_MODE_NON_RSSI (1 << 7)
 
 /**
@@ -1964,28 +1977,30 @@ typedef void (*pfnRFStatusCB_t)(uint8_t sta, uint8_t rsr, uint8_t* rxBuf);
 // rxBuf - receive data buffer
 
 typedef struct tag_rf_config {
-    uint8_t LLEMode; // BIT0   0=basic, 1=auto def@LLE_MODE_TYPE
-        // BIT1   0=whitening on, 1=whitening off def@LLE_WHITENING_TYPE
-        // BIT6   0=data channel(0-39)
-        //        1=rf frequency (2400000kHz-2483500kHz)
-        // BIT7   0=the first byte of the receive buffer is rssi
-        //        1=the first byte of the receive buffer is package type
-    uint8_t Channel; // rf channel(0-39)
-    uint32_t Frequency; // rf frequency (2400000kHz-2483500kHz)
-    uint32_t accessAddress; // access address,32bit PHY address
-    uint32_t CRCInit; // crc initial value
-    pfnRFStatusCB_t rfStatusCB; // status call back
-    uint32_t ChannelMap; // indicating  Used and Unused data channels.Every channel is represented with a bit positioned as per the data channel index,The LSB represents data channel index 0
+    uint8_t LLEMode; //!< BIT0   0=basic, 1=auto def@LLE_MODE_TYPE
+                     //!< BIT1   0=whitening on, 1=whitening off def@LLE_WHITENING_TYPE
+                     //!< BIT6   0=data channel(0-39)
+                     //!<        1=rf frequency (2400000kHz-2483500kHz)
+                     //!< BIT7   0=the first byte of the receive buffer is rssi
+                     //!<        1=the first byte of the receive buffer is package type
+    uint8_t Channel; //!< rf channel(0-39)
+    uint32_t Frequency; //!< rf frequency (2400000kHz-2483500kHz)
+    uint32_t accessAddress; //!< access address,32bit PHY address
+    uint32_t CRCInit; //!< crc initial value
+    pfnRFStatusCB_t rfStatusCB; //!< status call back
+    uint32_t ChannelMap; //!< indicating  Used and Unused data channels.Every channel is represented with a
+                         //!< bit positioned as per the data channel index,The LSB represents data channel index 0
     uint8_t Resv;
-    uint8_t HeartPeriod; // The heart package interval shall be an integer multiple of 100ms
-    uint8_t HopPeriod; // hop period( T=32n*RTC clock ),default is 8
-    uint8_t HopIndex; // indicate the hopIncrement used in the data channel selection algorithm,default is 17
+    uint8_t HeartPeriod; //!< The heart package interval shall be an integer multiple of 100ms
+    uint8_t HopPeriod; //!< hop period( T=32n*RTC clock ),default is 8
+    uint8_t HopIndex; //!< indicate the hopIncrement used in the data channel selection algorithm,default is 17
     uint8_t RxMaxlen; //!< Maximum data length received in rf-mode(default 251)
     uint8_t TxMaxlen; //!< Maximum data length transmit in rf-mode(default 251)
 } rfConfig_t;
 
 /* end define@RF-PHY */
-/*********************************************************************
+
+/*******************************************************************************
  * UUID defined
  */
 /**
@@ -2026,7 +2041,7 @@ extern const uint8_t periConnParamUUID[];
 extern const uint8_t serviceChangedUUID[];
 extern const uint8_t centAddrResUUID[];
 
-/*********************************************************************
+/*******************************************************************************
  * PUBLIC FUNCTIONS
  */
 extern uint32_t tmos_rand(void); // pseudo-random number
@@ -2037,33 +2052,33 @@ extern void tmos_memset(void* pDst, uint8_t Value, uint32_t len);
 extern void tmos_memcpy(void* dst, const void* src, uint32_t len); // Generic memory copy.
 
 /**
- * @brief       start a event immediately
+ * @brief   start a event immediately
  *
- * @param       taskID - task ID of event
- * @param       event - event value
+ * @param   taskID - task ID of event
+ * @param   event - event value
  *
- * @return      0 - success.
+ * @return  0 - SUCCESS.
  */
 extern bStatus_t tmos_set_event(tmosTaskID taskID, tmosEvents event);
 
 /**
- * @brief       clear a event already timeout, cannot be used in it own event function.
+ * @brief   clear a event already timeout, cannot be used in it own event function.
  *
- * @param       taskID - task ID of event
- * @param       event - event value
+ * @param   taskID - task ID of event
+ * @param   event - event value
  *
- * @return      0 - success.
+ * @return  0 - SUCCESS.
  */
 extern bStatus_t tmos_clear_event(tmosTaskID taskID, tmosEvents event);
 
 /**
- * @brief       start a event after period of time
+ * @brief   start a event after period of time
  *
- * @param       taskID - task ID of event
- * @param       event - event value
- * @param       time - period of time
+ * @param   taskID - task ID to set event for
+ * @param   event - event to be notified with
+ * @param   time - timeout value
  *
- * @return      TRUE - success.
+ * @return  TRUE,FALSE.
  */
 extern bool tmos_start_task(tmosTaskID taskID, tmosEvents event, tmosTimer time);
 
@@ -2081,189 +2096,191 @@ extern bool tmos_start_task(tmosTaskID taskID, tmosEvents event, tmosTimer time)
 extern bStatus_t tmos_start_reload_task(tmosTaskID taskID, tmosEvents event, tmosTimer time);
 
 /**
- * @brief       stop a event
+ * @brief   stop a event
  *
- * @param       taskID - task ID of event
- * @param       event - event value
+ * @param   taskID - task ID of event
+ * @param   event - event value
  *
- * @return      0 - success. 
+ * @param   None.
+ *
+ * @return  SUCCESS.
  */
 extern bStatus_t tmos_stop_task(tmosTaskID taskID, tmosEvents event);
 
 /**
- * @brief       get last period of time for this event
+ * @brief   get last period of time for this event
  *
- * @param       taskID - task ID of event
- * @param       event - event value
+ * @param   taskID - task ID of event
+ * @param   event - event value
  *
- * @return      the timer's tick count if found, zero otherwise.
+ * @return  the timer's tick count if found, zero otherwise.
  */
 extern tmosTimer tmos_get_task_timer(tmosTaskID taskID, tmosEvents event);
 
 /**
- * @brief       send msg to a task,callback events&SYS_EVENT_MSG
+ * @brief   send msg to a task,callback events&SYS_EVENT_MSG
  *
- * @param       taskID - task ID of task need to send msg
- * @param       *msg_ptr - point of msg
+ * @param   taskID - task ID of task need to send msg
+ * @param  *msg_ptr - point of msg
  *
- * @return      SUCCESS, INVALID_TASK, INVALID_MSG_POINTER
+ * @return  SUCCESS, INVALID_TASK, INVALID_MSG_POINTER
  */
 extern bStatus_t tmos_msg_send(tmosTaskID taskID, uint8_t* msg_ptr);
 
 /**
- * @brief       delete a msg
+ * @brief   delete a msg
  *
- * @param       *msg_ptr - point of msg
+ * @param  *msg_ptr - point of msg
  *
- * @return      0 - success. 
+ * @return  SUCCESS.
  */
 extern bStatus_t tmos_msg_deallocate(uint8_t* msg_ptr);
 
 /**
- * @brief       receive a msg
+ * @brief   receive a msg
  *
- * @param       taskID  - task ID of task need to receive msg
+ * @param   taskID  - task ID of task need to receive msg
  *
- * @return      *uint8_t - message information or NULL if no message
+ * @return *uint8_t - message information or NULL if no message
  */
 extern uint8_t* tmos_msg_receive(tmosTaskID taskID);
 
 /**
- * @brief       allocate buffer for msg when need to send msg
+ * @brief   allocate buffer for msg when need to send msg
  *
- * @param       len  - length of msg
+ * @param   len  - length of msg
  *
- * @return      pointer to allocated buffer or NULL if allocation failed.
+ * @return  pointer to allocated buffer or NULL if allocation failed.
  */
 extern uint8_t* tmos_msg_allocate(uint16_t len);
 
 /**
- * @brief       read a data item to NV.
+ * @brief   read a data item to NV.
  *
- * @param       id   - Valid NV item Id.
- * @param       len  - Length of data to read.
- * @param       *pBuf - Data to read.
+ * @param   id   - Valid NV item Id.
+ * @param   len  - Length of data to read.
+ * @param  *pBuf - Data to read.
  *
- * @return      SUCCESS if successful, NV_OPER_FAILED if failed.
+ * @return  SUCCESS if successful, NV_OPER_FAILED if failed.
  */
-extern bStatus_t tmos_snv_read(uint8_t id, uint8_t len, void* pBuf);
+extern bStatus_t tmos_snv_read(tmosSnvId_t id, tmosSnvLen_t len, void* pBuf);
 
 /**
- * @brief       tmos system timer initialization
+ * @brief   tmos system timer initialization
  *
- * @note        must initialization before call tmos task
+ * @note    must initialization before call tmos task
  *
- * @param       fnGetClock - 0:system clock select RTC timer
- *                       valid:system clock select extend input
+ * @param   fnGetClock - 0:system clock select RTC timer
+ *                   valid:system clock select extend input
  *
- * @return      SUCCESS if successful, FAILURE if failed.
+ * @return  SUCCESS if successful, FAILURE if failed.
  */
 extern bStatus_t TMOS_TimerInit(pfnGetSysClock fnGetClock);
 
 /**
- * @brief       Process system
+ * @brief   Process system
  *
- * @param       None.
+ * @param   None.
  *
- * @return      None.
+ * @return  None.
  */
 extern void TMOS_SystemProcess(void);
 
 /**
- * @brief       Get current system clock
+ * @brief   Get current system clock
  *
- * @param       None.
+ * @param   None.
  *
- * @return      current system clock (in 0.625ms)
+ * @return  current system clock (in 0.625ms)
  */
 extern uint32_t TMOS_GetSystemClock(void);
 
 /**
- * @brief       register process event callback function
+ * @brief   register process event callback function
  *
- * @param       eventCb-events callback function
+ * @param   eventCb-events callback function
  *
- * @return      0xFF - error,others-task id
+ * @return  0xFF - error,others-task id
  */
 extern tmosTaskID TMOS_ProcessEventRegister(pTaskEventHandlerFn eventCb);
 
 /**
- * @brief       set LSE calibration value
+ * @brief   set LSE calibration value
  *
- * @param       flash_val - the value of flash
- * @param       ram_val - the value of ram
+ * @param   flash_val - the value of flash
+ * @param   ram_val - the value of ram
  *
- * @return      None.
+ * @return  None.
  */
 extern void TMOS_Set32KTuneValue(uint16_t flash_val, uint16_t ram_val);
 
 /**
- * @brief       Add a device address into white list ( support SNVNum MAX )
+ * @brief   Add a device address into white list ( support SNVNum MAX )
  *
- * @param       addrType - Type of device address
- * @param       devAddr  - first address of device address
+ * @param   addrType - Type of device address
+ * @param   devAddr  - first address of device address
  *
- * @return      Command Status.
+ * @return  Command Status.
  */
 extern bStatus_t LL_AddWhiteListDevice(uint8_t addrType, uint8_t* devAddr);
 
 /**
- * @brief       Remove a device address from white list
+ * @brief   Remove a device address from white list
  *
- * @param       addrType - Type of device address
- * @param       devAddr  - first address of device address
+ * @param   addrType - Type of device address
+ * @param   devAddr  - first address of device address
  *
- * @return      Command Status.
+ * @return  Command Status.
  */
 extern bStatus_t LL_RemoveWhiteListDevice(uint8_t addrType, uint8_t* devAddr);
 
 /**
- * @brief       Clear white list
+ * @brief   Clear white list
  *
- * @param       None
+ * @param   None
  *
- * @return      Command Status.
+ * @return  Command Status.
  */
 extern bStatus_t LL_ClearWhiteList(void);
 
 /**
- * @brief       Encrypt data
+ * @brief   Encrypt data
  *
- * @param       key - key
- * @param       plaintextData - original data
- * @param       encryptData - encrypted data
+ * @param   key - key
+ * @param   plaintextData - original data
+ * @param   encryptData - encrypted data
  *
- * @return      Command Status.
+ * @return  Command Status.
  */
 extern bStatus_t LL_Encrypt(uint8_t* key, uint8_t* plaintextData, uint8_t* encryptData);
 
 /**
- * @brief       Decrypt data
+ * @brief   Decrypt data
  *
- * @param       key - key
- * @param       plaintextData - original data
- * @param       decryptData - decrypted data
+ * @param   key - key
+ * @param   plaintextData - original data
+ * @param   decryptData - decrypted data
  *
- * @return      Command Status.
+ * @return  Command Status.
  */
 extern bStatus_t LL_Decrypt(uint8_t* key, uint8_t* plaintextData, uint8_t* decryptData);
 
 /**
- * @brief       get number of unAck packet in current connect buffer
+ * @brief   get number of unAck packet in current connect buffer
  *
- * @param       handle - connect handle
+ * @param   handle - connect handle
  *
- * @return      0xFFFFFFFF-handle error,number of packets not receiving ack 
+ * @return  0xFFFFFFFF-handle error,number of packets not receiving ack
  */
 extern uint32_t LL_GetNumberOfUnAckPacket(uint16_t handle);
 
 /**
- * @brief       Register a callback function will be called after each connect event.
- *              Only effect in single connection
+ * @brief   Register a callback function will be called after each connect event.
+ *          Only effect in single connection
  *
- * @param       connEventCB - callback function
+ * @param   connEventCB - callback function
  *
- * @return      None.
+ * @return  None.
  */
 extern void LL_ConnectEventRegister(pfnEventCB connEventCB);
 
@@ -2277,79 +2294,92 @@ extern void LL_ConnectEventRegister(pfnEventCB connEventCB);
 extern void LL_AdvertiseEventRegister(pfnEventCB advEventCB);
 
 /**
- * @brief       set tx power level
+ * @brief   set tx power level
  *
- * @param       power - tx power level
+ * @param   power - tx power level
  *
- * @return      Command Status.
+ * @return  Command Status.
  */
 extern bStatus_t LL_SetTxPowerLevel(uint8_t power);
 
 /**
- * @brief       read rssi
+ * @brief   read rssi
  *
+ * @param   None.
  *
- * @param       None.
- *
- * @return      the value of rssi.
+ * @return  the value of rssi.
  */
 extern int8_t BLE_ReadRssi(void);
 
 /**
- * @brief       read cfo
+ * @brief   read cfo
  *
+ * @param   None.
  *
- * @param       None.
- *
- * @return      the value of cfo.
+ * @return  the value of cfo.
  */
 extern int16_t BLE_ReadCfo(void);
 
 /**
- * @brief       pa control init
- * @note        Can't be called until  role Init
+ * @brief   pa control init
  *
- * @param       paControl - pa control parameters(global variable)
+ * @note    Can't be called until  role Init
  *
- * @return      Command Status.
+ * @param   paControl - pa control parameters(global variable)
+ *
+ * @return  Command Status.
  */
 extern void BLE_PAControlInit(blePaControlConfig_t* paControl);
 
 /**
- * @brief       ble register reset and rf calibration 
+ * @brief   ble register reset and rf calibration
  *
- * @param          - 
+ * @param   None
  *
- * output parameters
- *
- * @param       
- *
- * @return      None.
+ * @return  None
  */
 extern void BLE_RegInit(void);
 
 /**
- * @brief       Init BLE lib. RTC will be occupied at the same time.
+ * @brief   Init BLE lib. RTC will be occupied at the same time.
  *
- * @param       pCfg - config of BLE lib
+ * @param   pCfg - config of BLE lib
  *
- * @return      0-success. error defined @ ERR_LIB_INIT
+ * @return  0-success. error defined @ ERR_LIB_INIT
  */
 extern bStatus_t BLE_LibInit(bleConfig_t* pCfg);
 
 /**
- * @brief       generate a valid access address
+ * @brief   interrupt handler.
  *
- * @param       None.
+ * @param   None
  *
- * @return      access address
+ * @return  None
+ */
+extern void BB_IRQLibHandler(void);
+
+/**
+ * @brief   interrupt handler.
+ *
+ * @param   None
+ *
+ * @return  None
+ */
+extern void LLE_IRQLibHandler(void);
+
+/**
+ * @brief   generate a valid access address
+ *
+ * @param   None.
+ *
+ * @return  access address
  * the Access Address meets the following requirements:
- * It shall have no more than six consecutive zeros or ones. 
+ * It shall have no more than six consecutive zeros or ones.
  * It shall not be t he advertising channel packets’ Access Address.
  * It shall not be a sequence that differ s from the advertising channel packets' Access Address by only one bit.
  * It shall not have all four octets equal.
  * It shall have no more  than 24 transitions.
- * It shall have a minimum of two transitio ns in the most significant six bits.
+ * It shall have a minimum of two transitions in the most significant six bits.
  */
 extern uint32_t BLE_AccessAddressGenerate(void);
 
@@ -2361,7 +2391,7 @@ extern uint8_t linkDB_Register(pfnLinkDBCB_t pFunc);
 
 /*
  * linkDB_State - Check to see if a physical link is in a specific state.
- * 
+ *
  *    returns TRUE is the link is in state. FALSE, otherwise.
  */
 extern uint8_t linkDB_State(uint16_t connectionHandle, uint8_t state);
@@ -2403,8 +2433,7 @@ extern bStatus_t ATT_HandleValueCfm(uint16_t connHandle);
 /*
  * Compare two UUIDs. The UUIDs are converted if necessary.
  */
-extern uint8_t ATT_CompareUUID(const uint8_t* pUUID1, uint16_t len1,
-    const uint8_t* pUUID2, uint16_t len2);
+extern uint8_t ATT_CompareUUID(const uint8_t* pUUID1, uint16_t len1, const uint8_t* pUUID2, uint16_t len2);
 
 /**
  * @brief   Initialize the Generic Attribute Profile Client.
@@ -2429,13 +2458,13 @@ extern void GATT_RegisterForInd(uint8_t taskId);
  *
  * @param   handle - handle to look for
  * @param   pHandle - handle of owner of attribute (to be returned)
- * 
+ *
  * @return  Pointer to attribute record. NULL, otherwise.
  */
 extern gattAttribute_t* GATT_FindHandle(uint16_t handle, uint16_t* pHandle);
 
 /**
- * @brief   This sub-procedure is used when a server is configured to 
+ * @brief   This sub-procedure is used when a server is configured to
  *          indicate a characteristic value to a client and expects an
  *          attribute protocol layer acknowledgement that the indication
  *          was successfully received.
@@ -2464,15 +2493,14 @@ extern gattAttribute_t* GATT_FindHandle(uint16_t handle, uint16_t* pHandle);
  */
 extern bStatus_t GATT_Indication(uint16_t connHandle, attHandleValueInd_t* pInd, uint8_t authenticated, uint8_t taskId);
 /**
- * @brief   This sub-procedure is used when a server is configured to 
+ * @brief   This sub-procedure is used when a server is configured to
  *          notify a characteristic value to a client without expecting
- *          any attribute protocol layer acknowledgement that the 
+ *          any attribute protocol layer acknowledgement that the
  *          notification was successfully received.
  *
  *          The ATT Handle Value Notification is used in this sub-procedure.
  *
  * @note    A notification may be sent at any time and does not invoke a confirmation.
- *
  *          No confirmation will be sent to the calling application task for
  *          this sub-procedure.
  *
@@ -2522,7 +2550,7 @@ extern bStatus_t GATT_Notification(uint16_t connHandle, attHandleValueNoti_t* pN
 extern bStatus_t GATT_ExchangeMTU(uint16_t connHandle, attExchangeMTUReq_t* pReq, uint8_t taskId);
 
 /**
- * @brief   This sub-procedure is used by a client to discover all 
+ * @brief   This sub-procedure is used by a client to discover all
  *          the primary services on a server.
  *
  *          The ATT Read By Group Type Request is used with the Attribute
@@ -2555,7 +2583,7 @@ extern bStatus_t GATT_DiscAllPrimaryServices(uint16_t connHandle, uint8_t taskId
 /**
  * @brief   This sub-procedure is used by a client to discover a specific
  *          primary service on a server when only the Service UUID is
- *          known. The primary specific service may exist multiple times 
+ *          known. The primary specific service may exist multiple times
  *          on a server. The primary service being discovered is identified
  *          by the service UUID.
  *
@@ -2588,9 +2616,10 @@ extern bStatus_t GATT_DiscAllPrimaryServices(uint16_t connHandle, uint8_t taskId
  *          bleTimeout: Previous transaction timed out.<BR>
  */
 extern bStatus_t GATT_DiscPrimaryServiceByUUID(uint16_t connHandle, uint8_t* pUUID, uint8_t len, uint8_t taskId);
+
 /**
  * @brief   This sub-procedure is used by a client to find include
- *          service declarations within a service definition on a 
+ *          service declarations within a service definition on a
  *          server. The service specified is identified by the service
  *          handle range.
  *
@@ -2606,7 +2635,7 @@ extern bStatus_t GATT_DiscPrimaryServiceByUUID(uint16_t connHandle, uint8_t* pUU
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
- *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with bleProcedureCompleteor bleTimeout status)or ATT_ERROR_RSP
  *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
@@ -2623,8 +2652,9 @@ extern bStatus_t GATT_DiscPrimaryServiceByUUID(uint16_t connHandle, uint8_t* pUU
  *          bleTimeout: Previous transaction timed out.<BR>
  */
 extern bStatus_t GATT_FindIncludedServices(uint16_t connHandle, uint16_t startHandle, uint16_t endHandle, uint8_t taskId);
+
 /**
- * @brief   This sub-procedure is used by a client to find all the 
+ * @brief   This sub-procedure is used by a client to find all the
  *          characteristic declarations within a service definition on
  *          a server when only the service handle range is known. The
  *          service specified is identified by the service handle range.
@@ -2641,7 +2671,7 @@ extern bStatus_t GATT_FindIncludedServices(uint16_t connHandle, uint16_t startHa
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
- *          (with bleProcedureComplete or bleTimeout status) or ATT_ERROR_RSP
+ *          (with bleProcedureComplete or bleTimeout status)or ATT_ERROR_RSP
  *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
@@ -2658,12 +2688,13 @@ extern bStatus_t GATT_FindIncludedServices(uint16_t connHandle, uint16_t startHa
  *          bleTimeout: Previous transaction timed out.<BR>
  */
 extern bStatus_t GATT_DiscAllChars(uint16_t connHandle, uint16_t startHandle, uint16_t endHandle, uint8_t taskId);
+
 /**
- * @brief   This sub-procedure is used by a client to discover service 
- *          characteristics on a server when only the service handle 
- *          ranges are known and the characteristic UUID is known. 
+ * @brief   This sub-procedure is used by a client to discover service
+ *          characteristics on a server when only the service handle
+ *          ranges are known and the characteristic UUID is known.
  *          The specific service may exist multiple times on a server.
- *          The characteristic being discovered is identified by the 
+ *          The characteristic being discovered is identified by the
  *          characteristic UUID.
  *
  *          The ATT Read By Type Request is used with the Attribute Type
@@ -2695,10 +2726,10 @@ extern bStatus_t GATT_DiscAllChars(uint16_t connHandle, uint16_t startHandle, ui
 extern bStatus_t GATT_DiscCharsByUUID(uint16_t connHandle, attReadByTypeReq_t* pReq, uint8_t taskId);
 
 /**
- * @brief   This sub-procedure is used by a client to find all the 
+ * @brief   This sub-procedure is used by a client to find all the
  *          characteristic descriptors Attribute Handles and Attribute
- *          Types within a characteristic definition when only the 
- *          characteristic handle range is known. The characteristic 
+ *          Types within a characteristic definition when only the
+ *          characteristic handle range is known. The characteristic
  *          specified is identified by the characteristic handle range.
  *
  *          The ATT Find Information Request is used with the Starting
@@ -2729,17 +2760,18 @@ extern bStatus_t GATT_DiscCharsByUUID(uint16_t connHandle, attReadByTypeReq_t* p
  *          bleTimeout: Previous transaction timed out.<BR>
  */
 extern bStatus_t GATT_DiscAllCharDescs(uint16_t connHandle, uint16_t startHandle, uint16_t endHandle, uint8_t taskId);
+
 /**
  * @brief   This sub-procedure is used to read a Characteristic Value
  *          from a server when the client knows the Characteristic Value
  *          Handle. The ATT Read Request is used with the Attribute Handle
- *          parameter set to the Characteristic Value Handle. The Read 
+ *          parameter set to the Characteristic Value Handle. The Read
  *          Response returns the Characteristic Value in the Attribute
  *          Value parameter.
  *
  *          The Read Response only contains a Characteristic Value that
- *          is less than or equal to (ATT_MTU ?1) octets in length. If 
- *          the Characteristic Value is greater than (ATT_MTU ?1) octets
+ *          is less than or equal to (ATT_MTU - 1) octets in length. If
+ *          the Characteristic Value is greater than (ATT_MTU - 1) octets
  *          in length, the Read Long Characteristic Value procedure may
  *          be used if the rest of the Characteristic Value is required.
  *
@@ -2749,8 +2781,8 @@ extern bStatus_t GATT_DiscAllCharDescs(uint16_t connHandle, uint16_t startHandle
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_READ_RSP
- *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *          SUCCESS status) is received by the calling application task.
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2775,7 +2807,7 @@ extern bStatus_t GATT_ReadCharValue(uint16_t connHandle, attReadReq_t* pReq, uin
  *          The Attribute Type is set to the known characteristic UUID and
  *          the Starting Handle and Ending Handle parameters shall be set
  *          to the range over which this read is to be performed. This is
- *          typically the handle range for the service in which the 
+ *          typically the handle range for the service in which the
  *          characteristic belongs.
  *
  *          If the return status from this function is SUCCESS, the calling
@@ -2784,8 +2816,8 @@ extern bStatus_t GATT_ReadCharValue(uint16_t connHandle, attReadReq_t* pReq, uin
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_READ_BY_TYPE_RSP
- *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *          SUCCESS status) is received by the calling application task.
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2800,10 +2832,11 @@ extern bStatus_t GATT_ReadCharValue(uint16_t connHandle, attReadReq_t* pReq, uin
  *          bleTimeout: Previous transaction timed out.<BR>
  */
 extern bStatus_t GATT_ReadUsingCharUUID(uint16_t connHandle, attReadByTypeReq_t* pReq, uint8_t taskId);
+
 /**
  * @brief   This sub-procedure is used to read a Characteristic Value from
  *          a server when the client knows the Characteristic Value Handle
- *          and the length of the Characteristic Value is longer than can 
+ *          and the length of the Characteristic Value is longer than can
  *          be sent in a single Read Response Attribute Protocol message.
  *
  *          The ATT Read Blob Request is used in this sub-procedure.
@@ -2833,8 +2866,8 @@ extern bStatus_t GATT_ReadLongCharValue(uint16_t connHandle, attReadBlobReq_t* p
 
 /**
  * @brief   This sub-procedure is used to read multiple Characteristic Values
- *          from a server when the client knows the Characteristic Value 
- *          Handles. The Attribute Protocol Read Multiple Requests is used 
+ *          from a server when the client knows the Characteristic Value
+ *          Handles. The Attribute Protocol Read Multiple Requests is used
  *          with the Set Of Handles parameter set to the Characteristic Value
  *          Handles. The Read Multiple Response returns the Characteristic
  *          Values in the Set Of Values parameter.
@@ -2847,8 +2880,8 @@ extern bStatus_t GATT_ReadLongCharValue(uint16_t connHandle, attReadBlobReq_t* p
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_READ_MULTI_RSP
- *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *          SUCCESS status) is received by the calling application task.
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2873,16 +2906,16 @@ extern bStatus_t GATT_ReadMultiCharValues(uint16_t connHandle, attReadMultiReq_t
  *          Value. This sub-procedure can not be used to write a long
  *          characteristic; instead the Write Long Characteristic Values
  *          sub-procedure should be used.
- * 
+ *
  *          The ATT Write Command is used for this sub-procedure. The
  *          Attribute Handle parameter shall be set to the Characteristic
  *          Value Handle. The Attribute Value parameter shall be set to
  *          the new Characteristic Value.
  *
  *          No response will be sent to the calling application task for this
- *          sub-procedure. If the Characteristic Value write request is the 
- *          wrong size, or has an invalid value as defined by the profile, 
- *          then the write will not succeed and no error will be generated 
+ *          sub-procedure. If the Characteristic Value write request is the
+ *          wrong size, or has an invalid value as defined by the profile,
+ *          then the write will not succeed and no error will be generated
  *          by the server.
  *
  * @param   connHandle - connection to use
@@ -2899,25 +2932,25 @@ extern bStatus_t GATT_WriteNoRsp(uint16_t connHandle, attWriteReq_t* pReq);
 
 /**
  * @brief   This sub-procedure is used to write a Characteristic Value
- *          to a server when the client knows the Characteristic Value 
+ *          to a server when the client knows the Characteristic Value
  *          Handle and the ATT Bearer is not encrypted. This sub-procedure
  *          shall only be used if the Characteristic Properties authenticated
  *          bit is enabled and the client and server device share a bond as
  *          defined in the GAP.
  *
  *          This sub-procedure only writes the first (ATT_MTU ?15) octets
- *          of an Attribute Value. This sub-procedure cannot be used to 
+ *          of an Attribute Value. This sub-procedure cannot be used to
  *          write a long Attribute.
  *
  *          The ATT Write Command is used for this sub-procedure. The
  *          Attribute Handle parameter shall be set to the Characteristic
- *          Value Handle. The Attribute Value parameter shall be set to 
+ *          Value Handle. The Attribute Value parameter shall be set to
  *          the new Characteristic Value authenticated by signing the
  *          value, as defined in the Security Manager.
  *
  *          No response will be sent to the calling application task for this
- *          sub-procedure. If the authenticated Characteristic Value that is 
- *          written is the wrong size, or has an invalid value as defined by 
+ *          sub-procedure. If the authenticated Characteristic Value that is
+ *          written is the wrong size, or has an invalid value as defined by
  *          the profile, or the signed value does not authenticate the client,
  *          then the write will not succeed and no error will be generated by
  *          the server.
@@ -2940,10 +2973,10 @@ extern bStatus_t GATT_SignedWriteNoRsp(uint16_t connHandle, attWriteReq_t* pReq)
  *          to a server when the client knows the characteristic value
  *          handle. This sub-procedure only writes the first (ATT_MTU-3)
  *          octets of a characteristic value. This sub-procedure can not
- *          be used to write a long attribute; instead the Write Long 
+ *          be used to write a long attribute; instead the Write Long
  *          Characteristic Values sub-procedure should be used.
  *
- *          The ATT Write Request is used in this sub-procedure. The 
+ *          The ATT Write Request is used in this sub-procedure. The
  *          Attribute Handle parameter shall be set to the Characteristic
  *          Value Handle. The Attribute Value parameter shall be set to
  *          the new characteristic.
@@ -2954,8 +2987,8 @@ extern bStatus_t GATT_SignedWriteNoRsp(uint16_t connHandle, attWriteReq_t* pReq)
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_WRITE_RSP
- *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *          SUCCESS status) is received by the calling application task.
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -2974,7 +3007,7 @@ extern bStatus_t GATT_WriteCharValue(uint16_t connHandle, attWriteReq_t* pReq, u
 /**
  * @brief   This sub-procedure is used to write a Characteristic Value to
  *          a server when the client knows the Characteristic Value Handle
- *          but the length of the Characteristic Value is longer than can 
+ *          but the length of the Characteristic Value is longer than can
  *          be sent in a single Write Request Attribute Protocol message.
  *
  *          The ATT Prepare Write Request and Execute Write Request are
@@ -2987,12 +3020,11 @@ extern bStatus_t GATT_WriteCharValue(uint16_t connHandle, attWriteReq_t* pReq, u
  *          the server).
  *
  * @note    This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
- *          (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
- *          or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
- *          is received by the calling application task.
+ *          (with bleTimeout status), ATT_EXECUTE_WRITE_RSP
+ *          (with SUCCESS or bleTimeout status), or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
- * @note    The 'pReq->pValue' pointer will be freed when the sub-procedure
- *          is complete. 
+ * @note    The 'pReq->pValue' pointer will be freed when the sub-procedure is complete.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3014,11 +3046,11 @@ extern bStatus_t GATT_WriteLongCharValue(uint16_t connHandle, attPrepareWriteReq
  *          and assurance is required that the correct Characteristic Value
  *          is going to be written by transferring the Characteristic Value
  *          to be written in both directions before the write is performed.
- *          This sub-procedure can also be used when multiple values must 
+ *          This sub-procedure can also be used when multiple values must
  *          be written, in order, in a single operation.
  *
  *          The sub-procedure has two phases, the first phase prepares the
- *          characteristic values to be written.  Once this is complete, 
+ *          characteristic values to be written.  Once this is complete,
  *          the second phase performs the execution of all of the prepared
  *          characteristic value writes on the server from this client.
  *
@@ -3033,12 +3065,11 @@ extern bStatus_t GATT_WriteLongCharValue(uint16_t connHandle, attPrepareWriteReq
  *          the server).
  *
  * @note    This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
- *          (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
- *          or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
- *          is received by the calling application task. 
+ *          (with bleTimeout status), ATT_EXECUTE_WRITE_RSP
+ *          (with SUCCESS or bleTimeout status), or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
- * @note    The 'pReqs' pointer will be freed when the sub-procedure is
- *          complete. 
+ * @note    The 'pReqs' pointer will be freed when the sub-procedure is complete.
  *
  * @param   connHandle - connection to use
  * @param   pReqs - pointer to requests to be sent
@@ -3054,14 +3085,16 @@ extern bStatus_t GATT_WriteLongCharValue(uint16_t connHandle, attPrepareWriteReq
  *          bleMemAllocError: Memory allocation error occurred.<BR>
  *          bleTimeout: Previous transaction timed out.<BR>
  */
-extern bStatus_t GATT_ReliableWrites(uint16_t connHandle, attPrepareWriteReq_t* pReqs, uint8_t numReqs, uint8_t flags, uint8_t taskId);
+extern bStatus_t GATT_ReliableWrites(uint16_t connHandle, attPrepareWriteReq_t* pReqs, uint8_t numReqs,
+    uint8_t flags, uint8_t taskId);
+
 /**
  * @brief   This sub-procedure is used to read a characteristic descriptor
  *          from a server when the client knows the characteristic descriptor
  *          declaration's Attribute handle.
  *
  *          The ATT Read Request is used for this sub-procedure. The Read
- *          Request is used with the Attribute Handle parameter set to the 
+ *          Request is used with the Attribute Handle parameter set to the
  *          characteristic descriptor handle. The Read Response returns the
  *          characteristic descriptor value in the Attribute Value parameter.
  *
@@ -3071,8 +3104,8 @@ extern bStatus_t GATT_ReliableWrites(uint16_t connHandle, attPrepareWriteReq_t* 
  *          ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_READ_RSP
- *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *          SUCCESS status) is received by the calling application task.
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3139,8 +3172,8 @@ extern bStatus_t GATT_ReadLongCharDesc(uint16_t connHandle, attReadBlobReq_t* pR
  *          or ATT_ERROR_RSP (if an error occurred on the server).
  *
  * @note    This sub-procedure is complete when either ATT_WRITE_RSP
- *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP (with
- *          SUCCESS status) is received by the calling application task.
+ *          (with SUCCESS or bleTimeout status) or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3159,7 +3192,7 @@ extern bStatus_t GATT_WriteCharDesc(uint16_t connHandle, attWriteReq_t* pReq, ui
 /**
  * @brief   This sub-procedure is used to write a Characteristic Value to
  *          a server when the client knows the Characteristic Value Handle
- *          but the length of the Characteristic Value is longer than can 
+ *          but the length of the Characteristic Value is longer than can
  *          be sent in a single Write Request Attribute Protocol message.
  *
  *          The ATT Prepare Write Request and Execute Write Request are
@@ -3172,12 +3205,11 @@ extern bStatus_t GATT_WriteCharDesc(uint16_t connHandle, attWriteReq_t* pReq, ui
  *          the server).
  *
  * @note    This sub-procedure is complete when either ATT_PREPARE_WRITE_RSP
- *                (with bleTimeout status), ATT_EXECUTE_WRITE_RSP (with SUCCESS
- *                or bleTimeout status), or ATT_ERROR_RSP (with SUCCESS status)
- *                is received by the calling application task.
+ *          (with bleTimeout status), ATT_EXECUTE_WRITE_RSP
+ *          (with SUCCESS or bleTimeout status), or ATT_ERROR_RSP
+ *          (with SUCCESS status) is received by the calling application task.
  *
- * @note    The 'pReq->pValue' pointer will be freed when the sub-procedure
- *                is complete.
+ * @note    The 'pReq->pValue' pointer will be freed when the sub-procedure is complete.
  *
  * @param   connHandle - connection to use
  * @param   pReq - pointer to request to be sent
@@ -3233,9 +3265,8 @@ extern void GATT_bm_free(gattMsg_t* pMsg, uint8_t opcode);
  *          bleMemAllocError: Memory allocation error occurred.<BR>
  *          bleInvalidRange: Encryption key size's out of range.<BR>
  */
-extern bStatus_t GATTServApp_RegisterService(gattAttribute_t* pAttrs,
-    uint16_t numAttrs, uint8_t encKeySize,
-    gattServiceCBs_t* pServiceCBs);
+extern bStatus_t GATTServApp_RegisterService(gattAttribute_t* pAttrs, uint16_t numAttrs,
+    uint8_t encKeySize, gattServiceCBs_t* pServiceCBs);
 
 /**
  * @brief   Add function for the GATT Service.
@@ -3268,9 +3299,8 @@ extern bStatus_t GATTServApp_DeregisterService(uint16_t handle, gattAttribute_t*
 /**
  * @brief   Initialize the client characteristic configuration table.
  *
- * @note    Each client has its own instantiation of the Client
- *          Characteristic Configuration. Reads/Writes of the Client
- *          Characteristic Configuration only only affect the
+ * @note    Each client has its own instantiation of the ClientCharacteristic Configuration.
+ *          Reads/Writes of the Client Characteristic Configuration only only affect the
  *          configuration of that client.
  *
  * @param   connHandle - connection handle (0xFFFF for all connections).
@@ -3310,12 +3340,10 @@ extern bStatus_t GATTServApp_SendServiceChangedInd(uint16_t connHandle, uint8_t 
 extern uint16_t GATTServApp_ReadCharCfg(uint16_t connHandle, gattCharCfg_t* charCfgTbl);
 
 /**
- * @brief   Write the client characteristic configuration for a given
- *          client.
+ * @brief   Write the client characteristic configuration for a given client.
  *
- * @note    Each client has its own instantiation of the Client
- *          Characteristic Configuration. Writes of the Client
- *          Characteristic Configuration only only affect the
+ * @note    Each client has its own instantiation of the Client Characteristic Configuration.
+ *          Writes of the Client Characteristic Configuration only only affect the
  *          configuration of that client.
  *
  * @param   connHandle - connection handle.
@@ -3340,8 +3368,7 @@ extern uint8_t GATTServApp_WriteCharCfg(uint16_t connHandle, gattCharCfg_t* char
  * @return  Success or Failure
  */
 extern bStatus_t GATTServApp_ProcessCCCWriteReq(uint16_t connHandle, gattAttribute_t* pAttr,
-    uint8_t* pValue, uint16_t len, uint16_t offset,
-    uint16_t validCfg);
+    uint8_t* pValue, uint16_t len, uint16_t offset, uint16_t validCfg);
 
 /**
  * @brief   Set a GAP GATT Server parameter.
@@ -3388,71 +3415,71 @@ extern bStatus_t GGS_AddService(uint32_t services);
  */
 
 /**
- * @brief       Set a GAP Parameter value.  Use this function to change
- *              the default GAP parameter values.
+ * @brief   Set a GAP Parameter value.  Use this function to change  the default GAP parameter values.
  *
- * @param       paramID - parameter ID: @ref GAP_PARAMETER_ID_DEFINES
- * @param       paramValue - new param value
+ * @param   paramID - parameter ID: @ref GAP_PARAMETER_ID_DEFINES
+ * @param   paramValue - new param value
  *
- * @return      SUCCESS or INVALIDPARAMETER (invalid paramID)
+ * @return  SUCCESS or INVALIDPARAMETER (invalid paramID)
  */
 extern bStatus_t GAP_SetParamValue(uint16_t paramID, uint16_t paramValue);
 
 /**
- * @brief       Get a GAP Parameter value.
+ * @brief   Get a GAP Parameter value.
  *
- * NOTE:        This function is the same as GAP_PasskeyUpdate(), except that
- *              the passkey is passed in as a non-string format.
+ * @note    This function is the same as GAP_PasskeyUpdate(), except that
+ *          the passkey is passed in as a non-string format.
  *
- * @param       paramID - parameter ID: @ref GAP_PARAMETER_ID_DEFINES
+ * @param   paramID - parameter ID: @ref GAP_PARAMETER_ID_DEFINES
  *
- * @return      GAP Parameter value or 0xFFFF if invalid
+ * @return  GAP Parameter value or 0xFFFF if invalid
  */
 extern uint16_t GAP_GetParamValue(uint16_t paramID);
 
 /**
- * @brief       Setup the device's address type.  If ADDRTYPE_PRIVATE_RESOLVE
- *              is selected, the address will change periodically.
+ * @brief   Setup the device's address type.  If ADDRTYPE_PRIVATE_RESOLVE is selected,
+ *          the address will change periodically.
  *
- * @param       addrType - @ref GAP_ADDR_TYPE_DEFINES
- * @param       pStaticAddr - Only used with ADDRTYPE_STATIC or ADDRTYPE_PRIVATE_NONRESOLVE type
+ * @param   addrType - @ref GAP_ADDR_TYPE_DEFINES
+ * @param   pStaticAddr - Only used with ADDRTYPE_STATIC or ADDRTYPE_PRIVATE_NONRESOLVE type
  *                   NULL to auto generate otherwise the application can specify the address value
  *
- * @return      SUCCESS: address type updated,<BR>
- *              bleNotReady: Can't be called until GAP_DeviceInit() is called and the init process is completed
- *              bleIncorrectMode: can't change with an active connection,or INVALIDPARAMETER
- *              If return value isn't SUCCESS, the address type remains the same as before this call.
+ * @return  SUCCESS: address type updated,<BR>
+ *          bleNotReady: Can't be called until GAP_DeviceInit() is called
+ *                   and the init process is completed
+ *          bleIncorrectMode: can't change with an active connection,or INVALIDPARAMETER
+ *          If return value isn't SUCCESS, the address type remains the same as before this call.
  */
 extern bStatus_t GAP_ConfigDeviceAddr(uint8_t addrType, uint8_t* pStaticAddr);
 
 /**
- * @brief       Resolves a private address against an IRK.
+ * @brief   Resolves a private address against an IRK.
  *
- * @param       pIRK - (in) pointer to the IRK
- * @param       pAddr - (in) pointer to the Resolvable Private address
+ * @param(in)   pIRK - pointer to the IRK
+ * @param(in)   pAddr - pointer to the Resolvable Private address
  *
- * @param       pIRK (out)
- * @param       pAddr (out)
+ * @param(out)  pIRK
+ * @param(out)  pAddr
  *
- * @return      SUCCESS: match,<BR>
- *              FAILURE: don't match,<BR>
- *              INVALIDPARAMETER: parameters invalid<BR>
+ * @return  SUCCESS: match,<BR>
+ *          FAILURE: don't match,<BR>
+ *          INVALIDPARAMETER: parameters invalid<BR>
  */
 extern bStatus_t GAP_ResolvePrivateAddr(uint8_t* pIRK, uint8_t* pAddr);
 
 /**
- * @brief       Setup or change advertising and scan response data.
+ * @brief   Setup or change advertising and scan response data.
  *
- * @note        if the return status from this function is SUCCESS,the task isn't complete
- *              until the GAP_ADV_DATA_UPDATE_DONE_EVENT is sent to the calling application task.
+ * @note    if the return status from this function is SUCCESS,the task isn't complete
+ *          until the GAP_ADV_DATA_UPDATE_DONE_EVENT is sent to the calling application task.
  *
- * @param       taskID - task ID of the app requesting the change
- * @param       adType - TRUE - advertisement data, FALSE  - scan response data
- * @param       dataLen - Octet length of advertData
- * @param       pAdvertData - advertising or scan response data
+ * @param   taskID - task ID of the app requesting the change
+ * @param   adType - TRUE - advertisement data, FALSE  - scan response data
+ * @param   dataLen - Octet length of advertData
+ * @param   pAdvertData - advertising or scan response data
  *
- * @return      SUCCESS: data accepted,
- *              bleIncorrectMode: invalid profile role,
+ * @return  SUCCESS: data accepted
+ *          bleIncorrectMode: invalid profile role
  */
 extern bStatus_t GAP_UpdateAdvertisingData(uint8_t taskID, uint8_t adType, uint8_t dataLen, uint8_t* pAdvertData);
 
@@ -3462,11 +3489,11 @@ extern bStatus_t GAP_UpdateAdvertisingData(uint8_t taskID, uint8_t adType, uint8
 /**
  * @brief       Set a GAP Bond Manager parameter.
  *
- * @note        You can call this function with a GAP Parameter ID and it will set the GAP Parameter.
+ * @note    You can call this function with a GAP Parameter ID and it will set the GAP Parameter.
  *
- * @param       param - Profile parameter ID: @ref GAPBOND_PROFILE_PARAMETERS
- * @param       len - length of data to write
- * @param       pValue - pointer to data to write.  This is dependent on
+ * @param   param - Profile parameter ID: @ref GAPBOND_PROFILE_PARAMETERS
+ * @param   len - length of data to write
+ * @param   pValue - pointer to data to write.  This is dependent on
  *          the parameter ID and WILL be cast to the appropriate
  *          data type (example: data type of uint16_t will be cast to
  *          uint16_t pointer).
@@ -3476,31 +3503,28 @@ extern bStatus_t GAP_UpdateAdvertisingData(uint8_t taskID, uint8_t adType, uint8
 extern bStatus_t GAPBondMgr_SetParameter(uint16_t param, uint8_t len, void* pValue);
 
 /**
- * @brief       Get a GAP Bond Manager parameter.
+ * @brief   Get a GAP Bond Manager parameter.
  *
- *  NOTE: You can call this function with a GAP Parameter ID and it will get a
- *        GAP Parameter.
+ * @note    You can call this function with a GAP Parameter ID and it will get a GAP Parameter.
  *
- * @param       param - Profile parameter ID: @ref GAPBOND_PROFILE_PARAMETERS
- * @param       pValue - pointer to location to get the value.  This is dependent on
- *          the parameter ID and WILL be cast to the appropriate
- *          data type (example: data type of uint16_t will be cast to
- *          uint16_t pointer).
+ * @param   param - Profile parameter ID: @ref GAPBOND_PROFILE_PARAMETERS
+ * @param   pValue - pointer to location to get the value.  This is dependent on
+ *          the parameter ID and WILL be cast to the appropriate data type.
+ *          (example: data type of uint16_t will be cast to uint16_t pointer)
  *
  * @return      SUCCESS or INVALIDPARAMETER (invalid paramID)
  */
 extern bStatus_t GAPBondMgr_GetParameter(uint16_t param, void* pValue);
 
 /**
- * @brief       Respond to a passcode request.
+ * @brief   Respond to a passcode request.
  *
- * @param       connectionHandle - connection handle of the connected device or 0xFFFF
- *                                 if all devices in database.
- * @param       status - SUCCESS if passcode is available, otherwise see @ref SMP_PAIRING_FAILED_DEFINES.
- * @param       passcode - integer value containing the passcode.
+ * @param   connectionHandle - connection handle of the connected device or 0xFFFF if all devices in database.
+ * @param   status - SUCCESS if passcode is available, otherwise see @ref SMP_PAIRING_FAILED_DEFINES.
+ * @param   passcode - integer value containing the passcode.
  *
- * @return      SUCCESS - bond record found and changed,<BR>
- *              bleIncorrectMode - Link not found.
+ * @return  SUCCESS - bond record found and changed
+ *          bleIncorrectMode - Link not found.
  */
 extern bStatus_t GAPBondMgr_PasscodeRsp(uint16_t connectionHandle, uint8_t status, uint32_t passcode);
 
@@ -3519,30 +3543,27 @@ extern bStatus_t GAPBondMgr_PeriSecurityReq(uint16_t connHandle);
  * FUNCTIONS - GAPRole API
  */
 /**
- * @brief       Set a GAP Role parameter.
+ * @brief   Set a GAP Role parameter.
  *
- *  NOTE: You can call this function with a GAP Parameter ID and it will set a
- *        GAP Parameter.
+ * @note    You can call this function with a GAP Parameter ID and it will set a GAP Parameter.
  *
- * @param       param - Profile parameter ID: @ref GAPROLE_PROFILE_PARAMETERS
- * @param       len - length of data to write
- * @param       pValue - pointer to data to write.  This is dependent on
- *          the parameter ID and WILL be cast to the appropriate
- *          data type (example: data type of uint16 will be cast to
- *          uint16 pointer).
+ * @param   param - Profile parameter ID: @ref GAPROLE_PROFILE_PARAMETERS
+ * @param   len - length of data to write
+ * @param   pValue - pointer to data to write.  This is dependent on the parameter ID and
+ *                   WILL be cast to the appropriate data type (example: data type of uint16_t
+ *                   will be cast to uint16_t pointer).
  *
- * @return      SUCCESS or INVALIDPARAMETER (invalid paramID)
+ * @return  SUCCESS or INVALIDPARAMETER (invalid paramID)
  */
 extern bStatus_t GAPRole_SetParameter(uint16_t param, uint8_t len, void* pValue);
 
 /**
- * @brief       Get a GAP Role parameter.
+ * @brief   Get a GAP Role parameter.
  *
- *  NOTE: You can call this function with a GAP Parameter ID and it will get a
- *        GAP Parameter.
+ * @note    You can call this function with a GAP Parameter ID and it will get a GAP Parameter.
  *
- * @param       param - Profile parameter ID: @ref GAPROLE_PROFILE_PARAMETERS
- * @param       pValue - pointer to location to get the value.  This is dependent on
+ * @param   param - Profile parameter ID: @ref GAPROLE_PROFILE_PARAMETERS
+ * @param   pValue - pointer to location to get the value.  This is dependent on
  *          the parameter ID and WILL be cast to the appropriate
  *          data type (example: data type of uint16_t will be cast to
  *          uint16_t pointer).
@@ -3564,7 +3585,7 @@ extern bStatus_t GAPRole_TerminateLink(uint16_t connHandle);
  * @param   connHandle - connection handle
  *
  * @return  bStatus_t: HCI Error Code.<BR>
- *          
+ *
  */
 extern bStatus_t GAPRole_ReadRssiCmd(uint16_t connHandle);
 
@@ -3587,29 +3608,30 @@ extern bStatus_t GAPRole_UpdateLink(uint16_t connHandle, uint16_t connIntervalMi
  * FUNCTIONS - BROADCASTER_PROFILE_API Broadcaster Profile API
  */
 /**
- * @brief       Initialization function for the GAP Role Task.
  *
- * @param       None
+ * @brief   Initialization function for the GAP Role Task.
  *
- * @return      SUCCESS,bleInvalidRange
+ * @param   None.
+ *
+ * @return  SUCCESS,bleInvalidRange
  */
 extern bStatus_t GAPRole_BroadcasterInit(void);
 
 /**
- * @brief       Does the device initialization.  Only call this function once.
+ * @brief   Does the device initialization.  Only call this function once.
  *
- * @param       pAppCallbacks - pointer to application callbacks.
+ * @param   pAppCallbacks - pointer to application callbacks.
  *
- * @return      SUCCESS or bleAlreadyInRequestedMode
+ * @return  SUCCESS or bleAlreadyInRequestedMode
  */
 extern bStatus_t GAPRole_BroadcasterStartDevice(gapRolesBroadcasterCBs_t* pAppCallbacks);
 
 /**
- * @brief       Does the Broadcaster receive scan request call initialization.
+ * @brief   Does the Broadcaster receive scan request call initialization.
  *
- * @param       pAppCallbacks - pointer to application callbacks.
+ * @param   pAppCallbacks - pointer to application callbacks.
  *
- * @return      None
+ * @return  None
  */
 extern void GAPRole_BroadcasterSetCB(gapRolesBroadcasterCBs_t* pAppCallbacks);
 
@@ -3666,42 +3688,41 @@ extern bStatus_t GAPRole_ObserverCancelDiscovery(void);
 /**
  * @internal
  *
- * @brief       Initialization function for the GAP Role Task.
+ * @brief   Initialization function for the GAP Role Task.
  *          This is called during initialization and should contain
  *          any application specific initialization (ie. hardware
  *          initialization/setup, table initialization, power up
  *          notificaiton ... ).
  *
- * @param       none
+ * @param   None.
  *
- * @return      SUCCESS,bleInvalidRange
+ * @return  SUCCESS,bleInvalidRange
  */
 extern bStatus_t GAPRole_PeripheralInit(void);
 
 /**
- * @brief       Does the device initialization.  Only call this function once.
+ * @brief   Does the device initialization.  Only call this function once.
  *
- * @param       pAppCallbacks - pointer to application callbacks.
+ * @param   pAppCallbacks - pointer to application callbacks.
  *
- * @return      SUCCESS or bleAlreadyInRequestedMode  
+ * @return  SUCCESS or bleAlreadyInRequestedMode
  */
 extern bStatus_t GAPRole_PeripheralStartDevice(uint8_t taskid, gapBondCBs_t* pCB, gapRolesCBs_t* pAppCallbacks);
 
 /**
- * @brief       Update the parameters of an existing connection
+ * @brief   Update the parameters of an existing connection
  *
- * @param       connHandle - the connection Handle
- * @param       connIntervalMin - minimum connection interval in 1.25ms units
- * @param       connIntervalMax - maximum connection interval in 1.25ms units
- * @param       latency - the new slave latency
- * @param       connTimeout - the new timeout value
- * @param       taskId - taskID will recv L2CAP_SIGNAL_EVENT message
+ * @param   connHandle - the connection Handle
+ * @param   connIntervalMin - minimum connection interval in 1.25ms units
+ * @param   connIntervalMax - maximum connection interval in 1.25ms units
+ * @param   latency - the new slave latency
+ * @param   connTimeout - the new timeout value
+ * @param   taskId - taskID will recv L2CAP_SIGNAL_EVENT message
  *
- * @return      SUCCESS, bleNotConnected or bleInvalidRange
+ * @return  SUCCESS, bleNotConnected or bleInvalidRange
  */
-extern bStatus_t GAPRole_PeripheralConnParamUpdateReq(uint16_t connHandle,
-    uint16_t connIntervalMin, uint16_t connIntervalMax,
-    uint16_t latency, uint16_t connTimeout, uint8_t taskId);
+extern bStatus_t GAPRole_PeripheralConnParamUpdateReq(uint16_t connHandle, uint16_t connIntervalMin,
+    uint16_t connIntervalMax, uint16_t latency, uint16_t connTimeout, uint8_t taskId);
 
 /*-------------------------------------------------------------------
  * FUNCTIONS - CENTRAL_PROFILE_API Central Profile API
@@ -3769,129 +3790,128 @@ extern bStatus_t GAPRole_CentralEstablishLink(uint8_t highDutyCycle, uint8_t whi
 /*-------------------------------------------------------------------
  * FUNCTIONS - RF_PHY Profile API
  */
+
 /**
- * @brief       RF_PHY Profile Task initialization function.
+ * @brief   RF_PHY Profile Task initialization function.
  *
- * @param       None.
+ * @param   None.
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern bStatus_t RF_RoleInit(void);
 
 /**
- * @brief       rf config.
+ * @brief   rf config.
  *
- * @param       pConfig - rf config parameters
+ * @param   pConfig - rf config parameters
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern bStatus_t RF_Config(rfConfig_t* pConfig);
 
 /**
- * @brief       rx mode.
+ * @brief   rx mode.
  *
- * @param       txBuf - rx mode tx data
- * @param       txLen - rx mode tx length(0-251)
- * @param       pktRxType - rx mode rx package type
- *                        broadcast type(0xFF):receive all matching types,
- *                        others:receive match type or broadcast type
- * @param       pktTxType - rx mode tx package type(auto mode)
- *                        broadcast type(0xFF):received by all matching types; 
- *                        others:only received by matching type
+ * @param   txBuf - rx mode tx data
+ * @param   txLen - rx mode tx length(0-251)
+ * @param   pktRxType - rx mode rx package type
+ *                      broadcast type(0xFF):receive all matching types,
+ *                      others:receive match type or broadcast type
+ * @param   pktTxType - rx mode tx package type(auto mode)
+ *                      broadcast type(0xFF):received by all matching types;
+ *                      others:only received by matching type
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern bStatus_t RF_Rx(uint8_t* txBuf, uint8_t txLen, uint8_t pktRxType, uint8_t pktTxType);
 
 /**
- * @brief       tx mode.
+ * @brief   tx mode.
  *
- * @param       txBuf - tx mode tx data
- * @param       txLen - tx mode tx length(0-251)
- * @param       pktTxType - tx mode tx package type
- *                        broadcast type(0xFF):received by all matching types; 
- *                        others:only received by matching type
- * @param       pktRxType - tx mode rx package type(auto mode)
- *                        broadcast type(0xFF):receive all matching types,
- *                        others:receive match type or broadcast type
+ * @param   txBuf - tx mode tx data
+ * @param   txLen - tx mode tx length(0-251)
+ * @param   pktTxType - tx mode tx package type
+ *                      broadcast type(0xFF):received by all matching types;
+ *                      others:only received by matching type
+ * @param   pktRxType - tx mode rx package type(auto mode)
+ *                      broadcast type(0xFF):receive all matching types,
+ *                      others:receive match type or broadcast type
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern bStatus_t RF_Tx(uint8_t* txBuf, uint8_t txLen, uint8_t pktTxType, uint8_t pktRxType);
 
 /**
- * @brief       shut down,stop tx/rx mode.
+ * @brief   shut down,stop tx/rx mode.
  *
- * @param       None.
+ * @param   None.
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern bStatus_t RF_Shut(void);
 
 /**
- * @brief       rf mode set radio channel/frequency.
+ * @brief   rf mode set radio channel/frequency.
  *
- * @param       None.
+ * @param   channel.
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern void RF_SetChannel(uint32_t channel);
 
 /**
- * @brief       shut down rf frequency hopping 
+ * @brief   shut down rf frequency hopping
  *
- * @param       None.
+ * @param   None.
  *
- * @return      None.
+ * @return  None.
  */
 extern void RF_FrequencyHoppingShut(void);
 
 /**
- * @brief       
+ * @brief
  *
- * @param       resendCount - Maximum count of sending HOP_TX pdu,0 = unlimited.
+ * @param   resendCount - Maximum count of sending HOP_TX pdu,0 = unlimited.
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern uint8_t RF_FrequencyHoppingTx(uint8_t resendCount);
 
 /**
- * @brief       
+ * @brief
  *
- * @param       timeoutMS - Maximum time to wait for receiving HOP_TX pdu(Time = n * 1mSec),0 = unlimited.
+ * @param   timeoutMS - Maximum time to wait for receiving HOP_TX pdu(Time = n * 1mSec),0 = unlimited.
  *
- * @return      0 - success.1-fail.2-LLEMode error(shall AUTO)
+ * @return  0 - success.1-fail.2-LLEMode error(shall AUTO)
  */
 extern uint8_t RF_FrequencyHoppingRx(uint32_t timeoutMS);
 
 /**
- * @brief       Erase FH bonded device
+ * @brief   Erase FH bonded device
  *
- * @param       None.
+ * @param   None.
  *
- * output parameters
- *
- * @param       
- *
- * @return      None.
+ * @return  None.
  */
 extern void RF_BondingErase(void);
 
 /**
- * @brief       single channel mode.
+ * @brief   single channel mode.
  *
- * @param       ch - rf channel,f=2402+ch*2 MHz, ch=0,...,39
+ * @param   ch - rf channel,f=2402+ch*2 MHz, ch=0,...,39
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern bStatus_t LL_SingleChannel(uint8_t ch);
 
 /**
- * @brief       used to stop any test which is in progress.
+ * @brief   used to stop any test which is in progress.
  *
- * @param       pPktNum (out) - the number of received packets.
+ * @param(in)   pPktNum - null
  *
- * @return      0 - success.
+ * @param(out)  the number of received packets.
+ *
+ * @return  0 - success.
  */
 extern bStatus_t LL_TestEnd(uint8_t* pPktNum);
 
@@ -3921,7 +3941,7 @@ extern bStatus_t API_LE_TransmitterTestCmd(uint8_t tx_channel, uint8_t len, uint
  *
  * @param   None
  *
- * @return      0 - success.
+ * @return  0 - success.
  */
 extern bStatus_t API_LE_TestEndCmd(void);
 
@@ -3965,7 +3985,7 @@ extern void RFEND_SetAdcMode(uint8_t mode);
 /*
  * END @ Profile API
  */
-/***************************************************************************************************/
+/******************************************************************************/
 #ifdef __cplusplus
 }
 #endif

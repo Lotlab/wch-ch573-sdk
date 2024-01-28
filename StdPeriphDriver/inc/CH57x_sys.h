@@ -172,9 +172,25 @@ void mDelayuS(uint16_t t);
  */
 void mDelaymS(uint16_t t);
 
-/* Safe access */
+#ifdef CH58x
+extern volatile uint32_t IRQ_STA;
+#endif
+
+/**
+ * @brief 进入安全访问模式.
+ *
+ * @note: 进入安全访问模式后约16个系统主频周期都处于安全模式下，
+ * 该有效期内可以改写一个或多个安全类寄存器，超出上述有效期后将自动终止安全模式。
+ */
 __attribute__((always_inline)) static inline void sys_safe_access_enable(void)
 {
+#ifdef CH58x
+    if (read_csr(0x800) & 0x08) {
+        IRQ_STA = read_csr(0x800);
+        write_csr(0x800, (IRQ_STA & (~0x08)));
+    }
+    SAFEOPERATE;
+#endif
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG1;
     R8_SAFE_ACCESS_SIG = SAFE_ACCESS_SIG2;
 #ifdef CH58x
@@ -185,6 +201,11 @@ __attribute__((always_inline)) static inline void sys_safe_access_enable(void)
 __attribute__((always_inline)) static inline void sys_safe_access_disable(void)
 {
     R8_SAFE_ACCESS_SIG = 0;
+#ifdef CH58x
+    write_csr(0x800, read_csr(0x800) | (IRQ_STA & 0x08));
+    IRQ_STA = 0;
+    SAFEOPERATE;
+#endif
 }
 
 #ifdef __cplusplus

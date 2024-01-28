@@ -133,7 +133,7 @@ extern "C" {
 #define RST_FLAG_RPOR 0x01
 #define RST_FLAG_WTR 0x02
 #define RST_FLAG_MR 0x03
-//#define  RST_FLAG_GPWSM     0x04                      // RO, power on reset flag during sleep/shutdown: 0=no power on reset during sleep/shutdown, 1=power on reset occurred during sleep/shutdown
+// #define  RST_FLAG_GPWSM     0x04                      // RO, power on reset flag during sleep/shutdown: 0=no power on reset during sleep/shutdown, 1=power on reset occurred during sleep/shutdown
 #define RST_FLAG_GPWSM 0x05
 // RB_RESET_FLAG: recent reset flag
 //   000 - SR, software reset, by RB_SOFTWARE_RESET=1 @RB_WDOG_RST_EN=0
@@ -197,7 +197,7 @@ extern "C" {
 #define R8_SLP_WAKE_CTRL (*((volatile uint8_t*)0x4000100E)) // RWA, wake control, SAM
 #define RB_SLP_USB_WAKE 0x01 // RWA, enable USB waking
 #define RB_SLP_USB2_WAKE 0x02 // RWA, enable USB2 waking
-//#define  RB_SLP_BLE_WAKE    0x04                      // RWA, enable BLE waking
+// #define  RB_SLP_BLE_WAKE    0x04                      // RWA, enable BLE waking
 #define RB_SLP_RTC_WAKE 0x08 // RWA, enable RTC waking
 #define RB_SLP_GPIO_WAKE 0x10 // RWA, enable GPIO waking
 #define RB_SLP_BAT_WAKE 0x20 // RWA, enable BAT waking
@@ -209,8 +209,8 @@ extern "C" {
 //   01: short time, 520 cycles+TSUHSE
 //   10: shorter time, 70 cycles+TSUHSE
 //   11: no delay, 8 cycles+TSUHSE
-//#define  RB_SLP_USB_PWR_DN  0x01                      // RWA, enable USB power down
-//#define  RB_SLP_BLE_PWR_DN  0x04                      // RWA, enable BLE power down
+// #define  RB_SLP_USB_PWR_DN  0x01                      // RWA, enable USB power down
+// #define  RB_SLP_BLE_PWR_DN  0x04                      // RWA, enable BLE power down
 #define RB_SLP_CLK_RAMX 0x10 // RWA, close main SRAM clock
 #define RB_SLP_CLK_RAM2K 0x20 // RWA, close retention 2KB SRAM clock
 #define RB_RAM_RET_LV 0x40 // RWA, SRAM retention voltage selection: 0=normal, 1=low voltage for low power
@@ -259,7 +259,7 @@ extern "C" {
 #define RB_PWR_EXTEND 0x08 // RWA, power retention for USB and BLE
 #define RB_PWR_RAM30K 0x10 // RWA, power for main SRAM
 #define RB_PWR_SYS_EN 0x80 // RWA, power for system
-//#define  RB_PWR_LDO_EN      0x0100                    // RWA, LDO enable
+// #define  RB_PWR_LDO_EN      0x0100                    // RWA, LDO enable
 #define RB_PWR_DCDC_EN 0x0200 // RWA, DC/DC converter enable: 0=DC/DC disable and bypass, 1=DC/DC enable
 #define RB_PWR_DCDC_PRE 0x0400 // RWA, DC/DC converter pre-enable
 #define RB_PWR_PLAN_EN 0x8000 // RWA/WZ, power plan enable, auto clear after sleep executed
@@ -584,7 +584,9 @@ extern "C" {
 #define bMISO_ (1 << 15) // PB15
 #define bDTR_ (1 << 15) // PB15
 #define bSDA_ (1 << 20) // PB20
+#define bRXD3_ (1 << 20) // PB20
 #define bSCL_ (1 << 21) // PB21
+#define bTXD3_ (1 << 21) // PB21
 #define bRXD2_ (1 << 22) // PB22
 #define bTMR3 (1 << 22) // PB22
 #define bCAP3 bTMR3
@@ -845,12 +847,12 @@ extern "C" {
 #define UART_MSR 6
 #define RB_MSR_CTS_CHG 0x01 // RZ, UART0 CTS changed status, high action
 #define RB_MSR_DSR_CHG 0x02 // RZ, UART0 DSR changed status, high action
-//#define  RB_MSR_RI_CHG      0x04                      // RZ, UART0 RI changed status, high action
-//#define  RB_MSR_DCD_CHG     0x08                      // RZ, UART0 DCD changed status, high action
+// #define  RB_MSR_RI_CHG      0x04                      // RZ, UART0 RI changed status, high action
+// #define  RB_MSR_DCD_CHG     0x08                      // RZ, UART0 DCD changed status, high action
 #define RB_MSR_CTS 0x10 // RO, UART0 CTS action status
 #define RB_MSR_DSR 0x20 // RO, UART0 DSR action status
-//#define  RB_MSR_RI          0x40                      // RO, UART0 RI action status
-//#define  RB_MSR_DCD         0x80                      // RO, UART0 DCD action status
+// #define  RB_MSR_RI          0x40                      // RO, UART0 RI action status
+// #define  RB_MSR_DCD         0x80                      // RO, UART0 DCD action status
 #define UART_RBR 8
 #define UART_THR 8
 #define UART_RFC 0x0A
@@ -1208,7 +1210,7 @@ extern "C" {
 /******************************************************************************/
 /*                         Peripheral memory map                              */
 /******************************************************************************/
-/* usb addresses         
+/* usb addresses
 //      USB:     +8000H - 83FFH                                                    */
 #define USB_BASE_ADDR (0x40008000)
 #define USB2_BASE_ADDR (0x40008400)
@@ -1351,7 +1353,7 @@ extern "C" {
 //   0 1:  64 bytes buffer for transmittal (IN endpoint)
 //   1 1:  64 bytes buffer for receiving (OUT endpoint) + 64 bytes buffer for transmittal (IN endpoint), total=128bytes
 
-#define R8_UH_EP_MOD R8_UEP2_3_MOD //host endpoint mode
+#define R8_UH_EP_MOD R8_UEP2_3_MOD // host endpoint mode
 #define RB_UH_EP_TX_EN 0x40 // enable USB host OUT endpoint transmittal
 #define RB_UH_EP_TBUF_MOD 0x10 // buffer mode of USB host OUT endpoint
 // bUH_EP_TX_EN & bUH_EP_TBUF_MOD: USB host OUT endpoint buffer mode, buffer start address is UH_TX_DMA

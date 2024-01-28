@@ -11,6 +11,8 @@
 #include "CH57x_sys.h"
 #include "ISP573.h"
 
+volatile uint32_t IRQ_STA = 0;
+
 /*********************************************************************
  * @fn      SetSysClock
  *
@@ -30,6 +32,7 @@ __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
         if (!(R8_HFCK_PWR_CTRL & RB_CLK_XT32M_PON)) {
             sys_safe_access_enable();
             R8_HFCK_PWR_CTRL |= RB_CLK_XT32M_PON; // HSE power on
+            sys_safe_access_disable();
             for (i = 0; i < 1200; i++) {
                 __nop();
                 __nop();
@@ -52,6 +55,7 @@ __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
         if (!(R8_HFCK_PWR_CTRL & RB_CLK_PLL_PON)) {
             sys_safe_access_enable();
             R8_HFCK_PWR_CTRL |= RB_CLK_PLL_PON; // PLL power on
+            sys_safe_access_disable();
             for (i = 0; i < 2000; i++) {
                 __nop();
                 __nop();
@@ -77,8 +81,9 @@ __attribute__((section(".highcode"))) void SetSysClock(SYS_CLKTypeDef sc)
     } else {
         sys_safe_access_enable();
         R16_CLK_SYS_CFG |= RB_CLK_SYS_MOD;
+        sys_safe_access_disable();
     }
-    //更改FLASH clk的驱动能力
+    // 更改FLASH clk的驱动能力
     sys_safe_access_enable();
     R8_PLL_CONFIG |= 1 << 7;
     sys_safe_access_disable();
@@ -267,6 +272,7 @@ HardFault_Handler(void)
     FLASH_ROM_SW_RESET();
     sys_safe_access_enable();
     R16_INT32K_TUNE = 0xFFFF;
+    sys_safe_access_disable();
     sys_safe_access_enable();
     R8_RST_WDOG_CTRL |= RB_SOFTWARE_RESET;
     sys_safe_access_disable();
@@ -286,9 +292,9 @@ HardFault_Handler(void)
 __attribute__((section(".highcode"))) void mDelayuS(uint16_t t)
 {
     uint32_t i;
-#if(FREQ_SYS == 80000000)
+#if (FREQ_SYS == 80000000)
     i = t * 20;
-#elif(FREQ_SYS == 60000000)
+#elif (FREQ_SYS == 60000000)
     i = t * 15;
 #elif (FREQ_SYS == 48000000)
     i = t * 12;
@@ -361,3 +367,23 @@ __attribute__((used)) int _write(int fd, char* buf, int size)
 }
 
 #endif
+
+/*********************************************************************
+ * @fn      _sbrk
+ *
+ * @brief   Change the spatial position of data segment.
+ *
+ * @return  size: Data length
+ */
+__attribute__((used)) void* _sbrk(ptrdiff_t incr)
+{
+    extern char _end[];
+    extern char _heap_end[];
+    static char* curbrk = _end;
+
+    if ((curbrk + incr < _end) || (curbrk + incr > _heap_end))
+        return NULL - 1;
+
+    curbrk += incr;
+    return curbrk - incr;
+}

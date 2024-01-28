@@ -25,6 +25,12 @@ extern "C" {
  * @param   len         - read len
  */
 void FLASH_ROM_READ(uint32_t StartAddr, void* Buffer, uint32_t len);
+/**
+ * @brief   读取芯片唯一ID
+ * 
+ * @param   Buffer      - 输出缓冲区，长度为8 Bytes
+ */
+void GET_UNIQUE_ID(uint8_t *Buffer);
 
 #ifdef CH58x
 

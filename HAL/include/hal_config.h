@@ -35,10 +35,13 @@
 #define HAL_SLEEP TRUE // 是否开启睡眠功能 ( 默认:FALSE )
 #endif
 #ifndef SLEEP_RTC_MIN_TIME
-#define SLEEP_RTC_MIN_TIME (30U) // 非空闲模式下睡眠的最小时间（单位：625us）
+#define SLEEP_RTC_MIN_TIME US_TO_RTC(1000) // 非空闲模式下睡眠的最小时间（单位：一个RTC周期）
+#endif
+#ifndef SLEEP_RTC_MAX_TIME
+#define SLEEP_RTC_MAX_TIME MS_TO_RTC(RTC_TO_MS(RTC_TIMER_MAX_VALUE) - 1000 * 60 * 60) // 非空闲模式下睡眠的最大时间（单位：一个RTC周期）
 #endif
 #ifndef WAKE_UP_RTC_MAX_TIME
-#define WAKE_UP_RTC_MAX_TIME (45U) // - 等待32M晶振稳定时间，根据不同睡眠类型取值可分为： 睡眠模式/下电模式: 45(默认); 暂停模式: 45; 空闲模式: 5
+#define WAKE_UP_RTC_MAX_TIME US_TO_RTC(1400) // - 等待32M晶振稳定时间（单位：一个RTC周期），根据不同睡眠类型取值可分为： 睡眠模式/下电模式: 45(默认); 暂停模式: 45; 空闲模式: 5
 #endif
 #ifndef TEM_SAMPLE
 #define TEM_SAMPLE TRUE // 是否打开根据温度变化校准的功能，单次校准耗时小于10ms( 默认:TRUE )

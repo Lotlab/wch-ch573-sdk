@@ -53,8 +53,13 @@ void TMR0_EXTSingleCounterInit(CapModeTypeDef cap)
  */
 void TMR0_PWMInit(PWMX_PolarTypeDef pr, PWM_RepeatTsTypeDef ts)
 {
+#ifdef CH58x
+    R8_TMR0_CTRL_MOD = RB_TMR_ALL_CLEAR;
+    R8_TMR0_CTRL_MOD = (pr << 4) | (ts << 6);
+#else
     //    R8_TMR0_CTRL_MOD = RB_TMR_ALL_CLEAR;
     R8_TMR0_CTRL_MOD = RB_TMR_COUNT_EN | RB_TMR_OUT_EN | (pr << 4) | (ts << 6);
+#endif
 }
 
 /*********************************************************************

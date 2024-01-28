@@ -34,6 +34,18 @@ void HAL_TimeInit(void);
  */
 extern void RTC_SetTignTime(uint32_t time);
 
+#define CLK_PER_US (1.0 / ((1.0 / FREQ_RTC) * 1000 * 1000))
+#define CLK_PER_MS (CLK_PER_US * 1000)
+
+#define US_PER_CLK (1.0 / CLK_PER_US)
+#define MS_PER_CLK (US_PER_CLK / 1000.0)
+
+#define RTC_TO_US(clk) ((uint32_t)((clk) * US_PER_CLK + 0.5))
+#define RTC_TO_MS(clk) ((uint32_t)((clk) * MS_PER_CLK + 0.5))
+
+#define US_TO_RTC(us) ((uint32_t)((us) * CLK_PER_US + 0.5))
+#define MS_TO_RTC(ms) ((uint32_t)((ms) * CLK_PER_MS + 0.5))
+
 #ifdef __cplusplus
 }
 #endif

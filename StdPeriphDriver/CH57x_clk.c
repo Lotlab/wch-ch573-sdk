@@ -219,6 +219,10 @@ uint16_t Calibration_LSI_FLASH(void)
         loc_t = loc;
         diffc = diff_1 * CNT_STEP_K;
         loc = loc - diffc;
+        if (loc > RB_INT32K_TUNE)
+        {
+            loc = RB_INT32K_TUNE;
+        }
         if (loc == loc_t) {
             if (diff_1 > 0) {
                 loc = loc + 1; // 当前频率偏小
@@ -346,6 +350,10 @@ uint16_t Calibration_LSI_RAM(void)
         loc_t = loc;
         diffc = diff_1 * CNT_STEP_K;
         loc = loc - diffc;
+        if (loc > RB_INT32K_TUNE)
+        {
+            loc = RB_INT32K_TUNE;
+        }
         if (loc == loc_t) {
             if (diff_1 > 0) {
                 loc = loc + 1; // 当前频率偏小
@@ -560,6 +568,10 @@ void RTC_TRIGFunCfg(uint32_t cyc)
     uint32_t t;
 
     t = RTC_GetCycle32k() + cyc;
+    if (t > 0xA8C00000)
+    {
+        t -= 0xA8C00000;
+    }
 
     sys_safe_access_enable();
     R32_RTC_TRIG = t;

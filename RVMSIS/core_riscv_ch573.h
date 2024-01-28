@@ -4,8 +4,10 @@
  * Version            : V1.0.1
  * Date               : 2021/10/28
  * Description        : CH573 RISC-V Core Peripheral Access Layer Header File
+ *********************************************************************************
  * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
- * SPDX-License-Identifier: Apache-2.0
+ * Attention: This software (modified or not) and binary are used for
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
  *******************************************************************************/
 #ifndef __CORE_RV3A_H__
 #define __CORE_RV3A_H__
@@ -24,7 +26,7 @@ extern "C" {
 #define __IO volatile /*!< defines 'read / write' permissions   */
 #define RV_STATIC_INLINE static inline
 
-//typedef enum {SUCCESS = 0, ERROR = !SUCCESS} ErrorStatus;
+// typedef enum {SUCCESS = 0, ERROR = !SUCCESS} ErrorStatus;
 
 typedef enum {
     DISABLE = 0,
@@ -37,7 +39,8 @@ typedef enum {
     ITStatus;
 
 /* memory mapped structure for Program Fast Interrupt Controller (PFIC) */
-typedef struct __attribute__((packed)) {
+typedef struct
+{
     __I uint32_t ISR[8];
     __I uint32_t IPR[8];
     __IO uint32_t ITHRESDR;
@@ -78,7 +81,7 @@ typedef struct __attribute__((packed)) {
 #define PFIC_KEY3 ((uint32_t)0xBEEF0000)
 
 /* ##########################   define  #################################### */
-#define __nop() asm volatile("nop")
+#define __nop() __asm__ volatile("nop")
 
 /* ##########################   PFIC functions  #################################### */
 
@@ -91,7 +94,7 @@ typedef struct __attribute__((packed)) {
  */
 RV_STATIC_INLINE void PFIC_EnableIRQ(IRQn_Type IRQn)
 {
-    PFIC->IENR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn)&0x1F));
+    PFIC->IENR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn) & 0x1F));
 }
 
 /*******************************************************************************
@@ -106,7 +109,7 @@ RV_STATIC_INLINE void PFIC_DisableIRQ(IRQn_Type IRQn)
     uint32_t tem;
     tem = PFIC->ITHRESDR;
     PFIC->ITHRESDR = 0x10;
-    PFIC->IRER[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn)&0x1F));
+    PFIC->IRER[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn) & 0x1F));
     PFIC->ITHRESDR = tem;
     __nop();
     __nop();
@@ -124,7 +127,7 @@ RV_STATIC_INLINE void PFIC_DisableIRQ(IRQn_Type IRQn)
  */
 RV_STATIC_INLINE uint32_t PFIC_GetStatusIRQ(IRQn_Type IRQn)
 {
-    return ((uint32_t)((PFIC->ISR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn)&0x1F))) ? 1 : 0));
+    return ((uint32_t)((PFIC->ISR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn) & 0x1F))) ? 1 : 0));
 }
 
 /*******************************************************************************
@@ -139,7 +142,7 @@ RV_STATIC_INLINE uint32_t PFIC_GetStatusIRQ(IRQn_Type IRQn)
  */
 RV_STATIC_INLINE uint32_t PFIC_GetPendingIRQ(IRQn_Type IRQn)
 {
-    return ((uint32_t)((PFIC->IPR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn)&0x1F))) ? 1 : 0));
+    return ((uint32_t)((PFIC->IPR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn) & 0x1F))) ? 1 : 0));
 }
 
 /*******************************************************************************
@@ -151,7 +154,7 @@ RV_STATIC_INLINE uint32_t PFIC_GetPendingIRQ(IRQn_Type IRQn)
  */
 RV_STATIC_INLINE void PFIC_SetPendingIRQ(IRQn_Type IRQn)
 {
-    PFIC->IPSR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn)&0x1F));
+    PFIC->IPSR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn) & 0x1F));
 }
 
 /*******************************************************************************
@@ -163,7 +166,7 @@ RV_STATIC_INLINE void PFIC_SetPendingIRQ(IRQn_Type IRQn)
  */
 RV_STATIC_INLINE void PFIC_ClearPendingIRQ(IRQn_Type IRQn)
 {
-    PFIC->IPRR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn)&0x1F));
+    PFIC->IPRR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn) & 0x1F));
 }
 
 /*******************************************************************************
@@ -178,7 +181,7 @@ RV_STATIC_INLINE void PFIC_ClearPendingIRQ(IRQn_Type IRQn)
  */
 RV_STATIC_INLINE uint32_t PFIC_GetActive(IRQn_Type IRQn)
 {
-    return ((uint32_t)((PFIC->IACTR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn)&0x1F))) ? 1 : 0));
+    return ((uint32_t)((PFIC->IACTR[(uint32_t)(IRQn) >> 5] & (1 << ((uint32_t)(IRQn) & 0x1F))) ? 1 : 0));
 }
 
 /*******************************************************************************
@@ -269,7 +272,7 @@ __attribute__((always_inline)) RV_STATIC_INLINE void __SEV(void)
 __attribute__((always_inline)) RV_STATIC_INLINE void __WFI(void)
 {
     PFIC->SCTLR &= ~(1 << 3); // wfi
-    asm volatile("wfi");
+    __asm__ volatile("wfi");
 }
 
 /*******************************************************************************
@@ -280,9 +283,9 @@ __attribute__((always_inline)) RV_STATIC_INLINE void __WFI(void)
 __attribute__((always_inline)) RV_STATIC_INLINE void __WFE(void)
 {
     PFIC->SCTLR |= (1 << 3) | (1 << 5); // (wfi->wfe)+(__sev)
-    asm volatile("wfi");
+    __asm__ volatile("wfi");
     PFIC->SCTLR |= (1 << 3);
-    asm volatile("wfi");
+    __asm__ volatile("wfi");
 }
 
 /*******************************************************************************

@@ -114,12 +114,12 @@ typedef enum {
 
 #define MAX_DAY 0x00004000
 #define MAX_2_SEC 0x0000A8C0
-//#define	 MAX_SEC		0x545FFFFF
+// #define	 MAX_SEC		0x545FFFFF
 
 #define BEGYEAR 2020
 #define IsLeapYear(yr) (!((yr) % 400) || (((yr) % 100) && !((yr) % 4)))
 #define YearLength(yr) (IsLeapYear(yr) ? 366 : 365)
-#define monthLength(lpyr, mon) (((mon) == 1) ? (28 + (lpyr)) : (((mon) > 6) ? (((mon)&1) ? 31 : 30) : (((mon)&1) ? 30 : 31)))
+#define monthLength(lpyr, mon) (((mon) == 1) ? (28 + (lpyr)) : (((mon) > 6) ? (((mon) & 1) ? 31 : 30) : (((mon) & 1) ? 30 : 31)))
 
 /**
  * @brief  rtc timer mode period define
@@ -155,9 +155,9 @@ typedef enum {
 
 typedef enum {
     /* 校准精度越高，耗时越长 */
-    Level_32 = 3, // 用时 1.2ms 1000ppm (32M 主频)  1100ppm (64M 主频)
-    Level_64, // 用时 2.2ms 800ppm  (32M 主频)  1000ppm (64M 主频)
-    Level_128, // 用时 4.2ms 600ppm  (32M 主频)  800ppm  (64M 主频)
+    Level_32 = 3, // 用时 1.2ms 1000ppm (32M 主频)  1100ppm (60M 主频)
+    Level_64, // 用时 2.2ms 800ppm  (32M 主频)  1000ppm (60M 主频)
+    Level_128, // 用时 4.2ms 600ppm  (32M 主频)  800ppm  (60M 主频)
 
 } Cali_LevelTypeDef;
 
